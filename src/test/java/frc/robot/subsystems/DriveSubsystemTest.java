@@ -99,9 +99,6 @@ public class DriveSubsystemTest {
     when(m_navx.getAngle()).thenReturn(0.0);
     when(m_navx.getVelocityY()).thenReturn((float)-4.106);
 
-    // Fill up velocity moving average buffer by calling periodic
-    for (int i = 0; i < 6; i++) { m_driveSubsystem.periodic(); }
-
     // Try to drive in reverse
     m_driveSubsystem.teleopPID(-1.0, 0.0);
 
@@ -126,9 +123,6 @@ public class DriveSubsystemTest {
 
     // Hardcode NAVX sensor value for angle
     when(m_navx.getAngle()).thenReturn(0.0);
-
-    // Fill up velocity moving average buffer by calling periodic
-    for (int i = 0; i < 6; i++) { m_driveSubsystem.periodic(); }
 
     // Simulate NAVX sensor deceleration
     for (int i = 0; i < 75; i++) {
@@ -179,9 +173,6 @@ public class DriveSubsystemTest {
     // Hardcode NAVX sensor return values for angle, velocityY
     when(m_navx.getAngle()).thenReturn(0.0);
     when(m_navx.getVelocityY()).thenReturn((float)4.106);
-
-    // Fill up velocity moving average buffer by calling periodic
-    for (int i = 0; i < 6; i++) { m_driveSubsystem.periodic(); }
 
     // Try to drive with small turn value
     m_driveSubsystem.teleopPID(1.0, 0.001);
@@ -235,9 +226,6 @@ public class DriveSubsystemTest {
     when(m_navx.getAngle()).thenReturn(0.0);
     when(m_navx.getVelocityY()).thenReturn((float)0.0);
 
-    // Fill up velocity moving average buffer by calling periodic
-    for (int i = 0; i < 6; i++) { m_driveSubsystem.periodic(); }
-
     // Try to move forward
     m_driveSubsystem.teleopPID(1.0, 0.0);
 
@@ -255,9 +243,6 @@ public class DriveSubsystemTest {
     // Hardcode NAVX sensor values for angle, and velocityY
     when(m_navx.getAngle()).thenReturn(0.0);
     when(m_navx.getVelocityY()).thenReturn((float)0.0);
-
-    // Fill up velocity moving average buffer by calling periodic
-    for (int i = 0; i < 6; i++) { m_driveSubsystem.periodic(); }
 
     // Toggle off traction control
     m_driveSubsystem.toggleTractionControl();

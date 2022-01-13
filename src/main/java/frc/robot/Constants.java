@@ -34,6 +34,10 @@ public final class Constants {
   public static final double DRIVE_WHEEL_DIAMETER_METERS = 0.1524;
   public static final double DRIVE_GEAR_RATIO = 120.0 / 11.0;
 
+  // Xbox controller ports
+  public static final int PRIMARY_CONTROLLER_PORT = 0;
+  public static final int SECONDARY_CONTROLLER_PORT = 1;
+
   // Drive Motor Ports 
   public static final int FRONT_LEFT_MOTOR_PORT = 0;
   public static final int REAR_LEFT_MOTOR_PORT = 1;

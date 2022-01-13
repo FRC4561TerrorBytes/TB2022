@@ -73,17 +73,10 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   private final double METERS_PER_ROTATION = METERS_PER_TICK * TICKS_PER_ROTATION; // 0.04388
   private final double DRIVETRAIN_EFFICIENCY = 0.88;
   private final double MAX_LINEAR_SPEED = Math.floor(((MOTOR_MAX_RPM / 60) * METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY) * 1000) / 1000; // 4.106 m/s
-  private final double INERTIAL_VELOCITY_THRESHOLD = 0.005;
-  private final int INERTIAL_VELOCITY_WINDOW_SIZE = 1;
-  private final double[] INERTIAL_VELOCITY_READINGS = new double[INERTIAL_VELOCITY_WINDOW_SIZE];
-
   private final double TOLERANCE = 0.125;
 
   private double m_turnScalar = 1.0; 
   private double m_inertialVelocity = 0.0;
-  private double m_inertialVelocitySum = 0.0;
-  private int m_inertialVelocityIndex = 0;
-
   private boolean m_wasTurning = false;
 
   /**
@@ -94,12 +87,13 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param drivetrainHardware Hardware devices required by drivetrain
    * @param kP Proportional gain
    * @param kD Derivative gain
-   * @param turn_scalar Scalar for turn input (degrees)
+   * @param turnScalar Scalar for turn input (degrees)
    * @param accelerationLimit Maximum allowed acceleration (m/s^2)
    * @param tractionControlCurve Expression characterising traction of the robot with "X" as the variable
    * @param throttleInputCurve Expression characterising throttle input with "X" as the variable
    */
-  public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turn_scalar, double accelerationLimit, String tractionControlCurve, String throttleInputCurve) {
+  public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turnScalar,
+                        double accelerationLimit, String tractionControlCurve, String throttleInputCurve) {
       m_drivePIDController = new PIDController(kP, 0.0, kD, Constants.ROBOT_LOOP_PERIOD);
       m_tractionControlController = new TractionControlController(MAX_LINEAR_SPEED, accelerationLimit, tractionControlCurve, throttleInputCurve);
 
@@ -110,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
       this.m_navx = drivetrainHardware.navx;
 
-      this.m_turnScalar = turn_scalar;
+      this.m_turnScalar = turnScalar;
 
       // Reset TalonFX settings
       m_lMasterMotor.configFactoryDefault();
@@ -170,15 +164,17 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void shuffleboard() {
     ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
-    tab.addNumber("Drive Angle", () -> getHeading());
+    tab.addNumber("Drive Angle (degrees)", () -> getAngle());
+    tab.addNumber("Right master current (amps)", () -> m_rMasterMotor.getSupplyCurrent());
+    tab.addNumber("Left master current (amps)", () -> m_lMasterMotor.getSupplyCurrent());
+    tab.addNumber("Right slave current (amps)", () -> m_rSlaveMotor.getSupplyCurrent());
+    tab.addNumber("Left slave current (amps)", () -> m_lSlaveMotor.getSupplyCurrent());
   }
 
   @Override
   public void periodic() {
     // Display traction control indicator on SmartDashboard
     SmartDashboard.putBoolean("TC", m_tractionControlController.isEnabled());
-
-    updateInertialVelocity();
     
     // Update the odometry in the periodic block
     // Negate gyro angle because gyro is positive going clockwise which doesn't match WPILib convention
@@ -190,15 +186,15 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   /**
    * Call this repeatedly to drive without PID during teleoperation
    * @param speed Desired speed [-1.0, +1.0]
-   * @param turn_request Turn input [-1.0, +1.0]
+   * @param turn Turn input [-1.0, +1.0]
    * @param power exponent for drive response curve. 1 is linear response
    */
-	public void teleop(double speed, double turn_request, int power) {
+	public void teleop(double speed, double turn, int power) {
     speed = Math.copySign(Math.pow(speed, power), speed);
-    turn_request = Math.copySign(Math.pow(turn_request, power), turn_request);
+    turn = Math.copySign(Math.pow(turn, power), turn);
 
-    m_lMasterMotor.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, -turn_request);
-    m_rMasterMotor.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, +turn_request);
+    m_lMasterMotor.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, -turn);
+    m_rMasterMotor.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, +turn);
 	}
 
   /**
@@ -349,37 +345,14 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Update Robot's current inertial velocity (m/s) using a moving average
-   */
-  public void updateInertialVelocity() {
-    // Remove oldest reading from running sum
-    m_inertialVelocitySum = m_inertialVelocitySum - INERTIAL_VELOCITY_READINGS[m_inertialVelocityIndex];
-
-    // Get latest reading from NAVX
-    double latestReading = MathUtil.clamp(m_navx.getVelocityY(), -MAX_LINEAR_SPEED, +MAX_LINEAR_SPEED);
-
-    // Add latest reading to array
-    INERTIAL_VELOCITY_READINGS[m_inertialVelocityIndex] = latestReading;
-
-    // Add latest reading to running sum of readings
-    m_inertialVelocitySum += latestReading;
-
-    // Increment index, wrapping around to zero if it surpasses window size
-    m_inertialVelocityIndex = (m_inertialVelocityIndex + 1) % INERTIAL_VELOCITY_WINDOW_SIZE;
-    
-    // Update inertial velocity variable with latest average
-    m_inertialVelocity = m_inertialVelocitySum / INERTIAL_VELOCITY_WINDOW_SIZE;
-  }
-
-  /**
    * Returns inertial velocity of the robot.
    * @return Velocity of the robot as measured by the NAVX
    */
   public double getInertialVelocity() {
-    // Return the latest moviing average, ignoring really small values
-    return (Math.abs(m_inertialVelocity) >= INERTIAL_VELOCITY_THRESHOLD) ? 
-            m_inertialVelocity : 
-            0;
+    // Return inertial velocity to nearest cm/sec
+    m_inertialVelocity = m_navx.getVelocityY();
+    m_inertialVelocity = Math.copySign(Math.floor(Math.abs(m_inertialVelocity) * 100) / 100, m_inertialVelocity);
+    return m_inertialVelocity;
   }
 
   /**
