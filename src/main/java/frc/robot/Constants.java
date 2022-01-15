@@ -44,4 +44,7 @@ public final class Constants {
 
   public static final int FRONT_RIGHT_MOTOR_PORT = 2;
   public static final int REAR_RIGHT_MOTOR_PORT = 3;
+
+  //Automode Constants
+  public static final double TRACK_WIDTH = 0; //TODO: Find track width
 }
