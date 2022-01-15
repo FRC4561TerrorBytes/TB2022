@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -36,6 +37,9 @@ public class RobotContainer {
 
   public static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
 
+
+  private static SendableChooser<AutoTrajectory> automodeChooser = new SendableChooser<>();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
@@ -53,7 +57,16 @@ public class RobotContainer {
     DRIVE_SUBSYSTEM.shuffleboard();
     INTAKE_SUBSYSTEM.shuffleboard();
     CLIMBER_SUBSYSTEM.shuffleboard();
+
+    // Initialize Automode Chooser in Shuffleboard
+    AutomodeChooser();
   }
+
+  private void AutomodeChooser(){
+    // Creates dropdown box in DriverStation to manually choose automodes
+    // automodeChooser.addOption("PathNameDisplayed", new AutoTrajectory(DRIVE_SUBSYSTEM, pathplannerPathName, maxVelocity, maxAcceleration));
+  }
+
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
