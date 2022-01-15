@@ -129,7 +129,7 @@ public class TalonPIDConfig {
     talon.configSelectedFeedbackSensor(feedbackDevice);
     
     // Configure forward and reverse soft limits
-    if (this.m_enableSoftLimits) {
+    if (m_enableSoftLimits) {
       talon.configForwardSoftLimitThreshold((int)m_upperLimit);
       talon.configForwardSoftLimitEnable(true);
       talon.configReverseSoftLimitThreshold((int)m_lowerLimit);
@@ -164,7 +164,7 @@ public class TalonPIDConfig {
     } 
   }
 
-  private double rpmToTicksPer100ms(double rpm) {
+  public double rpmToTicksPer100ms(double rpm) {
     return (rpm * m_ticksPerRotation) / 600;
   }
 
