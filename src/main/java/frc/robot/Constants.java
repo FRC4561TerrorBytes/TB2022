@@ -44,4 +44,12 @@ public final class Constants {
 
   public static final int FRONT_RIGHT_MOTOR_PORT = 2;
   public static final int REAR_RIGHT_MOTOR_PORT = 3;
+
+  // Intake Motor Ports
+  public static final int ARM_MOTOR_PORT = 0;
+  public static final int INTAKE_ROLLER_PORT = 1;
+
+  // Intake Arm Positions
+  public static final int ARM_TOP_POSITION = -1450;
+  public static final int ARM_BOTTOM_POSITION = 0;
 }
