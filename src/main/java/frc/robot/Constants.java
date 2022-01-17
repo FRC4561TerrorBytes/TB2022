@@ -33,6 +33,39 @@ public final class Constants {
   public static final String DRIVE_TRACTION_CONTROL_CURVE = "X / 4.106";
   public static final String DRIVE_THROTTLE_INPUT_CURVE = "4.106 * X";
   public static final int DRIVE_RESPONSE_EXPONENT = 1;
+  
+  // Intake Arm PID config
+  public static final double INTAKE_ARM_kP = 0.0;
+  public static final double INTAKE_ARM_kD = 0.0;
+  public static final double INTAKE_ARM_TOLERANCE = 10;
+  public static final double INTAKE_ARM_LOWER_LIMIT = -1500;
+  public static final double INTAKE_ARM_UPPER_LIMIT = 0;
+  public static final double INTAKE_ARM_VELOCITY = 1;
+  public static final double INTAKE_ARM_ACCLERATION = 0.1;
+  public static final int INTAKE_ARM_MOTION_SMOOTHING = 7;
+  public static final int INTAKE_ARM_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
+  public static final int INTAKE_ARM_MAX_RPM = FALCON_500_MAX_RPM;
+  public static final boolean INTAKE_ARM_SOFT_LIMITS = true;
+  public static final boolean INTAKE_ARM_SENSOR_PHASE = false;
+  public static final boolean INTAKE_ARM_INVERT_MOTOR = false;
+
+  public static final double INTAKE_ROLLER_SPEED = 0.5;
+
+  // Intake Arm PID config
+  public static final TalonPIDConfig INTAKE_ARM_CONFIG = new TalonPIDConfig(INTAKE_ARM_SENSOR_PHASE, 
+                                                                            INTAKE_ARM_INVERT_MOTOR, 
+                                                                            INTAKE_ARM_TICKS_PER_ROTATION, 
+                                                                            INTAKE_ARM_MAX_RPM, 
+                                                                            INTAKE_ARM_kP, 
+                                                                            0.0, 
+                                                                            INTAKE_ARM_kD, 
+                                                                            INTAKE_ARM_TOLERANCE, 
+                                                                            INTAKE_ARM_LOWER_LIMIT, 
+                                                                            INTAKE_ARM_UPPER_LIMIT, 
+                                                                            INTAKE_ARM_SOFT_LIMITS, 
+                                                                            INTAKE_ARM_VELOCITY, 
+                                                                            INTAKE_ARM_ACCLERATION, 
+                                                                            INTAKE_ARM_MOTION_SMOOTHING);
 
   // Climber PID variables
   public static final double CLIMBER_kP = 0.0;
@@ -65,7 +98,6 @@ public final class Constants {
                                                                          CLIMBER_ACCLERATION, 
                                                                          CLIMBER_MOTION_SMOOTHING);
 
-
   // Xbox controller ports
   public static final int PRIMARY_CONTROLLER_PORT = 0;
   public static final int SECONDARY_CONTROLLER_PORT = 1;
@@ -81,9 +113,6 @@ public final class Constants {
   public static final int ARM_MOTOR_PORT = 0;
   public static final int INTAKE_ROLLER_PORT = 1;
 
-  // Intake Arm Positions
-  public static final int ARM_TOP_POSITION = -1450;
-  public static final int ARM_BOTTOM_POSITION = 0;
   // Climber motor ports
   public static final int CLIMBER_MOTOR_PORT = 42;
 }

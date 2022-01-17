@@ -18,9 +18,9 @@ import frc.robot.TalonPIDConfig;
 public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
 
   public enum ArmPosition {
-    Top(Constants.ARM_TOP_POSITION),
-    Middle(Constants.ARM_BOTTOM_POSITION / 2),
-    Bottom(Constants.ARM_BOTTOM_POSITION);
+    Top(Constants.INTAKE_ARM_UPPER_LIMIT),
+    Middle(Constants.INTAKE_ARM_LOWER_LIMIT / 2),
+    Bottom(Constants.INTAKE_ARM_LOWER_LIMIT);
 
     public final double position;
     private ArmPosition(double position) {
@@ -128,8 +128,8 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * Toggle arm between top and bottom positions
    */
   public void toggleArmPosition() {
-    if (m_armPosition == ArmPosition.Top) armSetPosition(Constants.ARM_BOTTOM_POSITION);
-    else armSetPosition(Constants.ARM_TOP_POSITION);
+    if (m_armPosition == ArmPosition.Top) armSetPosition(Constants.INTAKE_ARM_LOWER_LIMIT);
+    else armSetPosition(Constants.INTAKE_ARM_UPPER_LIMIT);
   }
 
   /**
