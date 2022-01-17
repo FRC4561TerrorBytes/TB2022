@@ -66,6 +66,8 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_armConfig = armConfig;
     this.m_rollerSpeed = rollerSpeed;
 
+    m_armPosition = ArmPosition.Top;
+    
     m_rollerMotor.setInverted(false);
   }
 
