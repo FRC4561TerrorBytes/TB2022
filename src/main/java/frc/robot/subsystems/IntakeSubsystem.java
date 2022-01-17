@@ -1,0 +1,156 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.subsystems;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.TalonPIDConfig;
+
+
+public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
+
+  public enum ArmPosition {
+    Top(Constants.ARM_TOP_POSITION),
+    Middle(Constants.ARM_BOTTOM_POSITION / 2),
+    Bottom(Constants.ARM_BOTTOM_POSITION);
+
+    public final double position;
+    private ArmPosition(double position) {
+      this.position = position;
+    }
+  }
+
+  public static class Hardware {
+    private WPI_TalonFX armMotor;
+    private WPI_TalonFX rollerMotor;
+
+    public Hardware(WPI_TalonFX armMotor, 
+                    WPI_TalonFX rollerMotor) {
+      this.armMotor = armMotor;
+      this.rollerMotor = rollerMotor;
+    }
+
+  }
+
+
+  private final String SUBSYSTEM_NAME = "Intake Subsystem";
+
+  private WPI_TalonFX m_armMotor;
+  private WPI_TalonFX m_rollerMotor;
+  private TalonPIDConfig m_armConfig;
+  private ArmPosition m_armPosition;
+  private double m_rollerSpeed;
+
+
+  /**
+   * Create an instance of IntakeSubsystem
+   * <p>
+   * ONLY ONE INSTANCE SHOULD EXIST AT ANY TIME!
+   * <p>
+   * 
+   * @param intakeHardware Hardware devices required by intake
+   * @param armConfig PID config for arm
+   * @param rollerSpeed Intake roller speed [-1, 1]
+   */
+  public IntakeSubsystem(Hardware intakeHardware, TalonPIDConfig armConfig, double rollerSpeed) {
+    this.m_armMotor = intakeHardware.armMotor;
+    this.m_rollerMotor = intakeHardware.rollerMotor;
+    this.m_armConfig = armConfig;
+    this.m_rollerSpeed = rollerSpeed;
+
+    m_rollerMotor.setInverted(false);
+  }
+
+  /**
+   * Initialize hardware devices for intake subsystem
+   * @return hardware object containing all necessary devices for this subsystem
+   */
+  public static Hardware initializeHardware() {
+    Hardware intakeHardWare = new Hardware(new WPI_TalonFX(Constants.ARM_MOTOR_PORT),
+                                            new WPI_TalonFX(Constants.INTAKE_ROLLER_PORT));
+
+    return intakeHardWare;
+  }
+
+  /**
+   * Create Shuffleboard tab for this subsystem and display values
+   */
+  public void shuffleboard() {
+    ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
+    tab.addNumber("Arm position (ticks)", () -> m_armMotor.getSelectedSensorPosition());
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+
+  /**
+   * Sets arm speed to percentage
+   * @param speed speed [-1, 1]
+   */
+  public void armManual(double speed) {
+    m_armMotor.set(ControlMode.PercentOutput, speed);
+  }
+
+  /**
+   * Move arm to position
+   * @param setpoint position to move arm to (ticks)
+   */
+  public void armSetPosition(double setpoint) {
+    // normalise setpoint
+    setpoint = MathUtil.clamp(setpoint, m_armConfig.getLowerLimit(), m_armConfig.getUpperLimit());
+    
+    // Arm position is top if greater than halfway point, otherwise bottom
+    m_armPosition = setpoint > ArmPosition.Middle.position ? ArmPosition.Top : ArmPosition.Bottom;
+
+    // Move arm toward setpoint
+    m_armMotor.set(ControlMode.MotionMagic, setpoint);
+  }
+
+  /**
+   * Move arm relative to previous setpoint
+   * @param setpoint Delta to move arm by (ticks)
+   */
+  public void armPositionRelative(double setpoint) {
+    armSetPosition(m_armMotor.getClosedLoopTarget() + setpoint);
+  }
+
+  /**
+   * Toggle arm between top and bottom positions
+   */
+  public void toggleArmPosition() {
+    if (m_armPosition == ArmPosition.Top) armSetPosition(Constants.ARM_BOTTOM_POSITION);
+    else armSetPosition(Constants.ARM_TOP_POSITION);
+  }
+
+  /**
+   * Intake balls
+   */
+  public void intake() {
+    m_rollerMotor.set(ControlMode.PercentOutput, +m_rollerSpeed);
+  }
+
+  /**
+   * Outtake balls
+   */
+  public void outtake() {
+    m_rollerMotor.set(ControlMode.PercentOutput, -m_rollerSpeed);
+  }
+
+  @Override
+  public void close() {
+    m_armMotor = null;
+    m_rollerMotor = null;
+  }
+}
+
+
