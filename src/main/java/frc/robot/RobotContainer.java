@@ -51,6 +51,7 @@ public class RobotContainer {
 
     // Initialize Shuffleboard tabs
     DRIVE_SUBSYSTEM.shuffleboard();
+    INTAKE_SUBSYSTEM.shuffleboard();
   }
 
   /**
