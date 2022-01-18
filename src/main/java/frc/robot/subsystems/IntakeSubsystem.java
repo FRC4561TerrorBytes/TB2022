@@ -68,6 +68,8 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     m_armPosition = ArmPosition.Top;
     
     m_rollerMotor.setInverted(false);
+
+    m_armConfig.initializeTalonPID(m_armMotor, FeedbackDevice.IntegratedSensor, false, false);
   }
 
   /**
@@ -129,8 +131,22 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * Toggle arm between top and bottom positions
    */
   public void toggleArmPosition() {
-    if (m_armPosition == ArmPosition.Top) armSetPosition(Constants.INTAKE_ARM_LOWER_LIMIT);
-    else armSetPosition(Constants.INTAKE_ARM_UPPER_LIMIT);
+    if (m_armPosition == ArmPosition.Top) armDown();
+    else armUp();
+  }
+
+  /**
+   * Move arm to top position
+   */
+  public void armUp(){
+    armSetPosition(ArmPosition.Top.position);
+  }
+
+  /**
+   * Move arm to bottom position
+   */
+  public void armDown(){
+    armSetPosition(ArmPosition.Bottom.position);
   }
 
   /**
