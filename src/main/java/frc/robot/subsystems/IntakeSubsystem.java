@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -40,7 +41,6 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
 
   }
 
-
   private final String SUBSYSTEM_NAME = "Intake Subsystem";
 
   private WPI_TalonFX m_armMotor;
@@ -55,10 +55,9 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * <p>
    * ONLY ONE INSTANCE SHOULD EXIST AT ANY TIME!
    * <p>
-   * 
    * @param intakeHardware Hardware devices required by intake
    * @param armConfig PID config for arm
-   * @param rollerSpeed Intake roller speed [-1, 1]
+   * @param rollerSpeed Intake roller speed [-1.0, +1.0]
    */
   public IntakeSubsystem(Hardware intakeHardware, TalonPIDConfig armConfig, double rollerSpeed) {
     this.m_armMotor = intakeHardware.armMotor;
@@ -76,10 +75,10 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * @return hardware object containing all necessary devices for this subsystem
    */
   public static Hardware initializeHardware() {
-    Hardware intakeHardWare = new Hardware(new WPI_TalonFX(Constants.ARM_MOTOR_PORT),
-                                            new WPI_TalonFX(Constants.INTAKE_ROLLER_PORT));
+    Hardware intakeHardware = new Hardware(new WPI_TalonFX(Constants.ARM_MOTOR_PORT),
+                                           new WPI_TalonFX(Constants.INTAKE_ROLLER_PORT));
 
-    return intakeHardWare;
+    return intakeHardware;
   }
 
   /**
@@ -97,7 +96,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
 
   /**
    * Sets arm speed to percentage
-   * @param speed speed [-1, 1]
+   * @param speed Speed percentage [-1.0, +1.0]
    */
   public void armManual(double speed) {
     m_armMotor.set(ControlMode.PercentOutput, speed);
@@ -108,11 +107,11 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * @param setpoint position to move arm to (ticks)
    */
   public void armSetPosition(double setpoint) {
-    // normalise setpoint
+    // Normalise setpoint
     setpoint = MathUtil.clamp(setpoint, m_armConfig.getLowerLimit(), m_armConfig.getUpperLimit());
     
     // Arm position is top if greater than halfway point, otherwise bottom
-    m_armPosition = setpoint > ArmPosition.Middle.position ? ArmPosition.Top : ArmPosition.Bottom;
+    m_armPosition = (setpoint > ArmPosition.Middle.position) ? ArmPosition.Top : ArmPosition.Bottom;
 
     // Move arm toward setpoint
     m_armMotor.set(ControlMode.MotionMagic, setpoint);
