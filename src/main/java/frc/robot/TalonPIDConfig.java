@@ -119,7 +119,10 @@ public class TalonPIDConfig {
 
   /**
    * Initializes Talon PID and/or MotionMagic parameters
+   * @param talon Talon motor controller to apply settings to
    * @param feedbackDevice Feedback device to use for Talon PID
+   * @param forwardLimitSwitch Enable forward limit switch
+   * @param reverseLimitSwitch Enable reverse limit switch
    */
   public void initializeTalonPID(BaseTalon talon, FeedbackDevice feedbackDevice, boolean forwardLimitSwitch, boolean reverseLimitSwitch) {
     // Reset Talon to default
@@ -164,47 +167,61 @@ public class TalonPIDConfig {
     } 
   }
 
+  /**
+   * Convert RPM to ticks per 100ms
+   * @param rpm RPM
+   * @return Value in ticks per 100ms
+   */
   public double rpmToTicksPer100ms(double rpm) {
     return (rpm * m_ticksPerRotation) / 600;
   }
 
   /**
-   * @return sensor phase
+   * Convert ticks per 100ms to RPM
+   * @param ticks Encoder ticks per 100ms
+   * @return Value in RPM
+   */
+  public double ticksPer100msToRPM(double ticks) {
+    return (ticks * 600) / m_ticksPerRotation;
+  }
+
+  /**
+   * @return Sensor phase
    */
   public boolean getSensorPhase() {
     return m_sensorPhase;
   }
 
   /**
-   * @return whether motor should be inverted or not
+   * @return Whether motor is inverted or not
    */
   public boolean getInvertMotor() {
     return m_invertMotor;
   }
 
   /**
-   * @return proportional gain
+   * @return Proportional gain
    */
   public double getkP() {
     return m_kP;
   }
 
   /**
-   * @return integral gain
+   * @return Integral gain
    */
   public double getkI() {
     return m_kI;
   }
 
   /**
-   * @return derivative gain
+   * @return Derivative gain
    */
   public double getkD() {
     return m_kD;
   }
 
   /**
-   * @return feed-forward gain
+   * @return Feed-forward gain
    */
   public double getkF() {
     return m_kF;
@@ -218,14 +235,14 @@ public class TalonPIDConfig {
   }
 
   /**
-   * @return lower limit of mechanism
+   * @return Lower limit of mechanism
    */
   public double getLowerLimit() {
     return m_lowerLimit;
   }
 
   /**
-   * @return upper limit of mechanism
+   * @return Upper limit of mechanism
    */
   public double getUpperLimit() {
     return m_upperLimit;
