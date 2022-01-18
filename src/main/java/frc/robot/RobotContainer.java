@@ -20,21 +20,22 @@ import frc.robot.subsystems.IntakeSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public static final DriveSubsystem DRIVE_SUBSYSTEM = new DriveSubsystem(DriveSubsystem.initializeHardware(),
-                                                                          Constants.DRIVE_kP,
-                                                                          Constants.DRIVE_kD,
-                                                                          Constants.DRIVE_TURN_SCALAR,
-                                                                          Constants.DRIVE_ACCELERATION_LIMIT,
-                                                                          Constants.DRIVE_TRACTION_CONTROL_CURVE,
-                                                                          Constants.DRIVE_THROTTLE_INPUT_CURVE);
+  private static final DriveSubsystem DRIVE_SUBSYSTEM = new DriveSubsystem(DriveSubsystem.initializeHardware(),
+                                                                           Constants.DRIVE_kP,
+                                                                           Constants.DRIVE_kD,
+                                                                           Constants.DRIVE_TURN_SCALAR,
+                                                                           Constants.DRIVE_ACCELERATION_LIMIT,
+                                                                           Constants.DRIVE_TRACTION_CONTROL_CURVE,
+                                                                           Constants.DRIVE_THROTTLE_INPUT_CURVE);
 
-  public static final IntakeSubsystem INTAKE_SUBSYSTEM = new IntakeSubsystem(IntakeSubsystem.initializeHardware(), 
-                                                                             Constants.INTAKE_ARM_CONFIG, 
-                                                                             Constants.INTAKE_ROLLER_SPEED);
+  private static final IntakeSubsystem INTAKE_SUBSYSTEM = new IntakeSubsystem(IntakeSubsystem.initializeHardware(), 
+                                                                              Constants.INTAKE_ARM_CONFIG, 
+                                                                              Constants.INTAKE_ROLLER_SPEED);
 
-  public static final ClimberSubsystem CLIMBER_SUBSYSTEM = new ClimberSubsystem(ClimberSubsystem.initializeHardware(), Constants.CLIMBER_CONFIG);
+  private static final ClimberSubsystem CLIMBER_SUBSYSTEM = new ClimberSubsystem(ClimberSubsystem.initializeHardware(),
+                                                                                 Constants.CLIMBER_CONFIG);
 
-  public static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
+  private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -52,6 +53,7 @@ public class RobotContainer {
     // Initialize Shuffleboard tabs
     DRIVE_SUBSYSTEM.shuffleboard();
     INTAKE_SUBSYSTEM.shuffleboard();
+    CLIMBER_SUBSYSTEM.shuffleboard();
   }
 
   /**

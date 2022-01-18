@@ -7,11 +7,15 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.TalonPIDConfig;
 
 public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
+
+  private final String SUBSYSTEM_NAME = "Climber Subsystem";
   
   public static class Hardware {
     private WPI_TalonFX climberMotor;
@@ -45,6 +49,11 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     Hardware climberHardware = new Hardware(new WPI_TalonFX(Constants.CLIMBER_MOTOR_PORT));
 
     return climberHardware;
+  }
+
+  public void shuffleboard() {
+    ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
+    tab.addNumber("Climber position", () -> m_climberMotor.getSelectedSensorPosition());
   }
 
   @Override
