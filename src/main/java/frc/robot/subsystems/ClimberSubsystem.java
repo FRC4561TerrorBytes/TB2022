@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -39,6 +40,8 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   public ClimberSubsystem(Hardware climberHardware, TalonPIDConfig climberConfig) {
     this.m_climberMotor = climberHardware.climberMotor;
     this.m_climberConfig = climberConfig;
+    m_climberConfig.initializeTalonPID(m_climberMotor, FeedbackDevice.IntegratedSensor, false, false);
+    m_climberMotor.setSelectedSensorPosition(0.0);
   }
 
   /**
