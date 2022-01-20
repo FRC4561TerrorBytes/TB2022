@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -39,7 +40,7 @@ public class RobotContainer {
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
 
 
-  private static SendableChooser<AutoTrajectory> automodeChooser = new SendableChooser<>();
+  private static SendableChooser<SequentialCommandGroup> automodeChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -65,7 +66,7 @@ public class RobotContainer {
 
   private void AutomodeChooser(){
     // Creates dropdown box in DriverStation to manually choose automodes
-    // automodeChooser.addOption("PathNameDisplayed", new AutoTrajectory(DRIVE_SUBSYSTEM, pathplannerPathName, maxVelocity, maxAcceleration));
+    // automodeChooser.addOption("Example Auto", new ExampleAuto());
   }
 
 
@@ -84,6 +85,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return null;
+    return automodeChooser.getSelected();
   }
 }

@@ -32,24 +32,25 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class AutoTrajectory {
   // Ramsete Command values
-  final DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(Constants.TRACK_WIDTH);
-  //TODO: Find VOLTS_ks, VOLTS_SECONDS_PER_METER_kV, VOLTS_SECONDS_PER_METER_kA
-  final double VOLTS_kS = 0.0; 
-  final double VOLT_SECONDS_PER_METER_kV = 0.0;
-  final double VOLT_SECONDS_SQUARED_PER_METER_kA = 0.0;
-  final double kP = 0;
-  final double kD = 0; 
+  private final DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(Constants.TRACK_WIDTH);
+  // TODO: Find VOLTS_kS, VOLTS_SECONDS_PER_METER_kV, VOLTS_SECONDS_PER_METER_kA
+  private final double VOLTS_kS = 0.0; 
+  private final double VOLT_SECONDS_PER_METER_kV = 0.0;
+  private final double VOLT_SECONDS_SQUARED_PER_METER_kA = 0.0;
+  private final double kP = 0;
+  private final double kD = 0; 
+  private final double MAX_VOLTAGE = 11.0;
 
-  DriveSubsystem subsystem;
-  RamseteCommand ramseteCommand;
-  RamseteController disabledRamsete = new RamseteController() {
+  DriveSubsystem m_subsystem;
+  RamseteCommand m_ramseteCommand;
+  RamseteController m_disabledRamsete = new RamseteController() {
     @Override
     public ChassisSpeeds calculate(Pose2d currentPose, Pose2d poseRef, double linearVelocityMeters,
       double angularVelocityRefRadiansPerSecond) {
         return new ChassisSpeeds(linearVelocityMeters, 0.0, angularVelocityRefRadiansPerSecond);
       }
   };
-  Trajectory pathplannerTrajectory;
+  Trajectory m_pathplannerTrajectory;
   
   /**
    * Create new path trajectory using PathPlanner file containing path
@@ -59,29 +60,29 @@ public class AutoTrajectory {
    * @param maxAcceleration Maximum acceleration of robot during path (m/s^2)
    */
   public AutoTrajectory(DriveSubsystem subsystem, String pathName, double maxVelocity, double maxAcceleration){
-    this.subsystem = subsystem;
+    this.m_subsystem = subsystem;
        
     // maxVelocity is (m/s)
     // maxAcceleration is (m/s^2)
-    this.pathplannerTrajectory = PathPlanner.loadPath(pathName, maxVelocity, maxAcceleration);
+    this.m_pathplannerTrajectory = PathPlanner.loadPath(pathName, maxVelocity, maxAcceleration);
 
-    Transform2d transform = subsystem.getPose().minus(pathplannerTrajectory.getInitialPose());
-    Trajectory transformedTrajectory =  pathplannerTrajectory.transformBy(transform);
+    Transform2d transform = subsystem.getPose().minus(m_pathplannerTrajectory.getInitialPose());
+    Trajectory transformedTrajectory =  m_pathplannerTrajectory.transformBy(transform);
 
-    this.ramseteCommand = new RamseteCommand(
+    m_ramseteCommand = new RamseteCommand(
         transformedTrajectory, 
-        subsystem::getPose,
-        disabledRamsete,
-        new SimpleMotorFeedforward(this.VOLTS_kS,
-                                    this.VOLT_SECONDS_PER_METER_kV,
-                                    this.VOLT_SECONDS_SQUARED_PER_METER_kA),
-        this.DRIVE_KINEMATICS,
-        subsystem::getWheelSpeeds,
-        new PIDController(this.kP, 0, this.kD),
-        new PIDController(this.kP, 0, this.kD),
+        m_subsystem::getPose,
+        m_disabledRamsete,
+        new SimpleMotorFeedforward(VOLTS_kS,
+                                   VOLT_SECONDS_PER_METER_kV,
+                                   VOLT_SECONDS_SQUARED_PER_METER_kA),
+        DRIVE_KINEMATICS,
+        m_subsystem::getWheelSpeeds,
+        new PIDController(kP, 0, kD),
+        new PIDController(kP, 0, kD),
         // RamseteCommand passes volts to the callback
-        subsystem::tankDriveVolts,
-        subsystem 
+        m_subsystem::tankDriveVolts,
+        m_subsystem 
     );
 
   }
@@ -94,18 +95,19 @@ public class AutoTrajectory {
    * @param maxAcceleration Maximum acceleration of robot during path (m/s^2)
    */
   public AutoTrajectory(DriveSubsystem subsystem, Pose2d[] waypoints, boolean isReversed, double maxVelocity, double maxAcceleration) {
-    this.subsystem = subsystem;
+    this.m_subsystem = subsystem;
     
     var autoVoltageConstraint = 
       new DifferentialDriveVoltageConstraint(
-        new SimpleMotorFeedforward(this.VOLTS_kS,
-                                    this.VOLT_SECONDS_PER_METER_kV,
-                                    this.VOLT_SECONDS_SQUARED_PER_METER_kA),
-        this.DRIVE_KINEMATICS,
-      11);
+        new SimpleMotorFeedforward(VOLTS_kS,
+                                   VOLT_SECONDS_PER_METER_kV,
+                                   VOLT_SECONDS_SQUARED_PER_METER_kA),
+        DRIVE_KINEMATICS,
+        MAX_VOLTAGE
+      );
     
     TrajectoryConfig config = new TrajectoryConfig(maxVelocity, maxAcceleration);
-    config.setKinematics(this.DRIVE_KINEMATICS);
+    config.setKinematics(DRIVE_KINEMATICS);
     config.addConstraint(autoVoltageConstraint);
     config.setReversed(isReversed);
     
@@ -124,21 +126,21 @@ public class AutoTrajectory {
 
     // This is a method used to get the desired trajectory, put it into the command, have the command calculate the 
     // actual route relative to one plotted in Pathweaver, and then follow it the best it can, based on characterization given to it.
-    this.ramseteCommand = new RamseteCommand(
+    m_ramseteCommand = new RamseteCommand(
         transformedTrajectory,  // This had been changed to be the transformed trajecotry so that it calculates trajectory 
                                 // from final (transformed) trajectory
         subsystem::getPose,
-        disabledRamsete,
-        new SimpleMotorFeedforward(this.VOLTS_kS,
-                                    this.VOLT_SECONDS_PER_METER_kV,
-                                    this.VOLT_SECONDS_SQUARED_PER_METER_kA),
-        this.DRIVE_KINEMATICS,
-        subsystem::getWheelSpeeds,
-        new PIDController(this.kP, 0, this.kD),
-        new PIDController(this.kP, 0, this.kD),
+        m_disabledRamsete,
+        new SimpleMotorFeedforward(VOLTS_kS,
+                                   VOLT_SECONDS_PER_METER_kV,
+                                   VOLT_SECONDS_SQUARED_PER_METER_kA),
+        DRIVE_KINEMATICS,
+        m_subsystem::getWheelSpeeds,
+        new PIDController(kP, 0, kD),
+        new PIDController(kP, 0, kD),
         // RamseteCommand passes volts to the callback
-        subsystem::tankDriveVolts,
-        subsystem 
+        m_subsystem::tankDriveVolts,
+        m_subsystem 
     );
   }
 
@@ -147,6 +149,6 @@ public class AutoTrajectory {
    * @return Ramsete command that will stop when complete
    */
   public Command getCommand() {
-    return this.ramseteCommand.andThen(() -> this.subsystem.stop());
+    return m_ramseteCommand.andThen(() -> m_subsystem.stop());
   }
 }
