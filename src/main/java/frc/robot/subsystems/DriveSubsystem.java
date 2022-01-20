@@ -151,10 +151,10 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public static Hardware initializeHardware() {
     Hardware drivetrainHardware = new Hardware(new WPI_TalonFX(Constants.FRONT_LEFT_MOTOR_PORT),
-                                                new WPI_TalonFX(Constants.FRONT_RIGHT_MOTOR_PORT),
-                                                new WPI_TalonFX(Constants.REAR_LEFT_MOTOR_PORT),
-                                                new WPI_TalonFX(Constants.REAR_RIGHT_MOTOR_PORT),
-                                                new AHRS(SPI.Port.kMXP));
+                                               new WPI_TalonFX(Constants.FRONT_RIGHT_MOTOR_PORT),
+                                               new WPI_TalonFX(Constants.REAR_LEFT_MOTOR_PORT),
+                                               new WPI_TalonFX(Constants.REAR_RIGHT_MOTOR_PORT),
+                                               new AHRS(SPI.Port.kMXP));
 
     return drivetrainHardware;
   }
@@ -180,7 +180,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     // Negate gyro angle because gyro is positive going clockwise which doesn't match WPILib convention
     m_odometry.update(Rotation2d.fromDegrees(-getAngle()), 
                       -m_lMasterMotor.getSelectedSensorPosition() * METERS_PER_TICK,
-                      m_rMasterMotor.getSelectedSensorPosition() * METERS_PER_TICK);
+                      +m_rMasterMotor.getSelectedSensorPosition() * METERS_PER_TICK);
   }
 
   /**
@@ -258,7 +258,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     while (Math.abs(currentAngle) <= Math.abs(angleSetpoint)) {
       double output = m_drivePIDController.calculate(currentAngle, m_drivePIDController.getSetpoint());
       m_lMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, -output);
-      m_rMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, output);
+      m_rMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, +output);
       currentAngle = getAngle();
     }
 
@@ -267,8 +267,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
   /**
    * Controls the left and right sides of the drive directly with voltages.
-   * @param leftVolts  the commanded left output [-12, +12]
-   * @param rightVolts  the commanded right output [-12, +12]
+   * @param leftVolts Left voltage [-12, +12]
+   * @param rightVolts Right voltage [-12, +12]
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     m_lMasterMotor.setVoltage(-leftVolts);
@@ -295,8 +295,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Resets the odometry to the specified pose.
-   * @param pose The pose to which to set the odometry.
+   * Resets the odometry
    */
   public void resetOdometry() {
     resetAngle();
@@ -306,7 +305,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Returns the currently-estimated pose of the robot
+   * Returns the currently estimated pose of the robot
    * @return The pose
    */
   public Pose2d getPose() {
@@ -370,7 +369,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public double getAverageEncoderDistance() {
     return (((m_lMasterMotor.getSensorCollection().getIntegratedSensorPosition() * METERS_PER_TICK) + 
-              (m_lMasterMotor.getSensorCollection().getIntegratedSensorPosition() * METERS_PER_TICK)) / 2);
+             (m_lMasterMotor.getSensorCollection().getIntegratedSensorPosition() * METERS_PER_TICK)) / 2);
   }
 
   /**
