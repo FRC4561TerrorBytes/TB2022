@@ -44,4 +44,13 @@ public final class Constants {
 
   public static final int FRONT_RIGHT_MOTOR_PORT = 2;
   public static final int REAR_RIGHT_MOTOR_PORT = 3;
+
+  // Shooter PID Values
+  public static final int HOOD_BOTTOM_POSITION = 0;
+  public static final int HOOD_TOP_POSITION = -4770;
+
+  // Shooter Motor Ports
+  public static final int FLYWHEEL_MASTER_MOTOR_PORT = 5;
+  public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 4;
+  public static final int HOOD_MOTOR_PORT = 9;
 }
