@@ -98,6 +98,10 @@ public final class Constants {
                                                                          CLIMBER_ACCLERATION, 
                                                                          CLIMBER_MOTION_SMOOTHING);
 
+  // Shooter PID Values
+  public static final int HOOD_BOTTOM_POSITION = 0;
+  public static final int HOOD_TOP_POSITION = -4770;
+
   // Xbox controller ports
   public static final int PRIMARY_CONTROLLER_PORT = 0;
   public static final int SECONDARY_CONTROLLER_PORT = 1;
@@ -115,6 +119,11 @@ public final class Constants {
 
   // Climber motor ports
   public static final int CLIMBER_MOTOR_PORT = 42;
+
+  // Shooter Motor Ports
+  public static final int FLYWHEEL_MASTER_MOTOR_PORT = 5;
+  public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 4;
+  public static final int HOOD_MOTOR_PORT = 9;
 
   //Automode Constants
   public static final double TRACK_WIDTH = 0; // TODO: Find track width
