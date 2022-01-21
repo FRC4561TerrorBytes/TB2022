@@ -17,18 +17,6 @@ import frc.robot.TalonPIDConfig;
 
 
 public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
-
-  public enum ArmPosition {
-    Top(Constants.INTAKE_ARM_UPPER_LIMIT),
-    Middle(Constants.INTAKE_ARM_LOWER_LIMIT / 2),
-    Bottom(Constants.INTAKE_ARM_LOWER_LIMIT);
-
-    public final double position;
-    private ArmPosition(double position) {
-      this.position = position;
-    }
-  }
-
   public static class Hardware {
     private WPI_TalonFX armMotor;
     private WPI_TalonFX rollerMotor;
@@ -38,7 +26,16 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
       this.armMotor = armMotor;
       this.rollerMotor = rollerMotor;
     }
+  }
 
+  public enum ArmPosition {
+    Top(Constants.INTAKE_ARM_UPPER_LIMIT),
+    Bottom(Constants.INTAKE_ARM_LOWER_LIMIT);
+
+    public final double position;
+    private ArmPosition(double position) {
+      this.position = position;
+    }
   }
 
   private final String SUBSYSTEM_NAME = "Intake Subsystem";
@@ -49,6 +46,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   private ArmPosition m_armPosition;
   private double m_rollerSpeed;
 
+  private final double ARM_MIDDLE_POSITION = ArmPosition.Bottom.position / 2;
 
   /**
    * Create an instance of IntakeSubsystem
@@ -69,7 +67,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     
     m_rollerMotor.setInverted(false);
 
-    m_armConfig.initializeTalonPID(m_armMotor, FeedbackDevice.IntegratedSensor, false, false);
+    m_armConfig.initializeTalonPID(m_armMotor, FeedbackDevice.IntegratedSensor);
     m_armMotor.setSelectedSensorPosition(0.0);
   }
 
@@ -114,7 +112,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     setpoint = MathUtil.clamp(setpoint, m_armConfig.getLowerLimit(), m_armConfig.getUpperLimit());
     
     // Arm position is top if greater than halfway point, otherwise bottom
-    m_armPosition = (setpoint > ArmPosition.Middle.position) ? ArmPosition.Top : ArmPosition.Bottom;
+    m_armPosition = (setpoint > ARM_MIDDLE_POSITION) ? ArmPosition.Top : ArmPosition.Bottom;
 
     // Move arm toward setpoint
     m_armMotor.set(ControlMode.MotionMagic, setpoint);
