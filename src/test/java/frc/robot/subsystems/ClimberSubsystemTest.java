@@ -26,36 +26,35 @@ import frc.robot.Constants;
 
 /** Add your docs here. */
 public class ClimberSubsystemTest {
-
-    private final double DELTA = 1e-3;
-    private ClimberSubsystem m_climberSubsystem;
-    private ClimberSubsystem.Hardware m_climberHardware;
-
-    private WPI_TalonFX m_climberMotor;
-
-    public void setup() {
-		
+	
+	private final double DELTA = 1e-3;
+	private ClimberSubsystem m_climberSubsystem;
+	private ClimberSubsystem.Hardware m_climberHardware;
+	
+	private WPI_TalonFX m_climberMotor;
+	
+	public void setup() {
 		// Create mock harware device
 		m_climberMotor = mock(WPI_TalonFX.class);
-
+		
 		// Create Hardware objects using mock objects
 		m_climberHardware = new ClimberSubsystem.Hardware(m_climberMotor);
-
-		// Create intakeSubsystem object
+		
+		// Create ClimberSubsystem object
 		m_climberSubsystem = new ClimberSubsystem(m_climberHardware, Constants.CLIMBER_CONFIG);
 	}
-
-    @AfterEach
+	
+	@AfterEach
 	public void close() {
 		m_climberSubsystem.close();
 		m_climberSubsystem = null;
 	}
-
-    public void climberUp(){
-        m_climberSubsystem.climberUp();
-    }
-
-    public void climberDown(){
-        m_climberSubsystem.climberDown();
-    }
+	
+	public void climberUp(){
+		m_climberSubsystem.climberUp();
+	}
+	
+	public void climberDown(){
+		m_climberSubsystem.climberDown();
+	}
 }
