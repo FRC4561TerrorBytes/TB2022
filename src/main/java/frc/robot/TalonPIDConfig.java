@@ -118,7 +118,7 @@ public class TalonPIDConfig {
   }
 
   /**
-   * Initializes Talon PID and/or MotionMagic parameters
+   * Initializes Talon PID and MotionMagic parameters
    * @param talon Talon motor controller to apply settings to
    * @param feedbackDevice Feedback device to use for Talon PID
    * @param forwardLimitSwitch Enable forward limit switch
@@ -165,6 +165,17 @@ public class TalonPIDConfig {
       talon.configMotionAcceleration(rpmToTicksPer100ms(m_accelerationRPMPerSec));
       talon.configMotionSCurveStrength(m_motionSmoothing);
     } 
+  }
+
+  /**
+   * Initializes Talon PID and MotionMagic parameters
+   * <p>
+   * Calls {@link TalonPIDConfig#initializeTalonPID(BaseTalon, FeedbackDevice, boolean, boolean)} with no limit switches 
+   * @param talon
+   * @param feedbackDevice
+   */
+  public void initializeTalonPID(BaseTalon talon, FeedbackDevice feedbackDevice) {
+    initializeTalonPID(talon, feedbackDevice, false, false);
   }
 
   /**
