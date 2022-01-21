@@ -40,7 +40,8 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   public ClimberSubsystem(Hardware climberHardware, TalonPIDConfig climberConfig) {
     this.m_climberMotor = climberHardware.climberMotor;
     this.m_climberConfig = climberConfig;
-    m_climberConfig.initializeTalonPID(m_climberMotor, FeedbackDevice.IntegratedSensor, false, false);
+
+    m_climberConfig.initializeTalonPID(m_climberMotor, FeedbackDevice.IntegratedSensor);
     m_climberMotor.setSelectedSensorPosition(0.0);
   }
 
@@ -79,11 +80,31 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Manual climber control
-   * @param speed Speed percentage [-1, 1]
+   * Move climber up manually
+   * <p>
+   * Note: soft limits are disabled, call {@link ClimberSubsystem#climberStopManual()} to re-enable soft limits
    */
-  public void climberManual(double speed) {
-    m_climberMotor.set(ControlMode.PercentOutput, speed);
+  public void climberUpManual() {
+    m_climberMotor.overrideSoftLimitsEnable(false);
+    m_climberMotor.set(ControlMode.PercentOutput, +1.0);
+  }
+
+  /**
+   * Move climber down manually
+   * <p>
+   * Note: soft limits are disabled, call {@link ClimberSubsystem#climberStopManual()} to re-enable soft limits
+   */
+  public void climberDownManual() {
+    m_climberMotor.overrideSoftLimitsEnable(false);
+    m_climberMotor.set(ControlMode.PercentOutput, -1.0);
+  }
+
+  /**
+   * Stop climber after moving manually, and re-enable soft limits
+   */
+  public void climberStopManual() {
+    m_climberMotor.overrideSoftLimitsEnable(true);
+    m_climberMotor.set(ControlMode.PercentOutput, 0.0);
   }
 
   @Override
