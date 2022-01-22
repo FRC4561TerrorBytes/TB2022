@@ -27,7 +27,6 @@ import frc.robot.Constants;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class IntakeSubsystemTest {
-	
 	private final double DELTA = 1e-3;
 	private IntakeSubsystem m_intakeSubsystem;
 	private IntakeSubsystem.Hardware m_intakeHardware;
@@ -37,7 +36,6 @@ public class IntakeSubsystemTest {
 
 	@BeforeEach
 	public void setup() {
-		
 		// Create mock harware device
 		m_armMotor = mock(WPI_TalonFX.class);
 		m_rollerMotor = mock(WPI_TalonFX.class);
@@ -82,7 +80,6 @@ public class IntakeSubsystemTest {
 	public void intake() {
 		m_intakeSubsystem.intake();
 		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
-	
 	}
 
 	@Test
@@ -91,6 +88,5 @@ public class IntakeSubsystemTest {
 	public void outtake() {
 		m_intakeSubsystem.outtake();
 		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-Constants.INTAKE_ROLLER_SPEED, DELTA));
-	
 	}
 }
