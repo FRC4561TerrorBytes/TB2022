@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot;
+package frc.robot.utils;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
@@ -56,7 +56,7 @@ public class TalonPIDConfig {
    * @param kD derivative gain
    * @param tolerance tolerance of PID loop in ticks per 100ms
    */
-  TalonPIDConfig(boolean sensorPhase, boolean invertMotor,
+  public TalonPIDConfig(boolean sensorPhase, boolean invertMotor,
                   double maxRPM, double ticksPerRotation,
                   double kP, double kI, double kD, 
                   double tolerance) {
@@ -88,7 +88,7 @@ public class TalonPIDConfig {
    * @param accelerationRPMPerSec MotionMagic acceleration in RPM
    * @param motionSmoothing MotionMagic smoothing factor [0, 7]
    */
-  TalonPIDConfig(boolean sensorPhase, boolean invertMotor, double ticksPerRotation, double maxRPM,
+  public TalonPIDConfig(boolean sensorPhase, boolean invertMotor, double ticksPerRotation, double maxRPM,
                   double kP, double kI, double kD, double tolerance, 
                   double lowerLimit, double upperLimit, boolean enableSoftLimits,
                   double velocityRPM, double accelerationRPMPerSec, int motionSmoothing) {

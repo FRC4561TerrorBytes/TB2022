@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot;
+package frc.robot.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 
 /**
@@ -61,10 +62,8 @@ public class AutoTrajectory {
    */
   public AutoTrajectory(DriveSubsystem subsystem, String pathName, double maxVelocity, double maxAcceleration){
     this.m_subsystem = subsystem;
-       
-    // maxVelocity is (m/s)
-    // maxAcceleration is (m/s^2)
-    this.m_pathplannerTrajectory = PathPlanner.loadPath(pathName, maxVelocity, maxAcceleration);
+
+    m_pathplannerTrajectory = PathPlanner.loadPath(pathName, maxVelocity, maxAcceleration);
 
     Transform2d transform = subsystem.getPose().minus(m_pathplannerTrajectory.getInitialPose());
     Trajectory transformedTrajectory =  m_pathplannerTrajectory.transformBy(transform);
@@ -84,7 +83,6 @@ public class AutoTrajectory {
         m_subsystem::tankDriveVolts,
         m_subsystem 
     );
-
   }
 /**
    * Creates new path trajectory using a physical x,y coordinate points

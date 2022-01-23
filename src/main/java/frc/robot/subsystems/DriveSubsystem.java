@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.TractionControlController;
+import frc.robot.utils.TractionControlController;
 
 
 public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
