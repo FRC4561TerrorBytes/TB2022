@@ -59,6 +59,8 @@ public class DriveSubsystemTest {
                                           Constants.DRIVE_kP,
                                           Constants.DRIVE_kD, 
                                           Constants.DRIVE_TURN_SCALAR,
+                                          Constants.DRIVE_METERS_PER_TICK,
+                                          Constants.DRIVE_MAX_LINEAR_SPEED,
                                           Constants.DRIVE_ACCELERATION_LIMIT,
                                           Constants.DRIVE_TRACTION_CONTROL_CURVE,
                                           Constants.DRIVE_THROTTLE_INPUT_CURVE);
@@ -86,9 +88,9 @@ public class DriveSubsystemTest {
 
     // Verify that left and right motors are being driven with expected values
     verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
     verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
   }
 
   @Test
@@ -104,9 +106,9 @@ public class DriveSubsystemTest {
 
     // Verify that left and right motors are being driven with expected values
     verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-1.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
     verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-1.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
   }
 
   @Test
@@ -114,7 +116,7 @@ public class DriveSubsystemTest {
   @DisplayName("Test if robot can reverse direction using PID drive")
   public void reverseDirection() {
     // Initial velocity
-    double velocity = 2.053;
+    double velocity = 1.883;
     when(m_navx.getVelocityY()).thenReturn((float)velocity);
 
     // Argument capture objects
@@ -126,8 +128,8 @@ public class DriveSubsystemTest {
 
     // Simulate NAVX sensor deceleration
     for (int i = 0; i < 75; i++) {
-      velocity = (velocity <= -2.053) ?
-                  -2.053 :
+      velocity = (velocity <= -1.883) ?
+                  -1.883 :
                   velocity - 0.05;
       when(m_navx.getVelocityY()).thenReturn((float)velocity);
 
@@ -138,9 +140,9 @@ public class DriveSubsystemTest {
 
     // Verify that left and right motors are being driven and capture output
     verify(m_lMasterMotor, times(75)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), lMotorOutputs.capture(), 
-                                            ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
     verify(m_rMasterMotor, times(75)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), rMotorOutputs.capture(), 
-                                            ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
 
     // Check that last motor output value was as expected
     double lMotorOutput = lMotorOutputs.getAllValues().get(lMotorOutputs.getAllValues().size() - 1);
@@ -161,9 +163,9 @@ public class DriveSubsystemTest {
 
     // Verify that left and right motors are being driven with expected values
     verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(0.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
     verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(0.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
   }
 
   @Test
@@ -179,9 +181,9 @@ public class DriveSubsystemTest {
 
     // Verify that left and right motors are being driven with expected values
     verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
     verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
   }
 
   @Test
@@ -196,9 +198,9 @@ public class DriveSubsystemTest {
 
     // Verify that left and right motors are being driven with expected values
     verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(0.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.gt(0.0));
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.gt(0.0));
     verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(0.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.lt(0.0));
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.lt(0.0));
   }
 
   @Test
@@ -213,9 +215,9 @@ public class DriveSubsystemTest {
 
     // Verify that left and right motors are being driven with expected values
     verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(0.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.lt(0.0));
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.lt(0.0));
     verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(0.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.gt(0.0));
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.gt(0.0));
   }
 
   @Test
@@ -230,10 +232,10 @@ public class DriveSubsystemTest {
     m_driveSubsystem.teleopPID(1.0, 0.0);
 
     // Verify that left and right motors are being driven with expected values
-    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(0.13), AdditionalMatchers.gt(0.0)), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(0.13), AdditionalMatchers.gt(0.0)), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(0.14), AdditionalMatchers.gt(0.0)), 
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(0.14), AdditionalMatchers.gt(0.0)), 
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
   }
 
   @Test
@@ -252,7 +254,7 @@ public class DriveSubsystemTest {
 
     // Verify that left and right motors are being driven with expected values
     verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
     verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA), 
                                           ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
 
@@ -263,9 +265,9 @@ public class DriveSubsystemTest {
     m_driveSubsystem.teleopPID(1.0, 0.0);
 
     // Verify that left and right motors are being driven with expected values
-    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(0.13), AdditionalMatchers.gt(0.0)), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(0.13), AdditionalMatchers.gt(0.0)), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(0.14), AdditionalMatchers.gt(0.0)), 
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(0.14), AdditionalMatchers.gt(0.0)), 
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
   }
 }

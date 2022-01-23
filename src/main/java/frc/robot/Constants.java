@@ -17,21 +17,28 @@ public final class Constants {
   public static final double ROBOT_LOOP_PERIOD = 1.0 / 60.0;
 
   // Motor RPMs, encoder values, and gear ratios
+  public static final double MECHANICAL_EFFICIENCY = 0.9;
   public static final int FALCON_500_MAX_RPM = 6380;
   public static final int BAG_MAX_RPM = 13180;
   public static final int CTRE_MAG_ENCODER_TICKS_PER_ROTATION = 4096;
   public static final int CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION = 2048;
 
-  public static final double DRIVE_WHEEL_DIAMETER_METERS = 0.1524;
-  public static final double DRIVE_GEAR_RATIO = 120.0 / 11.0;
+  // Drive specs
+  public static final double DRIVE_WHEEL_DIAMETER_METERS = 0.1016;
+  public static final double DRIVE_GEAR_RATIO = 1680.0 / 220.0;
+  public static final double DRIVE_TICKS_PER_METER = (CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION * DRIVE_GEAR_RATIO) * (1 / (DRIVE_WHEEL_DIAMETER_METERS * Math.PI)); // 48997.324
+  public static final double DRIVE_METERS_PER_TICK = 1 / DRIVE_TICKS_PER_METER; // 2.041e-5
+  public static final double DRIVE_METERS_PER_ROTATION = DRIVE_METERS_PER_TICK * CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION; // 0.041798
+  public static final double DRIVETRAIN_EFFICIENCY = 0.85;
+  public static final double DRIVE_MAX_LINEAR_SPEED = (FALCON_500_MAX_RPM / 60) * DRIVE_METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY; // 3.766 m/s
 
   // Drive PID values
   public static final double DRIVE_kP = 0.018;
   public static final double DRIVE_kD = 0.00029;
   public static final double DRIVE_TURN_SCALAR = 30.0;
   public static final double DRIVE_ACCELERATION_LIMIT = 0.5;
-  public static final String DRIVE_TRACTION_CONTROL_CURVE = "X / 4.106";
-  public static final String DRIVE_THROTTLE_INPUT_CURVE = "4.106 * X";
+  public static final String DRIVE_TRACTION_CONTROL_CURVE = "X / 3.766";
+  public static final String DRIVE_THROTTLE_INPUT_CURVE = "3.766 * X";
   public static final int DRIVE_RESPONSE_EXPONENT = 1;
   
   // Intake Arm PID config

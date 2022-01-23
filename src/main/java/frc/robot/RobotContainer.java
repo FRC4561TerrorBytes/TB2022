@@ -26,6 +26,8 @@ public class RobotContainer {
                                                                            Constants.DRIVE_kP,
                                                                            Constants.DRIVE_kD,
                                                                            Constants.DRIVE_TURN_SCALAR,
+                                                                           Constants.DRIVE_METERS_PER_TICK,
+                                                                           Constants.DRIVE_MAX_LINEAR_SPEED,
                                                                            Constants.DRIVE_ACCELERATION_LIMIT,
                                                                            Constants.DRIVE_TRACTION_CONTROL_CURVE,
                                                                            Constants.DRIVE_THROTTLE_INPUT_CURVE);

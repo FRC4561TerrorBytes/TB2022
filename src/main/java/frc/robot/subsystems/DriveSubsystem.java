@@ -64,18 +64,10 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   private AHRS m_navx;
 
   private final double TURN_DEADBAND = 0.005;
-  private final double WHEEL_DIAMETER_METERS = Constants.DRIVE_WHEEL_DIAMETER_METERS;
-  private final double MOTOR_MAX_RPM = Constants.FALCON_500_MAX_RPM;
-  private final double TICKS_PER_ROTATION = Constants.CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
-  private final double GEAR_RATIO = Constants.DRIVE_GEAR_RATIO;
-  private final double TICKS_PER_METER = (double)(TICKS_PER_ROTATION * GEAR_RATIO) * (double)(1 / (WHEEL_DIAMETER_METERS * Math.PI)); // 46644.183
-  private final double METERS_PER_TICK = 1 / TICKS_PER_METER; // 2.149e-5
-  private final double METERS_PER_ROTATION = METERS_PER_TICK * TICKS_PER_ROTATION; // 0.04388
-  private final double DRIVETRAIN_EFFICIENCY = 0.88;
-  private final double MAX_LINEAR_SPEED = Math.floor(((MOTOR_MAX_RPM / 60) * METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY) * 1000) / 1000; // 4.106 m/s
   private final double TOLERANCE = 0.125;
 
   private double m_turnScalar = 1.0; 
+  private double m_metersPerTick = 0.0;
   private double m_inertialVelocity = 0.0;
   private boolean m_wasTurning = false;
 
@@ -88,14 +80,16 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param kP Proportional gain
    * @param kD Derivative gain
    * @param turnScalar Scalar for turn input (degrees)
+   * @param metersPerTick Meters traveled per encoder tick (meters)
+   * @param maxLinearSpeed Maximum linear speed of the robot (m/s)
    * @param accelerationLimit Maximum allowed acceleration (m/s^2)
    * @param tractionControlCurve Expression characterising traction of the robot with "X" as the variable
    * @param throttleInputCurve Expression characterising throttle input with "X" as the variable
    */
-  public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turnScalar,
-                        double accelerationLimit, String tractionControlCurve, String throttleInputCurve) {
+  public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turnScalar, double metersPerTick,
+                        double maxLinearSpeed, double accelerationLimit, String tractionControlCurve, String throttleInputCurve) {
       m_drivePIDController = new PIDController(kP, 0.0, kD, Constants.ROBOT_LOOP_PERIOD);
-      m_tractionControlController = new TractionControlController(MAX_LINEAR_SPEED, accelerationLimit, tractionControlCurve, throttleInputCurve);
+      m_tractionControlController = new TractionControlController(maxLinearSpeed, accelerationLimit, tractionControlCurve, throttleInputCurve);
 
       this.m_lMasterMotor = drivetrainHardware.lMasterMotor;
       this.m_rMasterMotor = drivetrainHardware.rMasterMotor;
@@ -105,6 +99,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
       this.m_navx = drivetrainHardware.navx;
 
       this.m_turnScalar = turnScalar;
+      this.m_metersPerTick = metersPerTick;
 
       // Reset TalonFX settings
       m_lMasterMotor.configFactoryDefault();
@@ -141,6 +136,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
       // Set drive PID tolerance
       m_drivePIDController.setTolerance(TOLERANCE);
 
+      // Initialise odometry
       m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
       resetOdometry();
   }
@@ -179,8 +175,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     // Update the odometry in the periodic block
     // Negate gyro angle because gyro is positive going clockwise which doesn't match WPILib convention
     m_odometry.update(Rotation2d.fromDegrees(-getAngle()), 
-                      -m_lMasterMotor.getSelectedSensorPosition() * METERS_PER_TICK,
-                      +m_rMasterMotor.getSelectedSensorPosition() * METERS_PER_TICK);
+                      -m_lMasterMotor.getSelectedSensorPosition() * m_metersPerTick,
+                      +m_rMasterMotor.getSelectedSensorPosition() * m_metersPerTick);
   }
 
   /**
@@ -290,8 +286,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @return The current wheel speeds.
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(m_lMasterMotor.getSelectedSensorVelocity() * 10 * METERS_PER_TICK, 
-                                            m_rMasterMotor.getSelectedSensorVelocity() * 10 * METERS_PER_TICK);
+    return new DifferentialDriveWheelSpeeds(m_lMasterMotor.getSelectedSensorVelocity() * 10 * m_metersPerTick, 
+                                            m_rMasterMotor.getSelectedSensorVelocity() * 10 * m_metersPerTick);
   }
 
   /**
@@ -299,8 +295,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void resetOdometry() {
     resetAngle();
-    m_lMasterMotor.setSelectedSensorPosition(0.0);
-    m_rMasterMotor.setSelectedSensorPosition(0.0);
+    resetEncoders();
     m_odometry.resetPosition(new Pose2d(), Rotation2d.fromDegrees(0.0));
   }
 
@@ -360,7 +355,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @return Return distance in meters
    */
   public double getDistance(double ticks) {
-    return ticks * METERS_PER_TICK;
+    return ticks * m_metersPerTick;
   }
 
   /**
@@ -368,16 +363,16 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @return the average of the two encoder readings
    */
   public double getAverageEncoderDistance() {
-    return (((m_lMasterMotor.getSensorCollection().getIntegratedSensorPosition() * METERS_PER_TICK) + 
-             (m_lMasterMotor.getSensorCollection().getIntegratedSensorPosition() * METERS_PER_TICK)) / 2);
+    return (((m_lMasterMotor.getSensorCollection().getIntegratedSensorPosition() * m_metersPerTick) + 
+             (m_lMasterMotor.getSensorCollection().getIntegratedSensorPosition() * m_metersPerTick)) / 2);
   }
 
   /**
    * Stop drivetrain
    */
   public void stop() {
-    m_lMasterMotor.set(ControlMode.PercentOutput, 0.0);
-    m_rMasterMotor.set(ControlMode.PercentOutput, 0.0);
+    m_lMasterMotor.stopMotor();
+    m_rMasterMotor.stopMotor();
   }
 
   /**

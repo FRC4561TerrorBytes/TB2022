@@ -26,7 +26,7 @@ public class TractionControlController {
    * @param throttleInputCurve Expression characterising throttle input with "X" as the variable
    */
   public TractionControlController(double maxLinearSpeed, double accelerationLimit, String tractionControlCurve, String throttleInputCurve) {
-    m_maxLinearSpeed = maxLinearSpeed;
+    m_maxLinearSpeed = Math.floor(maxLinearSpeed * 1000) / 1000;
     m_accelerationLimit = accelerationLimit;
     m_originalAccelerationLimit = accelerationLimit;
 
