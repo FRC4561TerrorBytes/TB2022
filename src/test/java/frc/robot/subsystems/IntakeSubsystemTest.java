@@ -81,6 +81,7 @@ public class IntakeSubsystemTest {
 	@DisplayName("Test if robot can intake")
 	public void intake() {
 		m_intakeSubsystem.intake();
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
 		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
 	
 	}
