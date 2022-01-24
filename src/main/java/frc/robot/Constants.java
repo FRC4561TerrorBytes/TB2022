@@ -128,6 +128,10 @@ public final class Constants {
   // Climber motor ports
   public static final int CLIMBER_MOTOR_PORT = 42;
 
+  // Shooter motor ports
+  public static final int FLYWHEEL_MASTER_MOTOR_PORT = 0;
+  public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 0;
+
   //Automode Constants
   public static final double TRACK_WIDTH = 0; // TODO: Find track width
 }
