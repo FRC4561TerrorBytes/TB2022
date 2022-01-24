@@ -32,6 +32,7 @@ import frc.robot.Constants;
 public class DriveSubsystemTest {
 
   private final double DELTA = 2e-3;
+  private final double ALT_DELTA = 4e-3;
   private DriveSubsystem m_driveSubsystem;
   private DriveSubsystem.Hardware m_drivetrainHardware;
 
@@ -59,6 +60,7 @@ public class DriveSubsystemTest {
                                           Constants.DRIVE_kP,
                                           Constants.DRIVE_kD, 
                                           Constants.DRIVE_TURN_SCALAR,
+                                          Constants.CONTROLLER_DEADBAND,
                                           Constants.DRIVE_METERS_PER_TICK,
                                           Constants.DRIVE_MAX_LINEAR_SPEED,
                                           Constants.DRIVE_ACCELERATION_LIMIT,
@@ -78,7 +80,7 @@ public class DriveSubsystemTest {
   public void forward() {
     // Hardcode NAVX sensor return values for angle, and velocityY
     when(m_navx.getAngle()).thenReturn(0.0);
-    when(m_navx.getVelocityY()).thenReturn((float)4.106);
+    when(m_navx.getVelocityY()).thenReturn((float)3.766);
 
     // Fill up velocity moving average buffer by calling periodic
     for (int i = 0; i < 6; i++) { m_driveSubsystem.periodic(); }
@@ -99,7 +101,7 @@ public class DriveSubsystemTest {
   public void reverse() {
     // Hardcode NAVX sensor return values for angle, and velocityY
     when(m_navx.getAngle()).thenReturn(0.0);
-    when(m_navx.getVelocityY()).thenReturn((float)-4.106);
+    when(m_navx.getVelocityY()).thenReturn((float)-3.766);
 
     // Try to drive in reverse
     m_driveSubsystem.teleopPID(-1.0, 0.0);
@@ -147,8 +149,8 @@ public class DriveSubsystemTest {
     // Check that last motor output value was as expected
     double lMotorOutput = lMotorOutputs.getAllValues().get(lMotorOutputs.getAllValues().size() - 1);
     double rMotorOutput = rMotorOutputs.getAllValues().get(rMotorOutputs.getAllValues().size() - 1);
-    assertTrue(Math.abs(-0.5 - lMotorOutput) <= DELTA);
-    assertTrue(Math.abs(-0.5 - rMotorOutput) <= DELTA);
+    assertTrue(Math.abs(-0.5 - lMotorOutput) <= ALT_DELTA);
+    assertTrue(Math.abs(-0.5 - rMotorOutput) <= ALT_DELTA);
   }
 
   @Test
@@ -170,14 +172,32 @@ public class DriveSubsystemTest {
 
   @Test
   @Order(5)
+  @DisplayName("Test if robot ignores small throttle input values under threshold")
+  public void ignoreSmallThrottleInput() {
+    // Hardcode NAVX sensor return values for angle, velocityY
+    when(m_navx.getAngle()).thenReturn(0.0);
+    when(m_navx.getVelocityY()).thenReturn((float)0.0);
+
+    // Try to drive with small throttle value
+    m_driveSubsystem.teleopPID(0.007, 0.0);
+
+    // Verify that left and right motors are being driven with expected values
+    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(0.0, DELTA),
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(0.0, DELTA), 
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));                  
+  }
+
+  @Test
+  @Order(6)
   @DisplayName("Test if robot ignores small turn input values under threshold")
   public void ignoreSmallTurnInput() {
     // Hardcode NAVX sensor return values for angle, velocityY
     when(m_navx.getAngle()).thenReturn(0.0);
-    when(m_navx.getVelocityY()).thenReturn((float)4.106);
+    when(m_navx.getVelocityY()).thenReturn((float)3.766);
 
     // Try to drive with small turn value
-    m_driveSubsystem.teleopPID(1.0, 0.001);
+    m_driveSubsystem.teleopPID(1.0, 0.004);
 
     // Verify that left and right motors are being driven with expected values
     verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA), 
@@ -187,7 +207,7 @@ public class DriveSubsystemTest {
   }
 
   @Test
-  @Order(6)
+  @Order(7)
   @DisplayName("Test if robot can turn left using PID drive")
   public void turningLeft() {
     // Hardcode NAVX sensor return value for angle
@@ -204,7 +224,7 @@ public class DriveSubsystemTest {
   }
 
   @Test
-  @Order(7)
+  @Order(8)
   @DisplayName("Test if robot can turn right using PID drive")
   public void turningRight() {
     // Hardcode NAVX sensor return value for angle
@@ -221,7 +241,7 @@ public class DriveSubsystemTest {
   }
 
   @Test
-  @Order(8)
+  @Order(9)
   @DisplayName("Test if robot will limit wheel slip")
   public void tractionControl() {
     // Hardcode NAVX sensor values for angle, and velocityY
@@ -239,7 +259,7 @@ public class DriveSubsystemTest {
   }
 
   @Test
-  @Order(9)
+  @Order(10)
   @DisplayName("Test if robot can toggle traction control")
   public void toggleTractionControl() {
     // Hardcode NAVX sensor values for angle, and velocityY

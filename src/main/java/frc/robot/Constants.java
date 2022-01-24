@@ -18,6 +18,9 @@ public final class Constants {
   // Robot tick rate in seconds
   public static final double ROBOT_LOOP_PERIOD = 1.0 / 60.0;
 
+  // Controller deadband
+  public static final double CONTROLLER_DEADBAND = 0.005;
+
   // Motor RPMs, encoder values, and gear ratios
   public static final double MECHANICAL_EFFICIENCY = 0.9;
   public static final int FALCON_500_MAX_RPM = 6380;

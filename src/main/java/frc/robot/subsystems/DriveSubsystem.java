@@ -30,7 +30,6 @@ import frc.robot.utils.TractionControlController;
 
 
 public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
-
   public static class Hardware {
     private WPI_TalonFX lMasterMotor, rMasterMotor;
     private WPI_TalonFX lSlaveMotor, rSlaveMotor;
@@ -63,12 +62,12 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
   private AHRS m_navx;
 
-  private final double TURN_DEADBAND = 0.005;
   private final double TOLERANCE = 0.125;
 
   private double m_turnScalar = 1.0; 
   private double m_metersPerTick = 0.0;
   private double m_inertialVelocity = 0.0;
+  private double m_deadband = 0.0;
   private boolean m_wasTurning = false;
 
   /**
@@ -80,65 +79,67 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param kP Proportional gain
    * @param kD Derivative gain
    * @param turnScalar Scalar for turn input (degrees)
+   * @param deadband Deadband for controller input [+0.001, +0.05]
    * @param metersPerTick Meters traveled per encoder tick (meters)
    * @param maxLinearSpeed Maximum linear speed of the robot (m/s)
    * @param accelerationLimit Maximum allowed acceleration (m/s^2)
    * @param tractionControlCurve Expression characterising traction of the robot with "X" as the variable
    * @param throttleInputCurve Expression characterising throttle input with "X" as the variable
    */
-  public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turnScalar, double metersPerTick,
+  public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turnScalar, double deadband, double metersPerTick,
                         double maxLinearSpeed, double accelerationLimit, String tractionControlCurve, String throttleInputCurve) {
-      m_drivePIDController = new PIDController(kP, 0.0, kD, Constants.ROBOT_LOOP_PERIOD);
-      m_tractionControlController = new TractionControlController(maxLinearSpeed, accelerationLimit, tractionControlCurve, throttleInputCurve);
+    m_drivePIDController = new PIDController(kP, 0.0, kD, Constants.ROBOT_LOOP_PERIOD);
+    m_tractionControlController = new TractionControlController(deadband, maxLinearSpeed, accelerationLimit, tractionControlCurve, throttleInputCurve);
 
-      this.m_lMasterMotor = drivetrainHardware.lMasterMotor;
-      this.m_rMasterMotor = drivetrainHardware.rMasterMotor;
-      this.m_lSlaveMotor = drivetrainHardware.lSlaveMotor;
-      this.m_rSlaveMotor = drivetrainHardware.rSlaveMotor;
+    this.m_lMasterMotor = drivetrainHardware.lMasterMotor;
+    this.m_rMasterMotor = drivetrainHardware.rMasterMotor;
+    this.m_lSlaveMotor = drivetrainHardware.lSlaveMotor;
+    this.m_rSlaveMotor = drivetrainHardware.rSlaveMotor;
 
-      this.m_navx = drivetrainHardware.navx;
+    this.m_navx = drivetrainHardware.navx;
 
-      this.m_turnScalar = turnScalar;
-      this.m_metersPerTick = metersPerTick;
+    this.m_deadband = deadband;
+    this.m_turnScalar = turnScalar;
+    this.m_metersPerTick = metersPerTick;
 
-      // Reset TalonFX settings
-      m_lMasterMotor.configFactoryDefault();
-      m_lSlaveMotor.configFactoryDefault();
-      m_rMasterMotor.configFactoryDefault();
-      m_rSlaveMotor.configFactoryDefault();
+    // Reset TalonFX settings
+    m_lMasterMotor.configFactoryDefault();
+    m_lSlaveMotor.configFactoryDefault();
+    m_rMasterMotor.configFactoryDefault();
+    m_rSlaveMotor.configFactoryDefault();
 
-      // Set all drive motors to brake
-      m_lMasterMotor.setNeutralMode(NeutralMode.Brake);
-      m_lSlaveMotor.setNeutralMode(NeutralMode.Brake);
-      m_rMasterMotor.setNeutralMode(NeutralMode.Brake);
-      m_rSlaveMotor.setNeutralMode(NeutralMode.Brake);
+    // Set all drive motors to brake
+    m_lMasterMotor.setNeutralMode(NeutralMode.Brake);
+    m_lSlaveMotor.setNeutralMode(NeutralMode.Brake);
+    m_rMasterMotor.setNeutralMode(NeutralMode.Brake);
+    m_rSlaveMotor.setNeutralMode(NeutralMode.Brake);
 
-      // Invert only right side
-      m_lMasterMotor.setInverted(false);
-      m_lSlaveMotor.setInverted(false);
-      m_rMasterMotor.setInverted(true);
-      m_rSlaveMotor.setInverted(true);
+    // Invert only right side
+    m_lMasterMotor.setInverted(false);
+    m_lSlaveMotor.setInverted(false);
+    m_rMasterMotor.setInverted(true);
+    m_rSlaveMotor.setInverted(true);
 
-      // Make rear left motor controllers follow left master
-      m_lSlaveMotor.set(ControlMode.Follower, m_lMasterMotor.getDeviceID());
+    // Make rear left motor controllers follow left master
+    m_lSlaveMotor.set(ControlMode.Follower, m_lMasterMotor.getDeviceID());
 
-      // Make rear right motor controllers follow right master
-      m_rSlaveMotor.set(ControlMode.Follower, m_rMasterMotor.getDeviceID());
+    // Make rear right motor controllers follow right master
+    m_rSlaveMotor.set(ControlMode.Follower, m_rMasterMotor.getDeviceID());
 
-      // Make motors use integrated encoder
-      m_lMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-      m_rMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    // Make motors use integrated encoder
+    m_lMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    m_rMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-      // Initialise PID subsystem setpoint and input
-      resetAngle();
-      m_drivePIDController.setSetpoint(0.0);
+    // Initialise PID subsystem setpoint and input
+    resetAngle();
+    m_drivePIDController.setSetpoint(0.0);
 
-      // Set drive PID tolerance
-      m_drivePIDController.setTolerance(TOLERANCE);
+    // Set drive PID tolerance
+    m_drivePIDController.setTolerance(TOLERANCE);
 
-      // Initialise odometry
-      m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
-      resetOdometry();
+    // Initialise odometry
+    m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
+    resetOdometry();
   }
 
   /**
@@ -199,10 +200,11 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param turnRequest Turn input [-1.0, +1.0]
    */
   public void teleopPID(double speedRequest, double turnRequest) {
+    // Get current angle of robot
     double currentAngle = getAngle();
 
     // Start turning if input is greater than deadband
-    if (Math.abs(turnRequest) >= TURN_DEADBAND) {
+    if (Math.abs(turnRequest) >= m_deadband) {
       // Add delta to setpoint scaled by factor
       m_drivePIDController.setSetpoint(currentAngle + (turnRequest * m_turnScalar));
       m_wasTurning = true;
@@ -227,17 +229,20 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
   /**
    * Turn robot by angleDelta
-   * @param angleDelta degrees to turn robot by
+   * @param angleDelta degrees to turn robot by [-turnScalar, +turnScalar]
    */
-  public void aimToAngle(double angleDelta) {
-    double currentAngle = getAngle();
+  public void aimToAngle(double angleDelta) throws InterruptedException {
+    angleDelta = MathUtil.clamp(angleDelta, -m_turnScalar, +m_turnScalar);
+    m_drivePIDController.setSetpoint(getAngle() + angleDelta);
+    long loopTime = (long)Constants.ROBOT_LOOP_PERIOD * 1000;
 
-    m_drivePIDController.setSetpoint(currentAngle + angleDelta);
-
-    double turnOutput = m_drivePIDController.calculate(currentAngle);
-
-    m_lMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, -turnOutput);
-    m_rMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, +turnOutput);
+    do {
+      double turnOutput = m_drivePIDController.calculate(getAngle());
+      m_lMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, -turnOutput);
+      m_rMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, +turnOutput);
+      
+      Thread.sleep(loopTime);
+    } while (!m_drivePIDController.atSetpoint());
   }
 
   /**
