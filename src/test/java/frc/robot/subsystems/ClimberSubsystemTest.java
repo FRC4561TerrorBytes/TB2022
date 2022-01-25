@@ -50,11 +50,54 @@ public class ClimberSubsystemTest {
 		m_climberSubsystem = null;
 	}
 	
-	public void climberUp(){
+	@Test
+	@Order(1)
+	@DisplayName("Test if robot can move climber up automatically")
+	public void climberUp() {
 		m_climberSubsystem.climberUp();
+		verify(m_climberMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.CLIMBER_UPPER_LIMIT, DELTA));
 	}
 	
+	@Test
+	@Order(2)
+	@DisplayName("Test if robot can move climber down automatically")
 	public void climberDown(){
 		m_climberSubsystem.climberDown();
+		verify(m_climberMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.CLIMBER_LOWER_LIMIT, DELTA));
+	}
+
+	@Test
+	@Order(3)
+	@DisplayName("Test if robot can move climber up manually")
+	public void climberUpManual() {
+		m_climberSubsystem.climberUpManual();
+		verify(m_climberMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
+		verify(m_climberMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA));
+
+		m_climberSubsystem.climberStopManual();
+		verify(m_climberMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
+		verify(m_climberMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(Constants.CLIMBER_LOWER_LIMIT, DELTA));
+	}
+
+	@Test
+	@Order(4)
+	@DisplayName("Test if robot can move climber down manually")
+	public void climberDownManual() {
+		m_climberSubsystem.climberDownManual();
+		verify(m_climberMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
+		verify(m_climberMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-1.0, DELTA));
+
+		m_climberSubsystem.climberStopManual();
+		verify(m_climberMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
+		verify(m_climberMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(Constants.CLIMBER_LOWER_LIMIT, DELTA));
+	}
+
+	@Test
+	@Order(5)
+	@DisplayName("Test if robot can stop moving manually")
+	public void climberStopManual() {
+		m_climberSubsystem.climberStopManual();
+		verify(m_climberMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(true));
+		verify(m_climberMotor, times(1)).stopMotor();
 	}
 }
