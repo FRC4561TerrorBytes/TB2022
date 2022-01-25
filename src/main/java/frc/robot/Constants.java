@@ -46,6 +46,16 @@ public final class Constants {
   public static final String DRIVE_THROTTLE_INPUT_CURVE = "3.766 * X";
   public static final int DRIVE_RESPONSE_EXPONENT = 1;
   
+  // Shooter PID Values
+  private static final double FLYWHEEL_kP = 0.8;
+  private static final double FLYWHEEL_kI = 0.0;
+  private static final double FLYWHEEL_kD = 0.1;
+  private static final double FLYWHEEL_TOLERANCE = 100;
+  private static final double FLYWHEEL_MAX_RPM = FALCON_500_MAX_RPM;
+  private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
+  private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
+  private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = false;
+
   // Intake Arm PID config
   public static final double INTAKE_ARM_kP = 0.0;
   public static final double INTAKE_ARM_kD = 0.0;
@@ -93,6 +103,16 @@ public final class Constants {
   public static final boolean CLIMBER_SOFT_LIMITS = true;
   public static final boolean CLIMBER_SENSOR_PHASE = false;
   public static final boolean CLIMBER_INVERT_MOTOR = false;
+
+  // Set PID for Flywheel
+  public static final TalonPIDConfig FLYWHEEL_MASTER_CONFIG = new TalonPIDConfig(FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE,
+                                                                                FLYWHEEL_MASTER_MOTOR_INVERTED,
+                                                                                FLYWHEEL_MAX_RPM,
+                                                                                FLYWHEEL_TICKS_PER_ROTATION,
+                                                                                FLYWHEEL_kP,
+                                                                                FLYWHEEL_kI,
+                                                                                FLYWHEEL_kD,
+                                                                                FLYWHEEL_TOLERANCE);
 
   // Climber PID config
   public static final TalonPIDConfig CLIMBER_CONFIG = new TalonPIDConfig(CLIMBER_SENSOR_PHASE, 
