@@ -33,6 +33,7 @@ public class ClimberSubsystemTest {
 	
 	private WPI_TalonFX m_climberMotor;
 	
+	@BeforeEach
 	public void setup() {
 		// Create mock harware device
 		m_climberMotor = mock(WPI_TalonFX.class);
@@ -76,7 +77,7 @@ public class ClimberSubsystemTest {
 
 		m_climberSubsystem.climberStopManual();
 		verify(m_climberMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
-		verify(m_climberMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(Constants.CLIMBER_LOWER_LIMIT, DELTA));
+		verify(m_climberMotor, times(1)).stopMotor();
 	}
 
 	@Test
@@ -89,7 +90,7 @@ public class ClimberSubsystemTest {
 
 		m_climberSubsystem.climberStopManual();
 		verify(m_climberMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
-		verify(m_climberMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(Constants.CLIMBER_LOWER_LIMIT, DELTA));
+		verify(m_climberMotor, times(1)).stopMotor();
 	}
 
 	@Test
