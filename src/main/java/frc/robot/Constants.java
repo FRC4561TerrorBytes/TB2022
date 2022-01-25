@@ -93,8 +93,8 @@ public final class Constants {
   public static final double CLIMBER_kP = 0.0;
   public static final double CLIMBER_kD = 0.0;
   public static final double CLIMBER_TOLERANCE = 10;
-  public static final double CLIMBER_LOWER_LIMIT = -1500;
-  public static final double CLIMBER_UPPER_LIMIT = 0;
+  public static final double CLIMBER_LOWER_LIMIT = 0;
+  public static final double CLIMBER_UPPER_LIMIT = 1500;
   public static final double CLIMBER_VELOCITY = FALCON_500_MAX_RPM;
   public static final double CLIMBER_ACCLERATION = FALCON_500_MAX_RPM;
   public static final int CLIMBER_MOTION_SMOOTHING = 1;
