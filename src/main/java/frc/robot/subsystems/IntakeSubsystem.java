@@ -152,6 +152,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * Intake balls
    */
   public void intake() {
+    armDown();
     m_rollerMotor.set(ControlMode.PercentOutput, +m_rollerSpeed);
   }
 
