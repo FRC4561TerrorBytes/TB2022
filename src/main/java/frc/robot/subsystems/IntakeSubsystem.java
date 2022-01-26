@@ -171,14 +171,15 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
  /**
-   * Stops motor only
+   * Stop roller
    */
   public void stop() {
     m_rollerMotor.stopMotor();
   }
 
   /**
-   * Stops motor and returns arm to previous position
+   * Stop roller and return arm to previous position
+   * @param prevArmPosition Arm position to return to
    */
   public void stop(ArmPosition prevArmPosition) {
     m_rollerMotor.stopMotor();
