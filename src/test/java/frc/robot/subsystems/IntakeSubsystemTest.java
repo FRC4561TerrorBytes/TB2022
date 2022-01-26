@@ -90,4 +90,47 @@ public class IntakeSubsystemTest {
 		m_intakeSubsystem.outtake();
 		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-Constants.INTAKE_ROLLER_SPEED, DELTA));
 	}
+
+	@Test
+	@Order(5)
+	@DisplayName("Test if robot can stop rollermotor while intaking")
+	public void stopIntake() {
+		m_intakeSubsystem.armSetPosition(IntakeSubsystem.ArmPosition.Top.position);
+		m_intakeSubsystem.intake();
+		m_intakeSubsystem.stop();
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_UPPER_LIMIT, DELTA));
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).stopMotor();
+
+		m_intakeSubsystem.armSetPosition(IntakeSubsystem.ArmPosition.Bottom.position);
+		m_intakeSubsystem.intake();
+		m_intakeSubsystem.stop();
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).stopMotor();
+	}
+
+	@Test
+	@Order(6)
+	@DisplayName("Test if robot can stop rollermotor while outtaking")
+	public void stopOuttake() {
+		m_intakeSubsystem.armSetPosition(IntakeSubsystem.ArmPosition.Top.position);
+		m_intakeSubsystem.outtake();
+		m_intakeSubsystem.stop();
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_UPPER_LIMIT, DELTA));
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).stopMotor();
+
+		m_intakeSubsystem.armSetPosition(IntakeSubsystem.ArmPosition.Bottom.position);
+		m_intakeSubsystem.outtake();
+		m_intakeSubsystem.stop();
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).stopMotor();
+	}
+	
 }
