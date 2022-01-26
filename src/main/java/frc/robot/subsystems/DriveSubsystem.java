@@ -228,6 +228,16 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * Maintain robot angle using PID
+   */
+  public void maintainAngle() {
+    double turnOutput = m_drivePIDController.calculate(getAngle());
+
+    m_lMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, -turnOutput);
+    m_rMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, +turnOutput);
+  }
+
+  /**
    * Turn robot by angleDelta
    * @param angleDelta degrees to turn robot by [-turnScalar, +turnScalar]
    */
