@@ -71,7 +71,7 @@ public class RobotContainer {
     AutomodeChooser();
   }
 
-  private void AutomodeChooser(){
+  private void AutomodeChooser() {
     // Creates dropdown box in DriverStation to manually choose automodes
     // automodeChooser.addOption("Example Auto", new ExampleAuto());
   }

@@ -165,8 +165,8 @@ public class TalonPIDConfig {
    * Initializes Talon PID and MotionMagic parameters
    * <p>
    * Calls {@link TalonPIDConfig#initializeTalonPID(BaseTalon, FeedbackDevice, boolean, boolean)} with no limit switches 
-   * @param talon
-   * @param feedbackDevice
+   * @param talon Talon motor controller to apply settings to
+   * @param feedbackDevice Feedback device to use for Talon PID
    */
   public void initializeTalonPID(BaseTalon talon, FeedbackDevice feedbackDevice) {
     initializeTalonPID(talon, feedbackDevice, false, false);
