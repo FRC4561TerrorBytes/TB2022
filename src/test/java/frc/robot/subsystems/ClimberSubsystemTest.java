@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers;
 
 import frc.robot.Constants;
 
-/** Add your docs here. */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ClimberSubsystemTest {
 	
 	private final double DELTA = 1e-3;
