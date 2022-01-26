@@ -32,9 +32,9 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     Top(Constants.INTAKE_ARM_UPPER_LIMIT),
     Bottom(Constants.INTAKE_ARM_LOWER_LIMIT);
 
-    public final double position;
-    private ArmPosition(double position) {
-      this.position = position;
+    public final double value;
+    private ArmPosition(double value) {
+      this.value = value;
     }
   }
 
@@ -46,7 +46,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   private ArmPosition m_armPosition;
   private double m_rollerSpeed;
 
-  private final double ARM_MIDDLE_POSITION = ArmPosition.Bottom.position / 2;
+  private final double ARM_MIDDLE_POSITION = ArmPosition.Bottom.value / 2;
 
   /**
    * Create an instance of IntakeSubsystem
@@ -138,19 +138,19 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * Move arm to top position
    */
   public void armUp(){
-    armSetPosition(ArmPosition.Top.position);
+    armSetPosition(ArmPosition.Top.value);
   }
 
   /**
    * Move arm to bottom position
    */
   public void armDown(){
-    armSetPosition(ArmPosition.Bottom.position);
+    armSetPosition(ArmPosition.Bottom.value);
   }
 
    /**
-   * Intakes ball and returns previous arm position
-   * @return
+   * Intake balls
+   * @return Previous arm position
    */
   public ArmPosition intake() {
     ArmPosition prevArmPosition = m_armPosition;
@@ -160,8 +160,8 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Outtakes ball and returns previous arm position
-   * @return
+   * Outtakes balls
+   * @return Previous arm position
    */
   public ArmPosition outtake() {
     ArmPosition prevArmPosition = m_armPosition;
@@ -171,21 +171,20 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
  /**
-   * Stops motor only
+   * Stop roller
    */
   public void stop() {
     m_rollerMotor.stopMotor();
   }
 
   /**
-   * Stops motor and returns arm to previous position
+   * Stop roller and return arm to previous position
+   * @param prevArmPosition Arm position to return to
    */
   public void stop(ArmPosition prevArmPosition) {
     m_rollerMotor.stopMotor();
-    armSetPosition(prevArmPosition.position);
+    armSetPosition(prevArmPosition.value);
   }
-
-
 
   @Override
   public void close() {
