@@ -125,8 +125,7 @@ public class AutoTrajectory {
     // This is a method used to get the desired trajectory, put it into the command, have the command calculate the 
     // actual route relative to one plotted in Pathweaver, and then follow it the best it can, based on characterization given to it.
     m_ramseteCommand = new RamseteCommand(
-        transformedTrajectory,  // This had been changed to be the transformed trajecotry so that it calculates trajectory 
-                                // from final (transformed) trajectory
+        transformedTrajectory,
         subsystem::getPose,
         m_disabledRamsete,
         new SimpleMotorFeedforward(VOLTS_kS,

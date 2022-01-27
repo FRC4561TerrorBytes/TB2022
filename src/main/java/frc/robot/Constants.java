@@ -22,7 +22,6 @@ public final class Constants {
   public static final double CONTROLLER_DEADBAND = 0.005;
 
   // Motor RPMs, encoder values, and gear ratios
-  public static final double MECHANICAL_EFFICIENCY = 0.9;
   public static final int FALCON_500_MAX_RPM = 6380;
   public static final int BAG_MAX_RPM = 13180;
   public static final int CTRE_MAG_ENCODER_TICKS_PER_ROTATION = 4096;
