@@ -19,6 +19,8 @@ import edu.wpi.first.math.MathUtil;
  */
 public class TalonPIDConfig {
   private static final double MECHANICAL_EFFICIENCY = 0.9;
+  private static final double MOTOR_DEADBAND = 0.01;
+  private static final double MAX_VOLTAGE = 12.0;
   private static final double MIN_TOLERANCE = 1.0;
   private static final int MIN_MOTION_SMOOTHING = 0;
   private static final int MAX_MOTION_SMOOTHING = 7;
@@ -57,9 +59,9 @@ public class TalonPIDConfig {
    * @param tolerance tolerance of PID loop in ticks per 100ms
    */
   public TalonPIDConfig(boolean sensorPhase, boolean invertMotor,
-                  double maxRPM, double ticksPerRotation,
-                  double kP, double kI, double kD, 
-                  double tolerance) {
+                        double maxRPM, double ticksPerRotation,
+                        double kP, double kI, double kD, 
+                        double tolerance) {
     this.m_sensorPhase = sensorPhase;
     this.m_invertMotor = invertMotor;
     this.m_maxRPM = maxRPM * MECHANICAL_EFFICIENCY;
@@ -89,9 +91,9 @@ public class TalonPIDConfig {
    * @param motionSmoothing MotionMagic smoothing factor [0, 7]
    */
   public TalonPIDConfig(boolean sensorPhase, boolean invertMotor, double ticksPerRotation, double maxRPM,
-                  double kP, double kI, double kD, double tolerance, 
-                  double lowerLimit, double upperLimit, boolean enableSoftLimits,
-                  double velocityRPM, double accelerationRPMPerSec, int motionSmoothing) {
+                        double kP, double kI, double kD, double tolerance, 
+                        double lowerLimit, double upperLimit, boolean enableSoftLimits,
+                        double velocityRPM, double accelerationRPMPerSec, int motionSmoothing) {
     this.m_sensorPhase = sensorPhase;
     this.m_invertMotor = invertMotor;
     this.m_ticksPerRotation = ticksPerRotation;
@@ -118,7 +120,8 @@ public class TalonPIDConfig {
    * @param forwardLimitSwitch Enable forward limit switch
    * @param reverseLimitSwitch Enable reverse limit switch
    */
-  public void initializeTalonPID(BaseTalon talon, FeedbackDevice feedbackDevice, boolean forwardLimitSwitch, boolean reverseLimitSwitch) {
+  public void initializeTalonPID(BaseTalon talon, FeedbackDevice feedbackDevice, 
+                                 boolean forwardLimitSwitch, boolean reverseLimitSwitch) {
     // Reset Talon to default
     talon.configFactoryDefault();
 
@@ -152,6 +155,13 @@ public class TalonPIDConfig {
 
     m_kF = 1023 / rpmToTicksPer100ms(m_maxRPM);
     talon.config_kF(PID_SLOT, m_kF);
+
+    // Configure motor deadband
+    talon.configNeutralDeadband(MOTOR_DEADBAND);
+
+    // Enable voltage compensation
+    talon.configVoltageCompSaturation(MAX_VOLTAGE);
+    talon.enableVoltageCompensation(true);
 
     // Configure MotionMagic values
     if (m_motionMagic) {  

@@ -64,6 +64,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
   private final double TOLERANCE = 0.125;
   private final double MOTOR_DEADBAND = 0.001;
+  private final double MAX_VOLTAGE = 12.0;
 
   private double m_turnScalar = 1.0; 
   private double m_metersPerTick = 0.0;
@@ -136,6 +137,16 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     m_lSlaveMotor.configNeutralDeadband(MOTOR_DEADBAND);
     m_rMasterMotor.configNeutralDeadband(MOTOR_DEADBAND);
     m_rSlaveMotor.configNeutralDeadband(MOTOR_DEADBAND);
+
+    // Enable voltage compensation
+    m_lMasterMotor.configVoltageCompSaturation(MAX_VOLTAGE);
+    m_lMasterMotor.enableVoltageCompensation(true);
+    m_lSlaveMotor.configVoltageCompSaturation(MAX_VOLTAGE);
+    m_lSlaveMotor.enableVoltageCompensation(true);
+    m_rMasterMotor.configVoltageCompSaturation(MAX_VOLTAGE);
+    m_rMasterMotor.enableVoltageCompensation(true);
+    m_rSlaveMotor.configVoltageCompSaturation(MAX_VOLTAGE);
+    m_rSlaveMotor.enableVoltageCompensation(true);
 
     // Initialise PID subsystem setpoint and input
     resetAngle();
