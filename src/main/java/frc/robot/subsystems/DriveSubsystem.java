@@ -63,6 +63,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   private AHRS m_navx;
 
   private final double TOLERANCE = 0.125;
+  private final double MOTOR_DEADBAND = 0.001;
 
   private double m_turnScalar = 1.0; 
   private double m_metersPerTick = 0.0;
@@ -129,6 +130,12 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     // Make motors use integrated encoder
     m_lMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     m_rMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+
+    // Reduce motor deadband
+    m_lMasterMotor.configNeutralDeadband(MOTOR_DEADBAND);
+    m_lSlaveMotor.configNeutralDeadband(MOTOR_DEADBAND);
+    m_rMasterMotor.configNeutralDeadband(MOTOR_DEADBAND);
+    m_rSlaveMotor.configNeutralDeadband(MOTOR_DEADBAND);
 
     // Initialise PID subsystem setpoint and input
     resetAngle();
