@@ -44,6 +44,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   private WPI_TalonFX m_rollerMotor;
   private TalonPIDConfig m_armConfig;
   private ArmPosition m_armPosition;
+  private ArmPosition m_prevArmPosition;
   private double m_rollerSpeed;
 
   private final double ARM_MIDDLE_POSITION = ArmPosition.Bottom.value / 2;
@@ -64,6 +65,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_rollerSpeed = rollerSpeed;
 
     m_armPosition = ArmPosition.Top;
+    m_prevArmPosition = m_armPosition;
     
     m_rollerMotor.setInverted(false);
 
@@ -152,54 +154,28 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * Intake balls
    * @return Previous arm position
    */
-  public ArmPosition intake() {
-    ArmPosition prevArmPosition = m_armPosition;
+  public void intake() {
+    m_prevArmPosition = m_armPosition;
     armDown();
     m_rollerMotor.set(ControlMode.PercentOutput, +m_rollerSpeed);
-    return prevArmPosition;
   }
 
   /**
    * Outtakes balls
    * @return Previous arm position
    */
-  public ArmPosition outtake() {
-    ArmPosition prevArmPosition = m_armPosition;
+  public void outtake() {
+    m_prevArmPosition = m_armPosition;
     armDown();
     m_rollerMotor.set(ControlMode.PercentOutput, -m_rollerSpeed);
-    return prevArmPosition;
-  }
-
- /**
-   * Stop roller
-   */
-  public void stop() {
-    m_rollerMotor.stopMotor();
   }
 
   /**
    * Stop roller and return arm to previous position
-   * @param prevArmPosition Arm position to return to
-   */
-  public void stop(ArmPosition prevArmPosition) {
-    m_rollerMotor.stopMotor();
-    armSetPosition(prevArmPosition.value);
-  }
-
- /**
-   * Stops motor only
    */
   public void stop() {
     m_rollerMotor.stopMotor();
-  }
-
-  /**
-   * Stop roller and return arm to previous position
-   * @param prevArmPosition Arm position to return to
-   */
-  public void stop(ArmPosition prevArmPosition) {
-    m_rollerMotor.stopMotor();
-    armSetPosition(prevArmPosition.value);
+    armSetPosition(m_prevArmPosition.value);
   }
 
   @Override
