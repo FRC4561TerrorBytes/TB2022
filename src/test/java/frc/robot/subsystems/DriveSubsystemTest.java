@@ -249,6 +249,7 @@ public class DriveSubsystemTest {
     when(m_navx.getVelocityY()).thenReturn((float)0.0);
 
     // Try to move forward
+    m_driveSubsystem.enableTractionControl();
     m_driveSubsystem.teleopPID(1.0, 0.0);
 
     // Verify that left and right motors are being driven with expected values
@@ -265,6 +266,8 @@ public class DriveSubsystemTest {
     // Hardcode NAVX sensor values for angle, and velocityY
     when(m_navx.getAngle()).thenReturn(0.0);
     when(m_navx.getVelocityY()).thenReturn((float)0.0);
+
+    m_driveSubsystem.enableTractionControl();
 
     // Toggle off traction control
     m_driveSubsystem.toggleTractionControl();
