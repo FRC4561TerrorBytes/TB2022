@@ -32,7 +32,7 @@ import frc.robot.Constants;
 public class DriveSubsystemTest {
 
   private final double DELTA = 2e-3;
-  private final double ALT_DELTA = 4e-3;
+  private final double ALT_DELTA = 3e-2;
   private DriveSubsystem m_driveSubsystem;
   private DriveSubsystem.Hardware m_drivetrainHardware;
 
