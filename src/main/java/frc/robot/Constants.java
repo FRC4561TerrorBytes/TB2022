@@ -16,10 +16,10 @@ import frc.robot.utils.TalonPIDConfig;
  */
 public final class Constants {
   // Robot tick rate in seconds
-  public static final double ROBOT_LOOP_PERIOD = 1.0 / 60.0;
+  public static final double ROBOT_LOOP_PERIOD = 1.0 / 240.0;
 
   // Controller deadband
-  public static final double CONTROLLER_DEADBAND = 0.05;
+  public static final double CONTROLLER_DEADBAND = 0.09;
 
   // Motor RPMs, encoder values, and gear ratios
   public static final int FALCON_500_MAX_RPM = 6380;
@@ -37,8 +37,8 @@ public final class Constants {
   public static final double DRIVE_MAX_LINEAR_SPEED = (FALCON_500_MAX_RPM / 60) * DRIVE_METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY; // 3.766 m/s
 
   // Drive PID values
-  public static final double DRIVE_kP = 0.018;
-  public static final double DRIVE_kD = 0.00029;
+  public static final double DRIVE_kP = 0.01;
+  public static final double DRIVE_kD = 0.0001;
   public static final double DRIVE_TURN_SCALAR = 30.0;
   public static final double DRIVE_ACCELERATION_LIMIT = 0.5;
   public static final String DRIVE_TRACTION_CONTROL_CURVE = "X / 3.766";
@@ -148,8 +148,8 @@ public final class Constants {
   public static final int CLIMBER_MOTOR_PORT = 6;
 
   // Shooter motor ports
-  public static final int FLYWHEEL_MASTER_MOTOR_PORT = 0;
-  public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 0;
+  public static final int FLYWHEEL_MASTER_MOTOR_PORT = 7;
+  public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 8;
 
   //Automode Constants
   public static final double TRACK_WIDTH = 0; // TODO: Find track width
