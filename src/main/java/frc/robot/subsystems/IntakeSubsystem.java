@@ -32,9 +32,9 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     Top(Constants.INTAKE_ARM_UPPER_LIMIT),
     Bottom(Constants.INTAKE_ARM_LOWER_LIMIT);
 
-    public final double position;
-    private ArmPosition(double position) {
-      this.position = position;
+    public final double value;
+    private ArmPosition(double value) {
+      this.value = value;
     }
   }
 
@@ -44,9 +44,10 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   private WPI_TalonFX m_rollerMotor;
   private TalonPIDConfig m_armConfig;
   private ArmPosition m_armPosition;
+  private ArmPosition m_prevArmPosition;
   private double m_rollerSpeed;
 
-  private final double ARM_MIDDLE_POSITION = ArmPosition.Bottom.position / 2;
+  private final double ARM_MIDDLE_POSITION = ArmPosition.Bottom.value / 2;
 
   /**
    * Create an instance of IntakeSubsystem
@@ -64,6 +65,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_rollerSpeed = rollerSpeed;
 
     m_armPosition = ArmPosition.Top;
+    m_prevArmPosition = m_armPosition;
     
     m_rollerMotor.setInverted(false);
 
@@ -138,29 +140,42 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * Move arm to top position
    */
   public void armUp(){
-    armSetPosition(ArmPosition.Top.position);
+    armSetPosition(ArmPosition.Top.value);
   }
 
   /**
    * Move arm to bottom position
    */
   public void armDown(){
-    armSetPosition(ArmPosition.Bottom.position);
+    armSetPosition(ArmPosition.Bottom.value);
   }
 
-  /**
+   /**
    * Intake balls
+   * @return Previous arm position
    */
   public void intake() {
+    m_prevArmPosition = m_armPosition;
     armDown();
     m_rollerMotor.set(ControlMode.PercentOutput, +m_rollerSpeed);
   }
 
   /**
-   * Outtake balls
+   * Outtakes balls
+   * @return Previous arm position
    */
   public void outtake() {
+    m_prevArmPosition = m_armPosition;
+    armDown();
     m_rollerMotor.set(ControlMode.PercentOutput, -m_rollerSpeed);
+  }
+
+  /**
+   * Stop roller and return arm to previous position
+   */
+  public void stop() {
+    m_rollerMotor.stopMotor();
+    armSetPosition(m_prevArmPosition.value);
   }
 
   @Override
@@ -169,5 +184,3 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     m_rollerMotor = null;
   }
 }
-
-

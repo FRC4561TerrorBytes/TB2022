@@ -90,4 +90,55 @@ public class IntakeSubsystemTest {
 		m_intakeSubsystem.outtake();
 		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-Constants.INTAKE_ROLLER_SPEED, DELTA));
 	}
+
+	@Test
+	@Order(5)
+	@DisplayName("Test if robot can stop roller while intaking and return arm to up position")
+	public void stopIntake() {
+		m_intakeSubsystem.armSetPosition(IntakeSubsystem.ArmPosition.Top.value);
+		m_intakeSubsystem.intake();
+		m_intakeSubsystem.stop();
+		verify(m_armMotor, times(2)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_UPPER_LIMIT, DELTA));
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).stopMotor();
+	}
+
+	@Test
+	@Order(6)
+	@DisplayName("Test if robot can stop roller when arm is down and keep it down")
+	public void stopIntakeArmDown() {
+		m_intakeSubsystem.armSetPosition(IntakeSubsystem.ArmPosition.Bottom.value);
+		m_intakeSubsystem.intake();
+		m_intakeSubsystem.stop();
+		verify(m_armMotor, times(3)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).stopMotor();
+	}
+
+	@Test
+	@Order(7)
+	@DisplayName("Test if robot can stop roller while outtaking and return arm to up position")
+	public void stopOuttake() {
+		m_intakeSubsystem.armSetPosition(IntakeSubsystem.ArmPosition.Top.value);
+		m_intakeSubsystem.outtake();
+		m_intakeSubsystem.stop();
+		verify(m_armMotor, times(2)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_UPPER_LIMIT, DELTA));
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).stopMotor();
+	}
+
+	@Test
+	@Order(8)
+	@DisplayName("Test if robot can stop roller while outtaking when arm is down and keep it down")
+	public void stopOuttakeArmDown() {
+		m_intakeSubsystem.armSetPosition(IntakeSubsystem.ArmPosition.Bottom.value);
+		m_intakeSubsystem.outtake();
+		m_intakeSubsystem.stop();
+		verify(m_armMotor, times(3)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).stopMotor();
+	}
+	
 }
