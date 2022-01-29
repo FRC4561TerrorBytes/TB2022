@@ -19,7 +19,7 @@ public final class Constants {
   public static final double ROBOT_LOOP_PERIOD = 1.0 / 60.0;
 
   // Controller deadband
-  public static final double CONTROLLER_DEADBAND = 0.005;
+  public static final double CONTROLLER_DEADBAND = 0.05;
 
   // Motor RPMs, encoder values, and gear ratios
   public static final int FALCON_500_MAX_RPM = 6380;
@@ -141,11 +141,11 @@ public final class Constants {
   public static final int REAR_RIGHT_MOTOR_PORT = 3;
 
   // Intake Motor Ports
-  public static final int ARM_MOTOR_PORT = 0;
-  public static final int INTAKE_ROLLER_PORT = 1;
+  public static final int ARM_MOTOR_PORT = 4;
+  public static final int INTAKE_ROLLER_PORT = 5;
 
   // Climber motor ports
-  public static final int CLIMBER_MOTOR_PORT = 42;
+  public static final int CLIMBER_MOTOR_PORT = 6;
 
   // Shooter motor ports
   public static final int FLYWHEEL_MASTER_MOTOR_PORT = 0;
