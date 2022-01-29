@@ -104,7 +104,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void climberStopManual() {
     m_climberMotor.overrideSoftLimitsEnable(true);
-    m_climberMotor.set(ControlMode.PercentOutput, 0.0);
+    m_climberMotor.stopMotor();
   }
 
   @Override
