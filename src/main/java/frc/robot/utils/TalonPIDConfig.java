@@ -159,10 +159,6 @@ public class TalonPIDConfig {
     // Configure motor deadband
     talon.configNeutralDeadband(MOTOR_DEADBAND);
 
-    // Enable voltage compensation
-    talon.configVoltageCompSaturation(MAX_VOLTAGE);
-    talon.enableVoltageCompensation(true);
-
     // Configure MotionMagic values
     if (m_motionMagic) {  
       talon.configMotionCruiseVelocity(rpmToTicksPer100ms(m_velocityRPM));
