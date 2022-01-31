@@ -24,6 +24,7 @@ public class TractionControlController {
 
   /**
    * Create an instance of TractionControlController
+   * @param deadband Deadband for controller input [+0.001, +0.1]
    * @param maxLinearSpeed maximum linear speed of robot (m/s)
    * @param accelerationLimit acceleration limit (m/s^2)
    * @param tractionControlCurve Expression characterising traction of the robot with "X" as the variable

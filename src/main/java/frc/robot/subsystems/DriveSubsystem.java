@@ -81,7 +81,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param kP Proportional gain
    * @param kD Derivative gain
    * @param turnScalar Scalar for turn input (degrees)
-   * @param deadband Deadband for controller input [+0.001, +0.05]
+   * @param deadband Deadband for controller input [+0.001, +0.1]
    * @param metersPerTick Meters traveled per encoder tick (meters)
    * @param maxLinearSpeed Maximum linear speed of the robot (m/s)
    * @param accelerationLimit Maximum allowed acceleration (m/s^2)

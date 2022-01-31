@@ -32,7 +32,7 @@ import frc.robot.Constants;
 public class DriveSubsystemTest {
 
   private final double DELTA = 2e-3;
-  private final double ALT_DELTA = 3e-2;
+  private final double ALT_DELTA = 5e-2;
   private DriveSubsystem m_driveSubsystem;
   private DriveSubsystem.Hardware m_drivetrainHardware;
 
@@ -129,10 +129,10 @@ public class DriveSubsystemTest {
     when(m_navx.getAngle()).thenReturn(0.0);
 
     // Simulate NAVX sensor deceleration
-    for (int i = 0; i < 75; i++) {
+    for (int i = 0; i < 120; i++) {
       velocity = (velocity <= -1.883) ?
                   -1.883 :
-                  velocity - 0.05;
+                  velocity - 0.03;
       when(m_navx.getVelocityY()).thenReturn((float)velocity);
 
       // Try to reverse direction
@@ -141,9 +141,9 @@ public class DriveSubsystemTest {
     }
 
     // Verify that left and right motors are being driven and capture output
-    verify(m_lMasterMotor, times(75)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), lMotorOutputs.capture(), 
+    verify(m_lMasterMotor, times(120)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), lMotorOutputs.capture(), 
                                           ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(75)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), rMotorOutputs.capture(), 
+    verify(m_rMasterMotor, times(120)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), rMotorOutputs.capture(), 
                                           ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
 
     // Check that last motor output value was as expected
@@ -248,8 +248,10 @@ public class DriveSubsystemTest {
     when(m_navx.getAngle()).thenReturn(0.0);
     when(m_navx.getVelocityY()).thenReturn((float)0.0);
 
-    // Try to move forward
+    // Enable traction control
     m_driveSubsystem.enableTractionControl();
+
+    // Try to move forward
     m_driveSubsystem.teleopPID(1.0, 0.0);
 
     // Verify that left and right motors are being driven with expected values
@@ -257,6 +259,14 @@ public class DriveSubsystemTest {
                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
     verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(0.14), AdditionalMatchers.gt(0.0)), 
                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+
+    m_driveSubsystem.teleopPID(-1.0, 0.0);
+
+    // Verify that left and right motors are being driven with expected values
+    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.gt(-0.14), AdditionalMatchers.lt(0.0)), 
+                                        ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.gt(-0.14), AdditionalMatchers.lt(0.0)), 
+                                        ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
   }
 
   @Test
@@ -267,6 +277,7 @@ public class DriveSubsystemTest {
     when(m_navx.getAngle()).thenReturn(0.0);
     when(m_navx.getVelocityY()).thenReturn((float)0.0);
 
+    // Enable traction control
     m_driveSubsystem.enableTractionControl();
 
     // Toggle off traction control
