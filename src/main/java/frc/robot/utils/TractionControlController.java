@@ -13,11 +13,15 @@ public class TractionControlController {
   private final double MIN_DEADBAND = 0.001;
   private final double MAX_DEADBAND = 0.05;
 
+  private final double MIN_SLIP_LIMIT = 0.001;
+  private final double MAX_SLIP_LIMIT = 1.0;
+
   private boolean m_isEnabled = true;
   private double m_deadband = 0.0;
   private double m_maxLinearSpeed = 0.0;
-  private double m_accelerationLimit = 0.0;
-  private double m_originalAccelerationLimit = 0.0;
+  private double m_slipLimit = 0.0;
+  private double m_minSlipLimit = 0.0;
+  private double m_originalMinSlipLimit = 0.0;
 
   private HashMap<Double, Double> m_tractionControlMap = new HashMap<Double, Double>();
   private HashMap<Double, Double> m_throttleInputMap = new HashMap<Double, Double>();
@@ -26,15 +30,16 @@ public class TractionControlController {
    * Create an instance of TractionControlController
    * @param deadband Deadband for controller input [+0.001, +0.1]
    * @param maxLinearSpeed maximum linear speed of robot (m/s)
-   * @param accelerationLimit acceleration limit (m/s^2)
+   * @param slipLimit acceleration limit (m/s^2)
    * @param tractionControlCurve Expression characterising traction of the robot with "X" as the variable
    * @param throttleInputCurve Expression characterising throttle input with "X" as the variable
    */
-  public TractionControlController(double deadband, double maxLinearSpeed, double accelerationLimit, String tractionControlCurve, String throttleInputCurve) {
+  public TractionControlController(double deadband, double maxLinearSpeed, double slipLimit, String tractionControlCurve, String throttleInputCurve) {
     m_deadband = MathUtil.clamp(deadband, MIN_DEADBAND, MAX_DEADBAND);
     m_maxLinearSpeed = Math.floor(maxLinearSpeed * 1000) / 1000;
-    m_accelerationLimit = accelerationLimit;
-    m_originalAccelerationLimit = accelerationLimit;
+    m_slipLimit = MathUtil.clamp(slipLimit, MIN_SLIP_LIMIT, MAX_SLIP_LIMIT);
+    m_minSlipLimit = (maxLinearSpeed / 4) * slipLimit;
+    m_originalMinSlipLimit = m_minSlipLimit;
 
     // Get Mozilla Rhino JavaScript engine
     ScriptEngine jsEngine = new ScriptEngineManager().getEngineByName("rhino");
@@ -70,8 +75,6 @@ public class TractionControlController {
         DriverStation.reportError(e.getMessage(), true);
       }
     }
-
-    disable();
   }
 
   /**
@@ -90,7 +93,8 @@ public class TractionControlController {
     requestedAcceleration = Math.copySign(Math.floor(Math.abs(requestedAcceleration) * 100) / 100, requestedAcceleration);
 
     // Apply acceleration limit to requested acceleration to limit wheel slip
-    requestedAcceleration = Math.copySign(Math.min(Math.abs(requestedAcceleration), m_accelerationLimit), requestedAcceleration);
+    double slipLimitAcceleration = Math.max(Math.abs(inertialVelocity * m_slipLimit), m_minSlipLimit);
+    requestedAcceleration = Math.copySign(Math.min(Math.abs(requestedAcceleration), slipLimitAcceleration), requestedAcceleration);
 
     // Calculate optimal velocity and truncate value to 3 decimal places and clamp to maximum linear speed
     double velocityLookup = inertialVelocity + requestedAcceleration;
@@ -112,7 +116,7 @@ public class TractionControlController {
    * Disable traction control
    */
   public void disable() {
-    m_accelerationLimit = Double.MAX_VALUE;
+    m_minSlipLimit = Double.MAX_VALUE;
     m_isEnabled = false;
   }
 
@@ -120,7 +124,7 @@ public class TractionControlController {
    * Enable traction control
    */
   public void enable() {
-    m_accelerationLimit = m_originalAccelerationLimit;
+    m_minSlipLimit = m_originalMinSlipLimit;
     m_isEnabled = true;
   }
 

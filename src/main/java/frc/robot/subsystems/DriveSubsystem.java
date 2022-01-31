@@ -84,14 +84,14 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param deadband Deadband for controller input [+0.001, +0.1]
    * @param metersPerTick Meters traveled per encoder tick (meters)
    * @param maxLinearSpeed Maximum linear speed of the robot (m/s)
-   * @param accelerationLimit Maximum allowed acceleration (m/s^2)
+   * @param slipRatio Maximum allowed slip (%) [+0.001, +1.0]
    * @param tractionControlCurve Expression characterising traction of the robot with "X" as the variable
    * @param throttleInputCurve Expression characterising throttle input with "X" as the variable
    */
   public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turnScalar, double deadband, double metersPerTick,
-                        double maxLinearSpeed, double accelerationLimit, String tractionControlCurve, String throttleInputCurve) {
+                        double maxLinearSpeed, double slipRatio, String tractionControlCurve, String throttleInputCurve) {
     m_drivePIDController = new PIDController(kP, 0.0, kD, Constants.ROBOT_LOOP_PERIOD);
-    m_tractionControlController = new TractionControlController(deadband, maxLinearSpeed, accelerationLimit, tractionControlCurve, throttleInputCurve);
+    m_tractionControlController = new TractionControlController(deadband, maxLinearSpeed, slipRatio, tractionControlCurve, throttleInputCurve);
 
     this.m_lMasterMotor = drivetrainHardware.lMasterMotor;
     this.m_rMasterMotor = drivetrainHardware.rMasterMotor;
@@ -223,8 +223,9 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
     // Start turning if input is greater than deadband
     if (Math.abs(turnRequest) >= m_deadband) {
-      // Add delta to setpoint scaled by factor
+      // Apply deadband to turnRequest
       turnRequest = (1 / (1 - m_deadband)) * (turnRequest + (-(turnRequest * m_deadband)));
+      // Add delta to setpoint scaled by factor
       m_drivePIDController.setSetpoint(currentAngle + (turnRequest * m_turnScalar));
       m_wasTurning = true;
     } else { 
