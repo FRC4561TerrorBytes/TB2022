@@ -11,12 +11,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -44,6 +46,9 @@ public class RobotContainer {
   private static final ClimberSubsystem CLIMBER_SUBSYSTEM = new ClimberSubsystem(ClimberSubsystem.initializeHardware(),
                                                                                  Constants.CLIMBER_CONFIG);
 
+  private static final ShooterSubsystem SHOOTER_SUBSYSTEM = new ShooterSubsystem(ShooterSubsystem.initializeHardware(), 
+                                                                                 Constants.FLYWHEEL_MASTER_CONFIG);
+
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
 
 
@@ -66,6 +71,7 @@ public class RobotContainer {
     DRIVE_SUBSYSTEM.shuffleboard();
     INTAKE_SUBSYSTEM.shuffleboard();
     CLIMBER_SUBSYSTEM.shuffleboard();
+    SHOOTER_SUBSYSTEM.shuffleboard();
 
     // Initialize Automode Chooser in Shuffleboard
     AutomodeChooser();
@@ -101,6 +107,8 @@ public class RobotContainer {
     POVButton primaryDPadLeft = new POVButton(PRIMARY_CONTROLLER, 270);
     Trigger primaryTriggerLeft = new Trigger(() -> PRIMARY_CONTROLLER.getLeftTriggerAxis() > Constants.CONTROLLER_DEADBAND);
     Trigger primaryTriggerRight = new Trigger(() -> PRIMARY_CONTROLLER.getRightTriggerAxis() > Constants.CONTROLLER_DEADBAND);
+
+    primaryTriggerRight.whileActiveOnce(new StartEndCommand(() -> SHOOTER_SUBSYSTEM.setFlywheelSpeed(3000), () -> SHOOTER_SUBSYSTEM.flywheelStop(), SHOOTER_SUBSYSTEM));
   }
 
   /**
