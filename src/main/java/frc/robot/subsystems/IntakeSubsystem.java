@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -19,10 +21,10 @@ import frc.robot.utils.TalonPIDConfig;
 public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   public static class Hardware {
     private WPI_TalonFX armMotor;
-    private WPI_TalonFX rollerMotor;
+    private CANSparkMax rollerMotor;
 
     public Hardware(WPI_TalonFX armMotor, 
-                    WPI_TalonFX rollerMotor) {
+                    CANSparkMax rollerMotor) {
       this.armMotor = armMotor;
       this.rollerMotor = rollerMotor;
     }
@@ -41,7 +43,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   private final String SUBSYSTEM_NAME = "Intake Subsystem";
 
   private WPI_TalonFX m_armMotor;
-  private WPI_TalonFX m_rollerMotor;
+  private CANSparkMax m_rollerMotor;
   private TalonPIDConfig m_armConfig;
   private ArmPosition m_armPosition;
   private ArmPosition m_prevArmPosition;
@@ -79,7 +81,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public static Hardware initializeHardware() {
     Hardware intakeHardware = new Hardware(new WPI_TalonFX(Constants.ARM_MOTOR_PORT),
-                                           new WPI_TalonFX(Constants.INTAKE_ROLLER_PORT));
+                                           new CANSparkMax(Constants.INTAKE_ROLLER_PORT, MotorType.kBrushless));
 
     return intakeHardware;
   }
@@ -157,7 +159,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   public void intake() {
     m_prevArmPosition = m_armPosition;
     armDown();
-    m_rollerMotor.set(ControlMode.PercentOutput, +m_rollerSpeed);
+    m_rollerMotor.set(+m_rollerSpeed);
   }
 
   /**
@@ -167,7 +169,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   public void outtake() {
     m_prevArmPosition = m_armPosition;
     armDown();
-    m_rollerMotor.set(ControlMode.PercentOutput, -m_rollerSpeed);
+    m_rollerMotor.set(-m_rollerSpeed);
   }
 
   /**
