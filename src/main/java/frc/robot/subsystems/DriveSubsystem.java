@@ -63,7 +63,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   private AHRS m_navx;
 
   private final double TOLERANCE = 0.125;
-  private final double MOTOR_DEADBAND = 0.005;
+  private final double MOTOR_DEADBAND = 0.002;
   private final double MAX_VOLTAGE = 12.0;
 
   private double m_turnScalar = 1.0; 
@@ -84,7 +84,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param deadband Deadband for controller input [+0.001, +0.1]
    * @param metersPerTick Meters traveled per encoder tick (meters)
    * @param maxLinearSpeed Maximum linear speed of the robot (m/s)
-   * @param slipRatio Maximum allowed slip (%) [+0.001, +1.0]
+   * @param slipRatio Maximum allowed slip (%) [+0.001, +0.999]
    * @param tractionControlCurve Expression characterising traction of the robot with "X" as the variable
    * @param throttleInputCurve Expression characterising throttle input with "X" as the variable
    */

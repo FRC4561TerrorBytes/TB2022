@@ -16,10 +16,10 @@ import frc.robot.utils.TalonPIDConfig;
  */
 public final class Constants {
   // Robot tick rate in seconds
-  public static final double ROBOT_LOOP_PERIOD = 1.0 / 240.0;
+  public static final double ROBOT_LOOP_PERIOD = 1.0 / 120.0;
 
   // Controller deadband
-  public static final double CONTROLLER_DEADBAND = 0.09;
+  public static final double CONTROLLER_DEADBAND = 0.1;
 
   // Motor RPMs, encoder values, and gear ratios
   public static final int FALCON_500_MAX_RPM = 6380;
@@ -39,8 +39,8 @@ public final class Constants {
   // Drive PID values
   public static final double DRIVE_kP = 0.01;
   public static final double DRIVE_kD = 0.0001;
-  public static final double DRIVE_TURN_SCALAR = 30.0;
-  public static final double DRIVE_SLIP_LIMIT = 0.12;
+  public static final double DRIVE_TURN_SCALAR = 45.0;
+  public static final double DRIVE_SLIP_RATIO = 0.08;
   public static final String DRIVE_TRACTION_CONTROL_CURVE = "X / 3.766";
   public static final String DRIVE_THROTTLE_INPUT_CURVE = "3.766 * X";
   public static final int DRIVE_RESPONSE_EXPONENT = 1;

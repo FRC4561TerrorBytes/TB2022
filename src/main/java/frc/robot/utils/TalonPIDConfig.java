@@ -20,7 +20,6 @@ import edu.wpi.first.math.MathUtil;
 public class TalonPIDConfig {
   private static final double MECHANICAL_EFFICIENCY = 0.9;
   private static final double MOTOR_DEADBAND = 0.01;
-  private static final double MAX_VOLTAGE = 12.0;
   private static final double MIN_TOLERANCE = 1.0;
   private static final int MIN_MOTION_SMOOTHING = 0;
   private static final int MAX_MOTION_SMOOTHING = 7;

@@ -63,7 +63,7 @@ public class DriveSubsystemTest {
                                           Constants.CONTROLLER_DEADBAND,
                                           Constants.DRIVE_METERS_PER_TICK,
                                           Constants.DRIVE_MAX_LINEAR_SPEED,
-                                          Constants.DRIVE_SLIP_LIMIT,
+                                          Constants.DRIVE_SLIP_RATIO,
                                           Constants.DRIVE_TRACTION_CONTROL_CURVE,
                                           Constants.DRIVE_THROTTLE_INPUT_CURVE);
   }
@@ -81,9 +81,6 @@ public class DriveSubsystemTest {
     // Hardcode NAVX sensor return values for angle, and velocityY
     when(m_navx.getAngle()).thenReturn(0.0);
     when(m_navx.getVelocityY()).thenReturn((float)3.766);
-
-    // Fill up velocity moving average buffer by calling periodic
-    for (int i = 0; i < 6; i++) { m_driveSubsystem.periodic(); }
 
     // Try to drive forward
     m_driveSubsystem.teleopPID(1.0, 0.0);
@@ -129,7 +126,7 @@ public class DriveSubsystemTest {
     when(m_navx.getAngle()).thenReturn(0.0);
 
     // Simulate NAVX sensor deceleration
-    for (int i = 0; i < 120; i++) {
+    for (int i = 0; i < 180; i++) {
       velocity = (velocity <= -1.883) ?
                   -1.883 :
                   velocity - 0.03;
@@ -141,9 +138,9 @@ public class DriveSubsystemTest {
     }
 
     // Verify that left and right motors are being driven and capture output
-    verify(m_lMasterMotor, times(120)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), lMotorOutputs.capture(), 
+    verify(m_lMasterMotor, times(180)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), lMotorOutputs.capture(), 
                                           ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(120)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), rMotorOutputs.capture(), 
+    verify(m_rMasterMotor, times(180)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), rMotorOutputs.capture(), 
                                           ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
 
     // Check that last motor output value was as expected
@@ -255,17 +252,17 @@ public class DriveSubsystemTest {
     m_driveSubsystem.teleopPID(1.0, 0.0);
 
     // Verify that left and right motors are being driven with expected values
-    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(0.03), AdditionalMatchers.gt(0.0)), 
+    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.gt(0.0)), 
                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(0.03), AdditionalMatchers.gt(0.0)), 
+    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.gt(0.0)), 
                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
 
     m_driveSubsystem.teleopPID(-1.0, 0.0);
 
     // Verify that left and right motors are being driven with expected values
-    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.gt(-0.03), AdditionalMatchers.lt(0.0)), 
+    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.gt(-Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.lt(0.0)), 
                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.gt(-0.03), AdditionalMatchers.lt(0.0)), 
+    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.gt(-Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.lt(0.0)), 
                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
   }
 
@@ -292,6 +289,15 @@ public class DriveSubsystemTest {
     verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA), 
                                           ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
 
+    // Try to drive in reverse
+    m_driveSubsystem.teleopPID(-1.0, 0.0);
+
+    // Verify that left and right motors are being driven with expected values
+    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-1.0, DELTA), 
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-1.0, DELTA), 
+                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+
     // Toggle on traction control
     m_driveSubsystem.toggleTractionControl();
 
@@ -299,9 +305,18 @@ public class DriveSubsystemTest {
     m_driveSubsystem.teleopPID(1.0, 0.0);
 
     // Verify that left and right motors are being driven with expected values
-    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(0.03), AdditionalMatchers.gt(0.0)), 
+    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.gt(0.0)), 
                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(0.03), AdditionalMatchers.gt(0.0)), 
+    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.gt(0.0)), 
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+
+    // Try to drive in reverse
+    m_driveSubsystem.teleopPID(-1.0, 0.0);
+
+    // Verify that left and right motors are being driven with expected values
+    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.gt(-Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.lt(0.0)), 
+                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
+    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.gt(-Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.lt(0.0)), 
                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
   }
 }

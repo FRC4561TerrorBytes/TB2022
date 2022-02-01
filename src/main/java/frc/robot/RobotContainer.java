@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -35,7 +36,7 @@ public class RobotContainer {
                                                                            Constants.CONTROLLER_DEADBAND,
                                                                            Constants.DRIVE_METERS_PER_TICK,
                                                                            Constants.DRIVE_MAX_LINEAR_SPEED,
-                                                                           Constants.DRIVE_SLIP_LIMIT,
+                                                                           Constants.DRIVE_SLIP_RATIO,
                                                                            Constants.DRIVE_TRACTION_CONTROL_CURVE,
                                                                            Constants.DRIVE_THROTTLE_INPUT_CURVE);
 
@@ -107,7 +108,9 @@ public class RobotContainer {
     POVButton primaryDPadLeft = new POVButton(PRIMARY_CONTROLLER, 270);
     Trigger primaryTriggerLeft = new Trigger(() -> PRIMARY_CONTROLLER.getLeftTriggerAxis() > Constants.CONTROLLER_DEADBAND);
     Trigger primaryTriggerRight = new Trigger(() -> PRIMARY_CONTROLLER.getRightTriggerAxis() > Constants.CONTROLLER_DEADBAND);
+    Trigger primaryButtonTractionControl = new Trigger(() -> PRIMARY_CONTROLLER.getStartButton() && PRIMARY_CONTROLLER.getBackButton());
 
+    primaryButtonTractionControl.whenActive(new InstantCommand(() -> DRIVE_SUBSYSTEM.toggleTractionControl(), DRIVE_SUBSYSTEM));
     primaryTriggerRight.whileActiveOnce(new StartEndCommand(() -> SHOOTER_SUBSYSTEM.setFlywheelSpeed(3000), () -> SHOOTER_SUBSYSTEM.flywheelStop(), SHOOTER_SUBSYSTEM));
   }
 
