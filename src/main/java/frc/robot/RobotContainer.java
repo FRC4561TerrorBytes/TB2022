@@ -43,11 +43,11 @@ public class RobotContainer {
                                                                               Constants.INTAKE_ARM_CONFIG, 
                                                                               Constants.INTAKE_ROLLER_SPEED);
 
-  private static final ClimberSubsystem CLIMBER_SUBSYSTEM = new ClimberSubsystem(ClimberSubsystem.initializeHardware(),
-                                                                                 Constants.CLIMBER_CONFIG);
-
   private static final ShooterSubsystem SHOOTER_SUBSYSTEM = new ShooterSubsystem(ShooterSubsystem.initializeHardware(), 
                                                                                  Constants.FLYWHEEL_MASTER_CONFIG);
+
+  private static final ClimberSubsystem CLIMBER_SUBSYSTEM = new ClimberSubsystem(ClimberSubsystem.initializeHardware(),
+                                                                                 Constants.CLIMBER_CONFIG);
 
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
 
@@ -70,8 +70,8 @@ public class RobotContainer {
     // Initialize Shuffleboard tabs
     DRIVE_SUBSYSTEM.shuffleboard();
     INTAKE_SUBSYSTEM.shuffleboard();
-    CLIMBER_SUBSYSTEM.shuffleboard();
     SHOOTER_SUBSYSTEM.shuffleboard();
+    CLIMBER_SUBSYSTEM.shuffleboard();
 
     // Initialize Automode Chooser in Shuffleboard
     AutomodeChooser();

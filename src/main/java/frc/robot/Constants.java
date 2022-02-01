@@ -44,26 +44,6 @@ public final class Constants {
   public static final String DRIVE_TRACTION_CONTROL_CURVE = "X / 3.766";
   public static final String DRIVE_THROTTLE_INPUT_CURVE = "3.766 * X";
   public static final int DRIVE_RESPONSE_EXPONENT = 1;
-  
-  // Shooter PID Values
-  private static final double FLYWHEEL_kP = 0.15;
-  private static final double FLYWHEEL_kI = 0.00015;
-  private static final double FLYWHEEL_kD = 0.004;
-  private static final double FLYWHEEL_TOLERANCE = 100;
-  private static final double FLYWHEEL_MAX_RPM = FALCON_500_MAX_RPM;
-  private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
-  private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
-  private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = false;
-
-  // Set PID for Flywheel
-  public static final TalonPIDConfig FLYWHEEL_MASTER_CONFIG = new TalonPIDConfig(FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE,
-                                                                                FLYWHEEL_MASTER_MOTOR_INVERTED,
-                                                                                FLYWHEEL_MAX_RPM,
-                                                                                FLYWHEEL_TICKS_PER_ROTATION,
-                                                                                FLYWHEEL_kP,
-                                                                                FLYWHEEL_kI,
-                                                                                FLYWHEEL_kD,
-                                                                                FLYWHEEL_TOLERANCE);
 
   // Intake Arm PID config
   public static final double INTAKE_ARM_kP = 0.0;
@@ -97,6 +77,26 @@ public final class Constants {
                                                                             INTAKE_ARM_VELOCITY, 
                                                                             INTAKE_ARM_ACCLERATION, 
                                                                             INTAKE_ARM_MOTION_SMOOTHING);
+
+  // Shooter PID Values
+  private static final double FLYWHEEL_kP = 0.15;
+  private static final double FLYWHEEL_kI = 0.00015;
+  private static final double FLYWHEEL_kD = 0.004;
+  private static final double FLYWHEEL_TOLERANCE = 100;
+  private static final double FLYWHEEL_MAX_RPM = FALCON_500_MAX_RPM;
+  private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
+  private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
+  private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = false;
+
+  // Set PID for Flywheel
+  public static final TalonPIDConfig FLYWHEEL_MASTER_CONFIG = new TalonPIDConfig(FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE,
+                                                                                FLYWHEEL_MASTER_MOTOR_INVERTED,
+                                                                                FLYWHEEL_MAX_RPM,
+                                                                                FLYWHEEL_TICKS_PER_ROTATION,
+                                                                                FLYWHEEL_kP,
+                                                                                FLYWHEEL_kI,
+                                                                                FLYWHEEL_kD,
+                                                                                FLYWHEEL_TOLERANCE);
 
   // Climber PID variables
   public static final double CLIMBER_kP = 0.0;
@@ -144,12 +144,12 @@ public final class Constants {
   public static final int ARM_MOTOR_PORT = 6;
   public static final int INTAKE_ROLLER_PORT = 7;
 
-  // Climber motor ports
-  public static final int CLIMBER_MOTOR_PORT = 8;
-
   // Shooter motor ports
   public static final int FLYWHEEL_MASTER_MOTOR_PORT = 4;
   public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 5;
+
+  // Climber motor ports
+  public static final int CLIMBER_MOTOR_PORT = 8;
 
   //Automode Constants
   public static final double TRACK_WIDTH = 0; // TODO: Find track width
