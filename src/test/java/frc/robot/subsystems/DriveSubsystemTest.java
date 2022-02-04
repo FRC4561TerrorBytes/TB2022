@@ -177,7 +177,7 @@ public class DriveSubsystemTest {
   }
 
   @Test
-  @Order(8)
+  @Order(9)
   @DisplayName("Test if robot can turn right using PID drive")
   public void turningRight() {
     // Hardcode NAVX sensor return value for angle
