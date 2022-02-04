@@ -23,7 +23,6 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.TractionControlController;
@@ -84,14 +83,13 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param deadband Deadband for controller input [+0.001, +0.1]
    * @param metersPerTick Meters traveled per encoder tick (meters)
    * @param maxLinearSpeed Maximum linear speed of the robot (m/s)
-   * @param slipRatio Maximum allowed slip (%) [+0.001, +0.999]
    * @param tractionControlCurve Expression characterising traction of the robot with "X" as the variable
    * @param throttleInputCurve Expression characterising throttle input with "X" as the variable
    */
   public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turnScalar, double deadband, double metersPerTick,
-                        double maxLinearSpeed, double slipRatio, String tractionControlCurve, String throttleInputCurve) {
+                        double maxLinearSpeed, String tractionControlCurve, String throttleInputCurve) {
     m_drivePIDController = new PIDController(kP, 0.0, kD, Constants.ROBOT_LOOP_PERIOD);
-    m_tractionControlController = new TractionControlController(deadband, maxLinearSpeed, slipRatio, tractionControlCurve, throttleInputCurve);
+    m_tractionControlController = new TractionControlController(deadband, maxLinearSpeed, tractionControlCurve, throttleInputCurve);
 
     this.m_lMasterMotor = drivetrainHardware.lMasterMotor;
     this.m_rMasterMotor = drivetrainHardware.rMasterMotor;
@@ -188,9 +186,6 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
   @Override
   public void periodic() {
-    // Display traction control indicator on SmartDashboard
-    SmartDashboard.putBoolean("TC", m_tractionControlController.isEnabled());
-    
     // Update the odometry in the periodic block
     // Negate gyro angle because gyro is positive going clockwise which doesn't match WPILib convention
     m_odometry.update(Rotation2d.fromDegrees(-getAngle()), 
@@ -408,27 +403,6 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   public void stop() {
     m_lMasterMotor.stopMotor();
     m_rMasterMotor.stopMotor();
-  }
-
-  /**
-   * Toggle traction control
-   */
-  public void toggleTractionControl() {
-    m_tractionControlController.toggle();
-  }
-
-  /**
-   * Disable traction control
-   */
-  public void disableTractionControl() {
-    m_tractionControlController.disable();
-  }
-
-  /**
-   * Enable traction control
-   */
-  public void enableTractionControl() {
-    m_tractionControlController.enable();
   }
 
   /**

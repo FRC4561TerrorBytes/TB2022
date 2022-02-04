@@ -40,7 +40,6 @@ public final class Constants {
   public static final double DRIVE_kP = 0.01;
   public static final double DRIVE_kD = 0.0001;
   public static final double DRIVE_TURN_SCALAR = 45.0;
-  public static final double DRIVE_SLIP_RATIO = 0.08;
   public static final String DRIVE_TRACTION_CONTROL_CURVE = "X / 3.766";
   public static final String DRIVE_THROTTLE_INPUT_CURVE = "3.766 * X";
   public static final int DRIVE_RESPONSE_EXPONENT = 1;

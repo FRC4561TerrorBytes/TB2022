@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -23,7 +22,6 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.AdditionalMatchers;
-import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 
 import frc.robot.Constants;
@@ -32,7 +30,6 @@ import frc.robot.Constants;
 public class DriveSubsystemTest {
 
   private final double DELTA = 2e-3;
-  private final double ALT_DELTA = 5e-2;
   private DriveSubsystem m_driveSubsystem;
   private DriveSubsystem.Hardware m_drivetrainHardware;
 
@@ -63,7 +60,6 @@ public class DriveSubsystemTest {
                                           Constants.CONTROLLER_DEADBAND,
                                           Constants.DRIVE_METERS_PER_TICK,
                                           Constants.DRIVE_MAX_LINEAR_SPEED,
-                                          Constants.DRIVE_SLIP_RATIO,
                                           Constants.DRIVE_TRACTION_CONTROL_CURVE,
                                           Constants.DRIVE_THROTTLE_INPUT_CURVE);
   }
@@ -111,47 +107,7 @@ public class DriveSubsystemTest {
   }
 
   @Test
-  @Order(3)
-  @DisplayName("Test if robot can reverse direction using PID drive")
-  public void reverseDirection() {
-    // Initial velocity
-    double velocity = 1.883;
-    when(m_navx.getVelocityY()).thenReturn((float)velocity);
-
-    // Argument capture objects
-    ArgumentCaptor<Double> lMotorOutputs = ArgumentCaptor.forClass(Double.class);
-    ArgumentCaptor<Double> rMotorOutputs = ArgumentCaptor.forClass(Double.class);
-
-    // Hardcode NAVX sensor value for angle
-    when(m_navx.getAngle()).thenReturn(0.0);
-
-    // Simulate NAVX sensor deceleration
-    for (int i = 0; i < 180; i++) {
-      velocity = (velocity <= -1.883) ?
-                  -1.883 :
-                  velocity - 0.03;
-      when(m_navx.getVelocityY()).thenReturn((float)velocity);
-
-      // Try to reverse direction
-      m_driveSubsystem.teleopPID(-0.5, 0.0);
-      m_driveSubsystem.periodic();
-    }
-
-    // Verify that left and right motors are being driven and capture output
-    verify(m_lMasterMotor, times(180)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), lMotorOutputs.capture(), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(180)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), rMotorOutputs.capture(), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-
-    // Check that last motor output value was as expected
-    double lMotorOutput = lMotorOutputs.getAllValues().get(lMotorOutputs.getAllValues().size() - 1);
-    double rMotorOutput = rMotorOutputs.getAllValues().get(rMotorOutputs.getAllValues().size() - 1);
-    assertTrue(Math.abs(-0.5 - lMotorOutput) <= ALT_DELTA);
-    assertTrue(Math.abs(-0.5 - rMotorOutput) <= ALT_DELTA);
-  }
-
-  @Test
-  @Order(4)
+  @Order(5)
   @DisplayName("Test if robot can stop using PID drive")
   public void stop() {
     // Hardcode NAVX sensor return value for angle
@@ -168,7 +124,7 @@ public class DriveSubsystemTest {
   }
 
   @Test
-  @Order(5)
+  @Order(6)
   @DisplayName("Test if robot ignores small throttle input values under threshold")
   public void ignoreSmallThrottleInput() {
     // Hardcode NAVX sensor return values for angle, velocityY
@@ -186,7 +142,7 @@ public class DriveSubsystemTest {
   }
 
   @Test
-  @Order(6)
+  @Order(7)
   @DisplayName("Test if robot ignores small turn input values under threshold")
   public void ignoreSmallTurnInput() {
     // Hardcode NAVX sensor return values for angle, velocityY
@@ -204,7 +160,7 @@ public class DriveSubsystemTest {
   }
 
   @Test
-  @Order(7)
+  @Order(8)
   @DisplayName("Test if robot can turn left using PID drive")
   public void turningLeft() {
     // Hardcode NAVX sensor return value for angle
@@ -235,88 +191,5 @@ public class DriveSubsystemTest {
                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.lt(0.0));
     verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(0.0, DELTA), 
                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.gt(0.0));
-  }
-
-  @Test
-  @Order(9)
-  @DisplayName("Test if robot will limit wheel slip")
-  public void tractionControl() {
-    // Hardcode NAVX sensor values for angle, and velocityY
-    when(m_navx.getAngle()).thenReturn(0.0);
-    when(m_navx.getVelocityY()).thenReturn((float)0.0);
-
-    // Enable traction control
-    m_driveSubsystem.enableTractionControl();
-
-    // Try to move forward
-    m_driveSubsystem.teleopPID(1.0, 0.0);
-
-    // Verify that left and right motors are being driven with expected values
-    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.gt(0.0)), 
-                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.gt(0.0)), 
-                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-
-    m_driveSubsystem.teleopPID(-1.0, 0.0);
-
-    // Verify that left and right motors are being driven with expected values
-    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.gt(-Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.lt(0.0)), 
-                                        ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.gt(-Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.lt(0.0)), 
-                                        ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-  }
-
-  @Test
-  @Order(10)
-  @DisplayName("Test if robot can toggle traction control")
-  public void toggleTractionControl() {
-    // Hardcode NAVX sensor values for angle, and velocityY
-    when(m_navx.getAngle()).thenReturn(0.0);
-    when(m_navx.getVelocityY()).thenReturn((float)0.0);
-
-    // Enable traction control
-    m_driveSubsystem.enableTractionControl();
-
-    // Toggle off traction control
-    m_driveSubsystem.toggleTractionControl();
-
-    // Try to drive forward
-    m_driveSubsystem.teleopPID(1.0, 0.0);
-
-    // Verify that left and right motors are being driven with expected values
-    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA), 
-                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-
-    // Try to drive in reverse
-    m_driveSubsystem.teleopPID(-1.0, 0.0);
-
-    // Verify that left and right motors are being driven with expected values
-    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-1.0, DELTA), 
-                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-1.0, DELTA), 
-                                          ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-
-    // Toggle on traction control
-    m_driveSubsystem.toggleTractionControl();
-
-    // Try to drive forward
-    m_driveSubsystem.teleopPID(1.0, 0.0);
-
-    // Verify that left and right motors are being driven with expected values
-    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.gt(0.0)), 
-                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.lt(Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.gt(0.0)), 
-                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-
-    // Try to drive in reverse
-    m_driveSubsystem.teleopPID(-1.0, 0.0);
-
-    // Verify that left and right motors are being driven with expected values
-    verify(m_lMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.gt(-Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.lt(0.0)), 
-                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
-    verify(m_rMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.and(AdditionalMatchers.gt(-Constants.DRIVE_SLIP_RATIO), AdditionalMatchers.lt(0.0)), 
-                                         ArgumentMatchers.eq(DemandType.ArbitraryFeedForward), AdditionalMatchers.eq(0.0, DELTA));
   }
 }
