@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import org.photonvision.PhotonCamera;
+
+import edu.wpi.first.cscore.HttpCamera;
+import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.VideoSource;
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -51,10 +57,19 @@ public class RobotContainer {
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
 
 
-  private static SendableChooser<SequentialCommandGroup> automodeChooser = new SendableChooser<>();
+  private static SendableChooser<SequentialCommandGroup> m_automodeChooser = new SendableChooser<>();
+
+  private static PhotonCamera m_pi = new PhotonCamera("photonvision");
+
+  private static HttpCamera m_camera = new HttpCamera("DriverCam", "photonvision.local:1181");
+
+  private static MjpegServer m_piServer = new MjpegServer("PiServer", 1181);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    initializeCamera();
+    
     // Configure the button bindings
     configureButtonBindings();
 
@@ -74,6 +89,8 @@ public class RobotContainer {
 
     // Initialize Automode Chooser in Shuffleboard
     AutomodeChooser();
+
+    PortForwarder.add(5800, "photonvision.local", 5800);
   }
 
   private void AutomodeChooser() {
@@ -118,6 +135,12 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return automodeChooser.getSelected();
+    return m_automodeChooser.getSelected();
+  }
+
+  public void initializeCamera() {
+    m_pi.setDriverMode(true);
+    m_camera.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
+    m_piServer.setSource(m_camera);
   }
 }
