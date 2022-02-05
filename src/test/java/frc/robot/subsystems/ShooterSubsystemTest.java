@@ -4,16 +4,12 @@
 
 package frc.robot.subsystems;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.kauailabs.navx.frc.AHRS;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +19,6 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.AdditionalMatchers;
-import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 
 import frc.robot.Constants;
@@ -31,7 +26,6 @@ import frc.robot.Constants;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ShooterSubsystemTest {
   private final double DELTA = 2e-3;
-  private final double ALT_DELTA = 4e-3;
   private ShooterSubsystem m_shooterSubsystem;
   private ShooterSubsystem.Hardware m_shooterHardware;
 

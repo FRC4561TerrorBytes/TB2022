@@ -27,6 +27,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     }
   }
 
+  @SuppressWarnings("unused")
   private static class Flywheel {
     private static final double MAX_SPEED_RPM = Constants.FALCON_500_MAX_RPM;
     private static final int TICKS_PER_ROTATION = Constants.CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
