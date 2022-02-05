@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.CANSparkMax;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,13 +33,13 @@ public class IntakeSubsystemTest {
 	private IntakeSubsystem.Hardware m_intakeHardware;
 
 	private WPI_TalonFX m_armMotor;
-	private WPI_TalonFX m_rollerMotor;
+	private CANSparkMax m_rollerMotor;
 
 	@BeforeEach
 	public void setup() {
 		// Create mock harware device
 		m_armMotor = mock(WPI_TalonFX.class);
-		m_rollerMotor = mock(WPI_TalonFX.class);
+		m_rollerMotor = mock(CANSparkMax.class);
 
 		// Create Hardware objects using mock objects
 		m_intakeHardware = new IntakeSubsystem.Hardware(m_armMotor, m_rollerMotor);
@@ -80,7 +81,7 @@ public class IntakeSubsystemTest {
 	public void intake() {
 		m_intakeSubsystem.intake();
 		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
-		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).set(AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
 	}
 
 	@Test
@@ -88,7 +89,7 @@ public class IntakeSubsystemTest {
 	@DisplayName("Test if robot can outtake")
 	public void outtake() {
 		m_intakeSubsystem.outtake();
-		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).set(AdditionalMatchers.eq(-Constants.INTAKE_ROLLER_SPEED, DELTA));
 	}
 
 	@Test
@@ -100,7 +101,7 @@ public class IntakeSubsystemTest {
 		m_intakeSubsystem.stop();
 		verify(m_armMotor, times(2)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_UPPER_LIMIT, DELTA));
 		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
-		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).set(AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
 		verify(m_rollerMotor, times(1)).stopMotor();
 	}
 
@@ -112,7 +113,7 @@ public class IntakeSubsystemTest {
 		m_intakeSubsystem.intake();
 		m_intakeSubsystem.stop();
 		verify(m_armMotor, times(3)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
-		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).set(AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
 		verify(m_rollerMotor, times(1)).stopMotor();
 	}
 
@@ -125,7 +126,7 @@ public class IntakeSubsystemTest {
 		m_intakeSubsystem.stop();
 		verify(m_armMotor, times(2)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_UPPER_LIMIT, DELTA));
 		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
-		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).set(AdditionalMatchers.eq(-Constants.INTAKE_ROLLER_SPEED, DELTA));
 		verify(m_rollerMotor, times(1)).stopMotor();
 	}
 
@@ -137,7 +138,7 @@ public class IntakeSubsystemTest {
 		m_intakeSubsystem.outtake();
 		m_intakeSubsystem.stop();
 		verify(m_armMotor, times(3)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
-		verify(m_rollerMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-Constants.INTAKE_ROLLER_SPEED, DELTA));
+		verify(m_rollerMotor, times(1)).set(AdditionalMatchers.eq(-Constants.INTAKE_ROLLER_SPEED, DELTA));
 		verify(m_rollerMotor, times(1)).stopMotor();
 	}
 	
