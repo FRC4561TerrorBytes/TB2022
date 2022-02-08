@@ -9,12 +9,15 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.OuttakeCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -109,6 +112,9 @@ public class RobotContainer {
     Trigger primaryButtonTractionControl = new Trigger(() -> PRIMARY_CONTROLLER.getStartButton() && PRIMARY_CONTROLLER.getBackButton());
 
     primaryTriggerRight.whileActiveOnce(new StartEndCommand(() -> SHOOTER_SUBSYSTEM.setFlywheelSpeed(3000), () -> SHOOTER_SUBSYSTEM.flywheelStop(), SHOOTER_SUBSYSTEM));
+    primaryButtonRBumper.whenHeld(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    primaryButtonLBumper.whenHeld(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
   }
 
   /**
