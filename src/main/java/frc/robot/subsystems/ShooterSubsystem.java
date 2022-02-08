@@ -26,11 +26,11 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     private CANSparkMax feederMotor;
     private SparkMaxLimitSwitch forwardLimitSwitch;
 
-    public Hardware(WPI_TalonFX flywheelMasterMotor, WPI_TalonFX flywheelSlaveMotor, CANSparkMax feederMotor) {
+    public Hardware(WPI_TalonFX flywheelMasterMotor, WPI_TalonFX flywheelSlaveMotor, CANSparkMax feederMotor, SparkMaxLimitSwitch feederLimitSwitch) {
       this.flywheelMasterMotor = flywheelMasterMotor;
       this.flywheelSlaveMotor = flywheelSlaveMotor;
       this.feederMotor = feederMotor;
-      this.forwardLimitSwitch = feederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+      this.forwardLimitSwitch = feederLimitSwitch;
 
       forwardLimitSwitch.enableLimitSwitch(true);
     }
@@ -74,9 +74,11 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @return hardware object containing all necessary devices for this subsystem
    */
   public static Hardware initializeHardware() {
+    CANSparkMax feederMotor = new CANSparkMax(Constants.FEEDER_MOTOR_PORT, MotorType.kBrushless);
     Hardware shooterHardware = new Hardware(new WPI_TalonFX(Constants.FLYWHEEL_MASTER_MOTOR_PORT),
                                             new WPI_TalonFX(Constants.FLYWHEEL_SLAVE_MOTOR_PORT),
-                                            new CANSparkMax(Constants.FEEDER_MOTOR_PORT, MotorType.kBrushless));
+                                            feederMotor,
+                                            feederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed));
     return shooterHardware;
   }
 
