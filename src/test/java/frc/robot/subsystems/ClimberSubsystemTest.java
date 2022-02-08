@@ -31,14 +31,16 @@ public class ClimberSubsystemTest {
 	private ClimberSubsystem.Hardware m_climberHardware;
 	
 	private WPI_TalonFX m_climberMotor;
+	private WPI_TalonFX m_winchMotor;
 	
 	@BeforeEach
 	public void setup() {
 		// Create mock harware device
 		m_climberMotor = mock(WPI_TalonFX.class);
+		m_winchMotor = mock(WPI_TalonFX.class);
 		
 		// Create Hardware objects using mock objects
-		m_climberHardware = new ClimberSubsystem.Hardware(m_climberMotor);
+		m_climberHardware = new ClimberSubsystem.Hardware(m_climberMotor, m_winchMotor);
 		
 		// Create ClimberSubsystem object
 		m_climberSubsystem = new ClimberSubsystem(m_climberHardware, Constants.CLIMBER_CONFIG);
