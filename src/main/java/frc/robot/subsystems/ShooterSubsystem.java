@@ -149,6 +149,13 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * Sets feeder outtake speed
+   */
+  public void feederOuttake() {
+    m_feederMotor.set(-Constants.FEEDER_INTAKE_SPEED);
+  }
+
+  /**
    * Sets feeder shoot speed
    */
   public void feederShoot() {
