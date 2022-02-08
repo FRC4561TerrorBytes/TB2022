@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -20,13 +21,16 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   
   public static class Hardware {
     private WPI_TalonFX climberMotor;
+    private WPI_TalonFX winchMotor;
 
-    public Hardware(WPI_TalonFX climberMotor) {
+    public Hardware(WPI_TalonFX climberMotor, WPI_TalonFX winchMotor) {
       this.climberMotor = climberMotor;
+      this.winchMotor = winchMotor;
     }
   }
 
   private WPI_TalonFX m_climberMotor;
+  private WPI_TalonFX m_winchMotor;
   private TalonPIDConfig m_climberConfig;
 
   /**
@@ -39,10 +43,15 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public ClimberSubsystem(Hardware climberHardware, TalonPIDConfig climberConfig) {
     this.m_climberMotor = climberHardware.climberMotor;
+    this.m_winchMotor = climberHardware.winchMotor;
     this.m_climberConfig = climberConfig;
 
     m_climberConfig.initializeTalonPID(m_climberMotor, FeedbackDevice.IntegratedSensor);
     m_climberMotor.setSelectedSensorPosition(0.0);
+    m_winchMotor.setSelectedSensorPosition(0.0);
+
+    m_climberMotor.setNeutralMode(NeutralMode.Brake);
+    m_winchMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   /**
@@ -50,7 +59,8 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * @return hardware object containing all necessary devices for this subsystem
    */
   public static Hardware initializeHardware() {
-    Hardware climberHardware = new Hardware(new WPI_TalonFX(Constants.CLIMBER_MOTOR_PORT));
+    Hardware climberHardware = new Hardware(new WPI_TalonFX(Constants.CLIMBER_MOTOR_PORT), 
+                                            new WPI_TalonFX(Constants.CLIMBER_WINCH_MOTOR_PORT));
 
     return climberHardware;
   }
@@ -58,6 +68,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   public void shuffleboard() {
     ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
     tab.addNumber("Climber position", () -> m_climberMotor.getSelectedSensorPosition());
+    tab.addNumber("Winch position", () -> m_winchMotor.getSelectedSensorPosition());
   }
 
   @Override
@@ -107,8 +118,23 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_climberMotor.stopMotor();
   }
 
+  /**
+   * Moves winch to upper limit
+   */
+  public void winchUp() {
+    m_winchMotor.set(ControlMode.PercentOutput, m_climberConfig.getUpperLimit());
+  }
+
+  /**
+   * Moves winch to lower limit
+   */
+  public void winchDown() {
+    m_winchMotor.set(ControlMode.PercentOutput, m_climberConfig.getLowerLimit());
+  }
+
   @Override
   public void close() {
     m_climberMotor = null;
+    m_winchMotor = null;
   }
 }
