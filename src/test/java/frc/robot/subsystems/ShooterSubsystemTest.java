@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.CANSparkMax;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,7 @@ public class ShooterSubsystemTest {
 
 
   private WPI_TalonFX m_flywheelMasterMotor, m_flywheelSlaveMotor;
+  private CANSparkMax m_feederMotor;
 
   @BeforeEach
   public void setup() {
@@ -38,7 +40,7 @@ public class ShooterSubsystemTest {
     m_flywheelMasterMotor = mock(WPI_TalonFX.class);
     m_flywheelSlaveMotor = mock(WPI_TalonFX.class);
 
-    m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, m_flywheelSlaveMotor);
+    m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, m_flywheelSlaveMotor, m_feederMotor);
 
     m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware, Constants.FLYWHEEL_MASTER_CONFIG);
   }
