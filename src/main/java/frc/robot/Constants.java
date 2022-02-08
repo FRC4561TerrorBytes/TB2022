@@ -86,6 +86,9 @@ public final class Constants {
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
   private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = false;
+  public static final double FEEDER_INTAKE_SPEED = 1.0;
+  public static final double FEEDER_SHOOT_SPEED = 1.0;
+
 
   // Set PID for Flywheel
   public static final TalonPIDConfig FLYWHEEL_MASTER_CONFIG = new TalonPIDConfig(FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE,
@@ -140,15 +143,17 @@ public final class Constants {
   public static final int REAR_RIGHT_MOTOR_PORT = 3;
 
   // Intake Motor Ports
-  public static final int ARM_MOTOR_PORT = 6;
-  public static final int INTAKE_ROLLER_PORT = 7;
+  public static final int ARM_MOTOR_PORT = 7;
+  public static final int INTAKE_ROLLER_PORT = 8;
 
   // Shooter motor ports
   public static final int FLYWHEEL_MASTER_MOTOR_PORT = 4;
   public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 5;
+  public static final int FEEDER_MOTOR_PORT = 6;
 
   // Climber motor ports
-  public static final int CLIMBER_MOTOR_PORT = 8;
+  public static final int CLIMBER_MOTOR_PORT = 9;
+  public static final int CLIMBER_WINCH_MOTOR_PORT = 10;
 
   //Automode Constants
   public static final double TRACK_WIDTH = 0; // TODO: Find track width
