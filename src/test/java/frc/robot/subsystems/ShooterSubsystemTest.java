@@ -70,4 +70,42 @@ public class ShooterSubsystemTest {
     m_shooterSubsystem.flywheelStop();
     verify(m_flywheelMasterMotor, times(1)).stopMotor();
   }
+
+  @Test
+  @Order(3)
+  @DisplayName("Test if robot can set feeder intake speed")
+  public void feederIntake(){
+    m_feederMotor.set(Constants.FEEDER_INTAKE_SPEED);
+    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(Constants.FEEDER_INTAKE_SPEED));
+  }
+
+  @Test
+  @Order(4)
+  @DisplayName("Test if robot can set feeder outtake speed")
+  public void feederOuttake(){
+    m_feederMotor.set(-Constants.FEEDER_INTAKE_SPEED);
+    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(-Constants.FEEDER_INTAKE_SPEED));
+  }
+
+  @Test
+  @Order(5)
+  @DisplayName("Test if robot can set feeder shooter speed")
+  public void feederShoot(){
+    m_feederForwardLimitSwitch.enableLimitSwitch(false);
+    verify(m_feederForwardLimitSwitch, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
+
+    m_feederMotor.set(Constants.FEEDER_SHOOT_SPEED);
+    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(Constants.FEEDER_SHOOT_SPEED));
+  }
+
+  @Test
+  @Order(6)
+  @DisplayName("Test if robot can stop feeder motor")
+  public void feederStop(){
+    m_feederForwardLimitSwitch.enableLimitSwitch(true);
+    verify(m_feederForwardLimitSwitch, times(2)).enableLimitSwitch(ArgumentMatchers.eq(true));
+
+    m_feederMotor.stopMotor();
+    verify(m_feederMotor, times(1)).stopMotor();
+  }
 }
