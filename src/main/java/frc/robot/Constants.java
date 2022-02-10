@@ -86,6 +86,7 @@ public final class Constants {
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
   private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = false;
+  public static final double FLYWHEEL_SHOOTING_RPM = 1000;
   public static final double FEEDER_INTAKE_SPEED = 1.0;
   public static final double FEEDER_SHOOT_SPEED = 1.0;
 
