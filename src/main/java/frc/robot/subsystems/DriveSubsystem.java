@@ -219,9 +219,9 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     // Start turning if input is greater than deadband
     if (Math.abs(turnRequest) >= m_deadband) {
       // Apply deadband to turnRequest
-      turnRequest = (1 / (1 - m_deadband)) * (turnRequest + (-(turnRequest * m_deadband)));
+      double scaledTurnRequest = turnRequest + (turnRequest * m_deadband) - Math.copySign(m_deadband, turnRequest);
       // Add delta to setpoint scaled by factor
-      m_drivePIDController.setSetpoint(currentAngle + (turnRequest * m_turnScalar));
+      m_drivePIDController.setSetpoint(currentAngle + (scaledTurnRequest * m_turnScalar));
       m_wasTurning = true;
     } else { 
       // When turning is complete, set setpoint to current angle
