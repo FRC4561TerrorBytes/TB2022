@@ -23,6 +23,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.AdditionalMatchers;
 import org.mockito.ArgumentMatchers;
 
+import edu.wpi.first.wpilibj.Counter;
 import frc.robot.Constants;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -35,6 +36,7 @@ public class ShooterSubsystemTest {
   private WPI_TalonFX m_flywheelMasterMotor, m_flywheelSlaveMotor;
   private CANSparkMax m_feederMotor;
   private SparkMaxLimitSwitch m_feederForwardLimitSwitch;
+  private Counter m_lidar;
 
   @BeforeEach
   public void setup() {
@@ -43,8 +45,9 @@ public class ShooterSubsystemTest {
     m_flywheelSlaveMotor = mock(WPI_TalonFX.class);
     m_feederMotor = mock(CANSparkMax.class);
     m_feederForwardLimitSwitch = mock(SparkMaxLimitSwitch.class);
+    m_lidar = mock(Counter.class);
 
-    m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, m_flywheelSlaveMotor, m_feederMotor, m_feederForwardLimitSwitch);
+    m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, m_flywheelSlaveMotor, m_feederMotor, m_feederForwardLimitSwitch, m_lidar);
 
     m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware, Constants.FLYWHEEL_MASTER_CONFIG);
   }

@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,13 +25,20 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public static class Hardware {
     private WPI_TalonFX flywheelMasterMotor, flywheelSlaveMotor;
     private CANSparkMax feederMotor;
-    private SparkMaxLimitSwitch forwardLimitSwitch;
 
-    public Hardware(WPI_TalonFX flywheelMasterMotor, WPI_TalonFX flywheelSlaveMotor, CANSparkMax feederMotor, SparkMaxLimitSwitch feederLimitSwitch) {
+    private SparkMaxLimitSwitch forwardLimitSwitch;
+    private Counter lidar;
+
+    public Hardware(WPI_TalonFX flywheelMasterMotor, 
+                    WPI_TalonFX flywheelSlaveMotor, 
+                    CANSparkMax feederMotor, 
+                    SparkMaxLimitSwitch feederLimitSwitch, 
+                    Counter lidar) {
       this.flywheelMasterMotor = flywheelMasterMotor;
       this.flywheelSlaveMotor = flywheelSlaveMotor;
       this.feederMotor = feederMotor;
       this.forwardLimitSwitch = feederLimitSwitch;
+      this.lidar = lidar;
 
       forwardLimitSwitch.enableLimitSwitch(true);
     }
@@ -47,7 +55,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
 
   private CANSparkMax m_feederMotor;
   private SparkMaxLimitSwitch m_feederForwardLimitSwitch;
-
+  private Counter m_lidar;
+  private final double LIDAR_OFFSET = 10.0;
   /**
    * Creates an instance of ShooterSubsystem
    * <p>
@@ -60,6 +69,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     Flywheel.masterMotor = shooterHardware.flywheelMasterMotor;
     Flywheel.slaveMotor = shooterHardware.flywheelSlaveMotor;
     m_feederMotor = shooterHardware.feederMotor;
+    m_lidar = shooterHardware.lidar;
 
     Flywheel.masterConfig = flywheelMasterConfig;
 
@@ -67,6 +77,11 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     Flywheel.masterConfig.initializeTalonPID(Flywheel.masterMotor, TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice(), false, false);
     Flywheel.slaveMotor.set(ControlMode.Follower, Flywheel.masterMotor.getDeviceID());
     Flywheel.slaveMotor.setInverted(true);
+
+    // Configure LIDAR settings
+    m_lidar.setMaxPeriod(1.00); //set the max period that can be measured
+    m_lidar.setSemiPeriodMode(true); //Set the counter to period measurement
+    m_lidar.reset();
   }
   
   /**
@@ -78,7 +93,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     Hardware shooterHardware = new Hardware(new WPI_TalonFX(Constants.FLYWHEEL_MASTER_MOTOR_PORT),
                                             new WPI_TalonFX(Constants.FLYWHEEL_SLAVE_MOTOR_PORT),
                                             feederMotor,
-                                            feederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed));
+                                            feederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed),
+                                            new Counter(Constants.LIDAR_PORT));
     return shooterHardware;
   }
 
@@ -93,6 +109,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     tab.addNumber("Flywheel Motor Velocity", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getSelectedSensorVelocity()));
     tab.addNumber("Flywheel Motor Setpoint", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getClosedLoopTarget()));
     tab.addNumber("Flywheel Error", () -> flywheelError());
+    tab.addNumber("Shooter Distance", () -> getLIDAR());
   }
 
   @Override
@@ -170,6 +187,17 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void feederStop() {
     m_feederForwardLimitSwitch.enableLimitSwitch(true);
     m_feederMotor.stopMotor();
+  }
+
+  /**
+   * Get Distance from LIDAR sensor
+   * @return distance in Meters
+   */
+  public double getLIDAR() {
+    if(m_lidar.get() < 1)
+      return 0;
+    else
+      return ((m_lidar.getPeriod()*1000000.0/10.0) - LIDAR_OFFSET) / 100.0; //convert to distance. sensor is high 10 us for every centimeter. 
   }
 
   @Override
