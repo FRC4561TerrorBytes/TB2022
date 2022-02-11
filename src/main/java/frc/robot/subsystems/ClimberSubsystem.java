@@ -29,9 +29,9 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     private WPI_TalonFX winchMotor;
     private AnalogPotentiometer ultrasonicSensor;
 
-    public Hardware(WPI_TalonFX winchMotor,
-                    WPI_TalonFX telescopeMasterMotor,
+    public Hardware(WPI_TalonFX telescopeMasterMotor,
                     WPI_TalonFX telescopeSlaveMotor,
+                    WPI_TalonFX winchMotor,
                     AnalogPotentiometer ultrasonicSensor) {    
       this.telescopeMasterMotor = telescopeMasterMotor;
       this.telescopSlaveMotor = telescopeSlaveMotor;
@@ -40,7 +40,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     }
   }
 
-  public static enum ClimberState implements Iterator {
+  public static enum ClimberState implements Iterator<ClimberState> {
     climberStart(0, 0, 0),
     telescopeUp(1, 0, 0),
     telescopeDown(2, 0, 0),
@@ -69,7 +69,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     }
 
     @Override
-    public Object next() {
+    public ClimberState next() {
       // TODO Auto-generated method stub
       return null;
     }
