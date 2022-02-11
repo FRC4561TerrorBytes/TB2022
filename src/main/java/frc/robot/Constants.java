@@ -151,9 +151,12 @@ public final class Constants {
   public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 5;
   public static final int FEEDER_MOTOR_PORT = 6;
 
-  // Climber motor ports
+  // Climber ports
   public static final int CLIMBER_MOTOR_PORT = 9;
   public static final int CLIMBER_WINCH_MOTOR_PORT = 10;
+  public static final int CLIMBER_MASTER_TELESCOPE_MOTOR_PORT = 11;
+  public static final int CLIMBER_SLAVE_TELESCOPE_MOTOR_PORT = 12;
+  public static final int CLIMBER_ULTRASONIC_PORT = 0;
 
   //Automode Constants
   public static final double TRACK_WIDTH = 0; // TODO: Find track width
