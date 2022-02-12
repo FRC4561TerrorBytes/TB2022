@@ -86,6 +86,7 @@ public final class Constants {
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
   private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = false;
+  public static final double FLYWHEEL_SHOOTING_RPM = 1000;
   public static final double FEEDER_INTAKE_SPEED = 1.0;
   public static final double FEEDER_SHOOT_SPEED = 1.0;
 
@@ -166,29 +167,30 @@ public final class Constants {
   public static final int PRIMARY_CONTROLLER_PORT = 0;
   public static final int SECONDARY_CONTROLLER_PORT = 1;
 
-  // Drive Motor Ports 
+  // Drive hardware Ports 
   public static final int FRONT_LEFT_MOTOR_PORT = 1;
   public static final int REAR_LEFT_MOTOR_PORT = 2;
 
   public static final int FRONT_RIGHT_MOTOR_PORT = 3;
   public static final int REAR_RIGHT_MOTOR_PORT = 4;
 
-  // Intake Motor Ports
+  // Intake hardware Ports
   public static final int ARM_MOTOR_PORT = 5;
   public static final int INTAKE_ROLLER_PORT = 6;
 
-  // Shooter motor ports
+  // Shooter hardware ports
   public static final int FLYWHEEL_MASTER_MOTOR_PORT = 7;
   public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 8;
   public static final int FEEDER_MOTOR_PORT = 9;
+  public static final int LIDAR_PORT = 0;
 
-  // Climber ports
+  // Climber hardware ports
   public static final int CLIMBER_MOTOR_PORT = 9;
   public static final int CLIMBER_WINCH_MOTOR_PORT = 10;
   public static final int CLIMBER_MASTER_TELESCOPE_MOTOR_PORT = 11;
   public static final int CLIMBER_SLAVE_TELESCOPE_MOTOR_PORT = 12;
   public static final int CLIMBER_ULTRASONIC_PORT = 0;
 
-  //Automode Constants
+  // Automode Constants
   public static final double TRACK_WIDTH = 0; // TODO: Find track width
 }
