@@ -5,11 +5,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Counter;
@@ -24,23 +23,18 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
 
   public static class Hardware {
     private WPI_TalonFX flywheelMasterMotor, flywheelSlaveMotor;
-    private CANSparkMax feederMotor;
+    private WPI_TalonFX feederMotor;
 
-    private SparkMaxLimitSwitch forwardLimitSwitch;
     private Counter lidar;
 
     public Hardware(WPI_TalonFX flywheelMasterMotor, 
                     WPI_TalonFX flywheelSlaveMotor, 
-                    CANSparkMax feederMotor, 
-                    SparkMaxLimitSwitch feederLimitSwitch, 
+                    WPI_TalonFX feederMotor,
                     Counter lidar) {
       this.flywheelMasterMotor = flywheelMasterMotor;
       this.flywheelSlaveMotor = flywheelSlaveMotor;
       this.feederMotor = feederMotor;
-      this.forwardLimitSwitch = feederLimitSwitch;
       this.lidar = lidar;
-
-      forwardLimitSwitch.enableLimitSwitch(true);
     }
   }
 
@@ -53,8 +47,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     private static TalonPIDConfig masterConfig;
   }
 
-  private CANSparkMax m_feederMotor;
-  private SparkMaxLimitSwitch m_feederForwardLimitSwitch;
+  private WPI_TalonFX m_feederMotor;
   private Counter m_lidar;
   private final double LIDAR_OFFSET = 10.0;
   /**
@@ -73,6 +66,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
 
     Flywheel.masterConfig = flywheelMasterConfig;
 
+    m_feederMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+
     // Initialize config for flywheel PID
     Flywheel.masterConfig.initializeTalonPID(Flywheel.masterMotor, TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice(), false, false);
     Flywheel.slaveMotor.set(ControlMode.Follower, Flywheel.masterMotor.getDeviceID());
@@ -89,11 +84,9 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @return hardware object containing all necessary devices for this subsystem
    */
   public static Hardware initializeHardware() {
-    CANSparkMax feederMotor = new CANSparkMax(Constants.FEEDER_MOTOR_PORT, MotorType.kBrushless);
     Hardware shooterHardware = new Hardware(new WPI_TalonFX(Constants.FLYWHEEL_MASTER_MOTOR_PORT),
                                             new WPI_TalonFX(Constants.FLYWHEEL_SLAVE_MOTOR_PORT),
-                                            feederMotor,
-                                            feederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed),
+                                            new WPI_TalonFX(Constants.FEEDER_MOTOR_PORT),
                                             new Counter(Constants.LIDAR_PORT));
     return shooterHardware;
   }
@@ -177,7 +170,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * Sets feeder shoot speed
    */
   public void feederShoot() {
-    m_feederForwardLimitSwitch.enableLimitSwitch(false);
+    m_feederMotor.overrideLimitSwitchesEnable(false);
     m_feederMotor.set(Constants.FEEDER_SHOOT_SPEED);
   }
 
@@ -185,7 +178,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * Stops feeder motor
    */
   public void feederStop() {
-    m_feederForwardLimitSwitch.enableLimitSwitch(true);
+    m_feederMotor.overrideLimitSwitchesEnable(true);
     m_feederMotor.stopMotor();
   }
 

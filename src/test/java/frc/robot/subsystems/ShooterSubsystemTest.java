@@ -34,8 +34,7 @@ public class ShooterSubsystemTest {
 
 
   private WPI_TalonFX m_flywheelMasterMotor, m_flywheelSlaveMotor;
-  private CANSparkMax m_feederMotor;
-  private SparkMaxLimitSwitch m_feederForwardLimitSwitch;
+  private WPI_TalonFX m_feederMotor;
   private Counter m_lidar;
 
   @BeforeEach
@@ -43,11 +42,10 @@ public class ShooterSubsystemTest {
     // Create mock hardware devices
     m_flywheelMasterMotor = mock(WPI_TalonFX.class);
     m_flywheelSlaveMotor = mock(WPI_TalonFX.class);
-    m_feederMotor = mock(CANSparkMax.class);
-    m_feederForwardLimitSwitch = mock(SparkMaxLimitSwitch.class);
+    m_feederMotor = mock(WPI_TalonFX.class);
     m_lidar = mock(Counter.class);
 
-    m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, m_flywheelSlaveMotor, m_feederMotor, m_feederForwardLimitSwitch, m_lidar);
+    m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, m_flywheelSlaveMotor, m_feederMotor, m_lidar);
 
     m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware, Constants.FLYWHEEL_MASTER_CONFIG);
   }
@@ -78,7 +76,7 @@ public class ShooterSubsystemTest {
   @Order(3)
   @DisplayName("Test if robot can set feeder intake speed")
   public void feederIntake(){
-    m_feederMotor.set(Constants.FEEDER_INTAKE_SPEED);
+    m_shooterSubsystem.feederIntake();
     verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(Constants.FEEDER_INTAKE_SPEED));
   }
 
@@ -86,7 +84,7 @@ public class ShooterSubsystemTest {
   @Order(4)
   @DisplayName("Test if robot can set feeder outtake speed")
   public void feederOuttake(){
-    m_feederMotor.set(-Constants.FEEDER_INTAKE_SPEED);
+    m_shooterSubsystem.feederOuttake();
     verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(-Constants.FEEDER_INTAKE_SPEED));
   }
 
@@ -94,10 +92,8 @@ public class ShooterSubsystemTest {
   @Order(5)
   @DisplayName("Test if robot can set feeder shooter speed")
   public void feederShoot(){
-    m_feederForwardLimitSwitch.enableLimitSwitch(false);
-    verify(m_feederForwardLimitSwitch, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
-
-    m_feederMotor.set(Constants.FEEDER_SHOOT_SPEED);
+    m_shooterSubsystem.feederShoot();
+    verify(m_feederMotor, times(1)).overrideLimitSwitchesEnable(ArgumentMatchers.eq(false));
     verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(Constants.FEEDER_SHOOT_SPEED));
   }
 
@@ -105,10 +101,8 @@ public class ShooterSubsystemTest {
   @Order(6)
   @DisplayName("Test if robot can stop feeder motor")
   public void feederStop(){
-    m_feederForwardLimitSwitch.enableLimitSwitch(true);
-    verify(m_feederForwardLimitSwitch, times(2)).enableLimitSwitch(ArgumentMatchers.eq(true));
-
-    m_feederMotor.stopMotor();
+    m_shooterSubsystem.feederStop();
+    verify(m_feederMotor, times(1)).overrideLimitSwitchesEnable(ArgumentMatchers.eq(true));
     verify(m_feederMotor, times(1)).stopMotor();
   }
 }
