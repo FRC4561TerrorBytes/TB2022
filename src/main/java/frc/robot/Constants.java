@@ -37,9 +37,9 @@ public final class Constants {
   public static final double DRIVE_MAX_LINEAR_SPEED = (FALCON_500_MAX_RPM / 60) * DRIVE_METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY; // 3.766 m/s
 
   // Drive PID values
-  public static final double DRIVE_kP = 0.01;
-  public static final double DRIVE_kD = 0.0001;
-  public static final double DRIVE_TURN_SCALAR = 45.0;
+  public static final double DRIVE_kP = 0.011;
+  public static final double DRIVE_kD = 0.0005;
+  public static final double DRIVE_TURN_SCALAR = 80.0;
   public static final String DRIVE_TRACTION_CONTROL_CURVE = "X / 3.766";
   public static final String DRIVE_THROTTLE_INPUT_CURVE = "3.766 * X";
   public static final int DRIVE_RESPONSE_EXPONENT = 1;
@@ -136,24 +136,24 @@ public final class Constants {
   public static final int SECONDARY_CONTROLLER_PORT = 1;
 
   // Drive Motor Ports 
-  public static final int FRONT_LEFT_MOTOR_PORT = 0;
-  public static final int REAR_LEFT_MOTOR_PORT = 1;
+  public static final int FRONT_LEFT_MOTOR_PORT = 1;
+  public static final int REAR_LEFT_MOTOR_PORT = 2;
 
-  public static final int FRONT_RIGHT_MOTOR_PORT = 2;
-  public static final int REAR_RIGHT_MOTOR_PORT = 3;
+  public static final int FRONT_RIGHT_MOTOR_PORT = 3;
+  public static final int REAR_RIGHT_MOTOR_PORT = 4;
 
   // Intake Motor Ports
-  public static final int ARM_MOTOR_PORT = 7;
-  public static final int INTAKE_ROLLER_PORT = 8;
+  public static final int ARM_MOTOR_PORT = 5;
+  public static final int INTAKE_ROLLER_PORT = 6;
 
   // Shooter motor ports
-  public static final int FLYWHEEL_MASTER_MOTOR_PORT = 4;
-  public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 5;
-  public static final int FEEDER_MOTOR_PORT = 6;
+  public static final int FLYWHEEL_MASTER_MOTOR_PORT = 7;
+  public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 8;
+  public static final int FEEDER_MOTOR_PORT = 9;
 
   // Climber motor ports
-  public static final int CLIMBER_MOTOR_PORT = 9;
-  public static final int CLIMBER_WINCH_MOTOR_PORT = 10;
+  public static final int CLIMBER_MOTOR_PORT = 10;
+  public static final int CLIMBER_WINCH_MOTOR_PORT = 11;
 
   //Automode Constants
   public static final double TRACK_WIDTH = 0; // TODO: Find track width
