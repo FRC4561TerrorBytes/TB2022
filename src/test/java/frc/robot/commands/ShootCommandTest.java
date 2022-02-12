@@ -10,8 +10,6 @@ import static org.mockito.Mockito.verify;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxLimitSwitch;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,7 +17,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalMatchers;
-import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 
 import edu.wpi.first.wpilibj.Counter;
@@ -35,8 +32,7 @@ public class ShootCommandTest {
     private static ShooterSubsystem.Hardware m_shooterHardware;
     private static WPI_TalonFX m_flywheelMasterMotor; 
     private static WPI_TalonFX m_flywheelSlaveMotor; 
-    private static CANSparkMax m_feederMotor;
-    private static SparkMaxLimitSwitch m_feederLimitSwitch;
+    private static WPI_TalonFX m_feederMotor;
     private static Counter m_lidar;
 
     @BeforeAll
@@ -44,14 +40,12 @@ public class ShootCommandTest {
         m_shooterSubsystem = mock(ShooterSubsystem.class);
         m_flywheelMasterMotor = mock(WPI_TalonFX.class); 
         m_flywheelSlaveMotor = mock(WPI_TalonFX.class); 
-        m_feederMotor = mock(CANSparkMax.class);
-        m_feederLimitSwitch = mock(SparkMaxLimitSwitch.class);
+        m_feederMotor = mock(WPI_TalonFX.class);
         m_lidar = mock(Counter.class);
 
         m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, 
                                                           m_flywheelSlaveMotor, 
                                                           m_feederMotor,
-                                                          m_feederLimitSwitch,
                                                           m_lidar);
 
         m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware, Constants.FLYWHEEL_MASTER_CONFIG);
