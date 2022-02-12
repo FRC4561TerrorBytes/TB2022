@@ -101,7 +101,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     tab.addNumber("Flywheel Current", () -> Flywheel.masterMotor.getSupplyCurrent());
     tab.addNumber("Flywheel Motor Velocity", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getSelectedSensorVelocity()));
     tab.addNumber("Flywheel Motor Setpoint", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getClosedLoopTarget()));
-    tab.addNumber("Flywheel Error", () -> flywheelError());
+    tab.addNumber("Flywheel Error", () -> Flywheel.masterMotor.getClosedLoopError());
     tab.addNumber("Shooter Distance", () -> getLIDAR());
   }
 
@@ -124,7 +124,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @param speed flywheel speed [-1, +1]
    */
   public void flywheelManual(double speed) {
-    Flywheel.masterMotor.set(speed);
+    Flywheel.masterMotor.set(ControlMode.PercentOutput, speed);
   }
 
   /**
@@ -140,30 +140,22 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @return True if flywheel is at speed else false
    */
   public boolean isFlywheelAtSpeed() {
-    return (Math.abs(flywheelError()) < Flywheel.masterConfig.getTolerance())
+    return (Math.abs(Flywheel.masterMotor.getClosedLoopError()) < Flywheel.masterConfig.getTolerance())
                       && Flywheel.masterMotor.getClosedLoopTarget() != 0;
-  }
-
-  /**
-   * Get error in flywheel speed
-   * @return flywheel error (ticks per 100ms)
-   */
-  public double flywheelError() {
-    return Flywheel.masterMotor.getClosedLoopTarget() - Flywheel.masterMotor.getSelectedSensorVelocity();
   }
 
   /**
    * Sets feeder intake speed
    */
   public void feederIntake() {
-    m_feederMotor.set(Constants.FEEDER_INTAKE_SPEED);
+    m_feederMotor.set(ControlMode.PercentOutput, Constants.FEEDER_INTAKE_SPEED);
   }
 
   /**
    * Sets feeder outtake speed
    */
   public void feederOuttake() {
-    m_feederMotor.set(-Constants.FEEDER_INTAKE_SPEED);
+    m_feederMotor.set(ControlMode.PercentOutput, -Constants.FEEDER_INTAKE_SPEED);
   }
 
   /**
@@ -171,7 +163,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void feederShoot() {
     m_feederMotor.overrideLimitSwitchesEnable(false);
-    m_feederMotor.set(Constants.FEEDER_SHOOT_SPEED);
+    m_feederMotor.set(ControlMode.PercentOutput, Constants.FEEDER_SHOOT_SPEED);
   }
 
   /**

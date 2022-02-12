@@ -77,7 +77,7 @@ public class ShooterSubsystemTest {
   @DisplayName("Test if robot can set feeder intake speed")
   public void feederIntake(){
     m_shooterSubsystem.feederIntake();
-    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(Constants.FEEDER_INTAKE_SPEED));
+    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(Constants.FEEDER_INTAKE_SPEED));
   }
 
   @Test
@@ -85,7 +85,7 @@ public class ShooterSubsystemTest {
   @DisplayName("Test if robot can set feeder outtake speed")
   public void feederOuttake(){
     m_shooterSubsystem.feederOuttake();
-    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(-Constants.FEEDER_INTAKE_SPEED));
+    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(-Constants.FEEDER_INTAKE_SPEED));
   }
 
   @Test
@@ -94,7 +94,7 @@ public class ShooterSubsystemTest {
   public void feederShoot(){
     m_shooterSubsystem.feederShoot();
     verify(m_feederMotor, times(1)).overrideLimitSwitchesEnable(ArgumentMatchers.eq(false));
-    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(Constants.FEEDER_SHOOT_SPEED));
+    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(Constants.FEEDER_SHOOT_SPEED));
   }
 
   @Test
