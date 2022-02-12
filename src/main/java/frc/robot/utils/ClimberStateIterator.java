@@ -64,4 +64,11 @@ public class ClimberStateIterator {
     }
   }
 
+  public void previousState() {
+    currentState--;
+    if (currentState < 0) {
+      currentState = 0;
+    }
+  }
+
 }
