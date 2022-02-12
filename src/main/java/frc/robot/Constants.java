@@ -100,36 +100,67 @@ public final class Constants {
                                                                                 FLYWHEEL_kD,
                                                                                 FLYWHEEL_TOLERANCE);
 
-  // Climber PID variables
-  public static final double CLIMBER_kP = 0.0;
-  public static final double CLIMBER_kD = 0.0;
-  public static final double CLIMBER_TOLERANCE = 10;
-  public static final double CLIMBER_LOWER_LIMIT = 0;
-  public static final double CLIMBER_UPPER_LIMIT = 1500;
-  public static final double CLIMBER_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double CLIMBER_ACCLERATION = FALCON_500_MAX_RPM;
-  public static final int CLIMBER_MOTION_SMOOTHING = 1;
-  public static final int CLIMBER_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
-  public static final int CLIMBER_MAX_RPM = FALCON_500_MAX_RPM;
-  public static final boolean CLIMBER_SOFT_LIMITS = true;
-  public static final boolean CLIMBER_SENSOR_PHASE = false;
-  public static final boolean CLIMBER_INVERT_MOTOR = false;
+  // Telescope PID variables
+  public static final double TELESCOPE_kP = 0.0;
+  public static final double TELESCOPE_kD = 0.0;
+  public static final double TELESCOPE_TOLERANCE = 10;
+  public static final double TELESCOPE_LOWER_LIMIT = 0;
+  public static final double TELESCOPE_UPPER_LIMIT = 1500;
+  public static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM;
+  public static final double TELESCOPE_ACCLERATION = FALCON_500_MAX_RPM;
+  public static final int TELESCOPE_MOTION_SMOOTHING = 1;
+  public static final int TELESCOPE_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
+  public static final int TELESCOPE_MAX_RPM = FALCON_500_MAX_RPM;
+  public static final boolean TELESCOPE_SOFT_LIMITS = true;
+  public static final boolean TELESCOPE_SENSOR_PHASE = false;
+  public static final boolean TELESCOPE_INVERT_MOTOR = false;
 
-  // Climber PID config
-  public static final TalonPIDConfig CLIMBER_CONFIG = new TalonPIDConfig(CLIMBER_SENSOR_PHASE, 
-                                                                         CLIMBER_INVERT_MOTOR, 
-                                                                         CLIMBER_TICKS_PER_ROTATION, 
-                                                                         CLIMBER_MAX_RPM, 
-                                                                         CLIMBER_kP, 
+  // Telescope PID config
+  public static final TalonPIDConfig TELESCOPE_CONFIG = new TalonPIDConfig(TELESCOPE_SENSOR_PHASE, 
+                                                                         TELESCOPE_INVERT_MOTOR, 
+                                                                         TELESCOPE_TICKS_PER_ROTATION, 
+                                                                         TELESCOPE_MAX_RPM, 
+                                                                         TELESCOPE_kP, 
                                                                          0.0, 
-                                                                         CLIMBER_kD, 
-                                                                         CLIMBER_TOLERANCE, 
-                                                                         CLIMBER_LOWER_LIMIT, 
-                                                                         CLIMBER_UPPER_LIMIT, 
-                                                                         CLIMBER_SOFT_LIMITS, 
-                                                                         CLIMBER_VELOCITY, 
-                                                                         CLIMBER_ACCLERATION, 
-                                                                         CLIMBER_MOTION_SMOOTHING);
+                                                                         TELESCOPE_kD, 
+                                                                         TELESCOPE_TOLERANCE, 
+                                                                         TELESCOPE_LOWER_LIMIT, 
+                                                                         TELESCOPE_UPPER_LIMIT, 
+                                                                         TELESCOPE_SOFT_LIMITS, 
+                                                                         TELESCOPE_VELOCITY, 
+                                                                         TELESCOPE_ACCLERATION, 
+                                                                         TELESCOPE_MOTION_SMOOTHING);
+
+  // Winch PID variables
+  public static final double WINCH_kP = 0.0;
+  public static final double WINCH_kD = 0.0;
+  public static final double WINCH_TOLERANCE = 10;
+  public static final double WINCH_LOWER_LIMIT = 0;
+  public static final double WINCH_UPPER_LIMIT = 1500;
+  public static final double WINCH_VELOCITY = FALCON_500_MAX_RPM;
+  public static final double WINCH_ACCLERATION = FALCON_500_MAX_RPM;
+  public static final int WINCH_MOTION_SMOOTHING = 1;
+  public static final int WINCH_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
+  public static final int WINCH_MAX_RPM = FALCON_500_MAX_RPM;
+  public static final boolean WINCH_SOFT_LIMITS = true;
+  public static final boolean WINCH_SENSOR_PHASE = false;
+  public static final boolean WINCH_INVERT_MOTOR = false;
+
+  // Winch PID config
+  public static final TalonPIDConfig WINCH_CONFIG = new TalonPIDConfig(WINCH_SENSOR_PHASE, 
+                                                                         WINCH_INVERT_MOTOR, 
+                                                                         WINCH_TICKS_PER_ROTATION, 
+                                                                         WINCH_MAX_RPM, 
+                                                                         WINCH_kP, 
+                                                                         0.0, 
+                                                                         WINCH_kD, 
+                                                                         WINCH_TOLERANCE, 
+                                                                         WINCH_LOWER_LIMIT, 
+                                                                         WINCH_UPPER_LIMIT, 
+                                                                         WINCH_SOFT_LIMITS, 
+                                                                         WINCH_VELOCITY, 
+                                                                         WINCH_ACCLERATION, 
+                                                                         WINCH_MOTION_SMOOTHING);
 
   // Xbox controller ports
   public static final int PRIMARY_CONTROLLER_PORT = 0;
