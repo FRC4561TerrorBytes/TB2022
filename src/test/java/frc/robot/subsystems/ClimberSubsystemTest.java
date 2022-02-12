@@ -48,7 +48,7 @@ public class ClimberSubsystemTest {
 		m_climberHardware = new ClimberSubsystem.Hardware(m_telescopeMasterMotor, m_telescopeSlaveMotor, m_winchMotor, m_ultrasonicSensor);
 		
 		// Create ClimberSubsystem object
-		m_climberSubsystem = new ClimberSubsystem(m_climberHardware, Constants.CLIMBER_CONFIG);
+		m_climberSubsystem = new ClimberSubsystem(m_climberHardware, Constants.TELESCOPE_CONFIG, Constants.WINCH_CONFIG);
 	}
 	
 	@AfterEach
@@ -61,27 +61,27 @@ public class ClimberSubsystemTest {
 	@Order(1)
 	@DisplayName("Test if robot can move climber up automatically")
 	public void climberUp() {
-		m_climberSubsystem.climberUp();
-		verify(m_telescopeMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.CLIMBER_UPPER_LIMIT, DELTA));
+		m_climberSubsystem.telescopeUp();
+		verify(m_telescopeMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.TELESCOPE_UPPER_LIMIT, DELTA));
 	}
 	
 	@Test
 	@Order(2)
 	@DisplayName("Test if robot can move climber down automatically")
 	public void climberDown(){
-		m_climberSubsystem.climberDown();
-		verify(m_telescopeMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.CLIMBER_LOWER_LIMIT, DELTA));
+		m_climberSubsystem.telescopeDown();
+		verify(m_telescopeMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.TELESCOPE_LOWER_LIMIT, DELTA));
 	}
 
 	@Test
 	@Order(3)
 	@DisplayName("Test if robot can move climber up manually")
 	public void climberUpManual() {
-		m_climberSubsystem.climberUpManual();
+		m_climberSubsystem.telescopeUpManual();
 		verify(m_telescopeMasterMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
 		verify(m_telescopeMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA));
 
-		m_climberSubsystem.climberStopManual();
+		m_climberSubsystem.telescopeStopManual();
 		verify(m_telescopeMasterMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
 		verify(m_telescopeMasterMotor, times(1)).stopMotor();
 	}
@@ -90,11 +90,11 @@ public class ClimberSubsystemTest {
 	@Order(4)
 	@DisplayName("Test if robot can move climber down manually")
 	public void climberDownManual() {
-		m_climberSubsystem.climberDownManual();
+		m_climberSubsystem.telescopeDownManual();
 		verify(m_telescopeMasterMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
 		verify(m_telescopeMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-1.0, DELTA));
 
-		m_climberSubsystem.climberStopManual();
+		m_climberSubsystem.telescopeStopManual();
 		verify(m_telescopeMasterMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
 		verify(m_telescopeMasterMotor, times(1)).stopMotor();
 	}
@@ -103,7 +103,7 @@ public class ClimberSubsystemTest {
 	@Order(5)
 	@DisplayName("Test if robot can stop moving manually")
 	public void climberStopManual() {
-		m_climberSubsystem.climberStopManual();
+		m_climberSubsystem.telescopeStopManual();
 		verify(m_telescopeMasterMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(true));
 		verify(m_telescopeMasterMotor, times(1)).stopMotor();
 	}
