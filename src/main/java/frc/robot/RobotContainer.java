@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import org.photonvision.PhotonCamera;
+
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -56,7 +61,9 @@ public class RobotContainer {
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
 
 
-  private static SendableChooser<SequentialCommandGroup> automodeChooser = new SendableChooser<>();
+  private static SendableChooser<SequentialCommandGroup> m_automodeChooser = new SendableChooser<>();
+
+  private static PhotonCamera m_pi = new PhotonCamera("photonvision");
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -72,6 +79,7 @@ public class RobotContainer {
     );
 
     // Initialize Shuffleboard tabs
+    defaultShuffleboardTab();
     DRIVE_SUBSYSTEM.shuffleboard();
     INTAKE_SUBSYSTEM.shuffleboard();
     SHOOTER_SUBSYSTEM.shuffleboard();
@@ -79,6 +87,8 @@ public class RobotContainer {
 
     // Initialize Automode Chooser in Shuffleboard
     AutomodeChooser();
+
+    PortForwarder.add(5800, "photonvision.local", 5800);
   }
 
   private void AutomodeChooser() {
@@ -127,6 +137,13 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return automodeChooser.getSelected();
+    return m_automodeChooser.getSelected();
+  }
+
+  @SuppressWarnings("unused")
+  public void defaultShuffleboardTab() {
+    m_pi.setDriverMode(true);
+    ShuffleboardTab defaultTab = Shuffleboard.getTab(Constants.DEFAULT_TAB);
+    defaultTab.add(m_automodeChooser);
   }
 }
