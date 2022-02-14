@@ -48,7 +48,7 @@ public final class Constants {
   // Drive PID values
   public static final double DRIVE_kP = 0.011;
   public static final double DRIVE_kD = 0.0005;
-  public static final double DRIVE_TURN_SCALAR = 25.0;
+  public static final double DRIVE_TURN_SCALAR = 80.0;
 
   private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };
   private static final double DRIVE_THROTTLE_INPUT_CURVE_Y[] = { 0.0, 1.883, 3.766 };
