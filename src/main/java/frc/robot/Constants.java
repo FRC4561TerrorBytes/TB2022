@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+
 import frc.robot.utils.TalonPIDConfig;
 
 /**
@@ -16,13 +19,16 @@ import frc.robot.utils.TalonPIDConfig;
  */
 public final class Constants {
   // Robot tick rate in seconds
-  public static final double ROBOT_LOOP_PERIOD = 1.0 / 120.0;
+  public static final double ROBOT_LOOP_PERIOD = 1.0 / 60.0;
 
   // ShuffleBoard Default Tab name
   public static final String DEFAULT_TAB = "Default";
 
   // Controller deadband
-  public static final double CONTROLLER_DEADBAND = 0.1;
+  public static final double CONTROLLER_DEADBAND = 0.12;
+
+  // Spline interpolator
+  private static final SplineInterpolator SPLINE_INTERPOLATOR = new SplineInterpolator();
 
   // Motor RPMs, encoder values, and gear ratios
   public static final int FALCON_500_MAX_RPM = 6380;
@@ -42,10 +48,18 @@ public final class Constants {
   // Drive PID values
   public static final double DRIVE_kP = 0.011;
   public static final double DRIVE_kD = 0.0005;
-  public static final double DRIVE_TURN_SCALAR = 80.0;
-  public static final String DRIVE_TRACTION_CONTROL_CURVE = "X / 3.766";
-  public static final String DRIVE_THROTTLE_INPUT_CURVE = "3.766 * X";
-  public static final int DRIVE_RESPONSE_EXPONENT = 1;
+  public static final double DRIVE_TURN_SCALAR = 25.0;
+
+  private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };
+  private static final double DRIVE_THROTTLE_INPUT_CURVE_Y[] = { 0.0, 1.883, 3.766 };
+  private static final double DRIVE_TRACTION_CONTROL_CURVE_X[] = { 0.0, 1.883, 3.766 };
+  private static final double DRIVE_TRACTION_CONTROL_CURVE_Y[] = { 0.0, 0.5,   1.0 };
+  private static final double DRIVE_TURN_INPUT_CURVE_X[] = { 0.0, 0.5, 1.0 };
+  private static final double DRIVE_TURN_INPUT_CURVE_Y[] = { 0.0, 0.5, 1.0 };
+
+  public static final PolynomialSplineFunction DRIVE_THROTTLE_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_THROTTLE_INPUT_CURVE_X, DRIVE_THROTTLE_INPUT_CURVE_Y);
+  public static final PolynomialSplineFunction DRIVE_TRACTION_CONTROL_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TRACTION_CONTROL_CURVE_X, DRIVE_TRACTION_CONTROL_CURVE_Y);
+  public static final PolynomialSplineFunction DRIVE_TURN_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TURN_INPUT_CURVE_X, DRIVE_TURN_INPUT_CURVE_Y);
 
   // Intake Arm PID config
   public static final double INTAKE_ARM_kP = 0.0;
