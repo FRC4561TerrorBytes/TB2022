@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Counter;
@@ -23,17 +24,20 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
 
   public static class Hardware {
     private WPI_TalonFX flywheelMasterMotor, flywheelSlaveMotor;
-    private WPI_TalonFX feederMotor;
+    private WPI_TalonSRX upperFeederMotor;
+    private WPI_TalonSRX lowerFeederMotor;
 
     private Counter lidar;
 
     public Hardware(WPI_TalonFX flywheelMasterMotor, 
                     WPI_TalonFX flywheelSlaveMotor, 
-                    WPI_TalonFX feederMotor,
+                    WPI_TalonSRX upperFeederMotor,
+                    WPI_TalonSRX lowerFeederMotor,
                     Counter lidar) {
       this.flywheelMasterMotor = flywheelMasterMotor;
       this.flywheelSlaveMotor = flywheelSlaveMotor;
-      this.feederMotor = feederMotor;
+      this.upperFeederMotor = upperFeederMotor;
+      this.lowerFeederMotor = lowerFeederMotor;
       this.lidar = lidar;
     }
   }
@@ -47,7 +51,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     private static TalonPIDConfig masterConfig;
   }
 
-  private WPI_TalonFX m_feederMotor;
+  private WPI_TalonSRX m_upperFeederMotor;
+  private WPI_TalonSRX m_lowerFeederMotor;
   private Counter m_lidar;
   private final double LIDAR_OFFSET = 10.0;
   /**
@@ -61,12 +66,14 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public ShooterSubsystem(Hardware shooterHardware, TalonPIDConfig flywheelMasterConfig) {
     Flywheel.masterMotor = shooterHardware.flywheelMasterMotor;
     Flywheel.slaveMotor = shooterHardware.flywheelSlaveMotor;
-    m_feederMotor = shooterHardware.feederMotor;
+    m_upperFeederMotor = shooterHardware.upperFeederMotor;
+    m_lowerFeederMotor = shooterHardware.lowerFeederMotor;
     m_lidar = shooterHardware.lidar;
 
     Flywheel.masterConfig = flywheelMasterConfig;
 
-    m_feederMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+    m_upperFeederMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+    m_lowerFeederMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 
     // Initialize config for flywheel PID
     Flywheel.masterConfig.initializeTalonPID(Flywheel.masterMotor, TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice(), false, false);
@@ -86,7 +93,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public static Hardware initializeHardware() {
     Hardware shooterHardware = new Hardware(new WPI_TalonFX(Constants.FLYWHEEL_MASTER_MOTOR_PORT),
                                             new WPI_TalonFX(Constants.FLYWHEEL_SLAVE_MOTOR_PORT),
-                                            new WPI_TalonFX(Constants.FEEDER_MOTOR_PORT),
+                                            new WPI_TalonSRX(Constants.FEEDER_MOTOR_PORT),
+                                            new WPI_TalonSRX(Constants.FEEDER_MOTOR_PORT),
                                             new Counter(Constants.LIDAR_PORT));
     return shooterHardware;
   }
@@ -148,30 +156,38 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * Sets feeder intake speed
    */
   public void feederIntake() {
-    m_feederMotor.set(ControlMode.PercentOutput, Constants.FEEDER_INTAKE_SPEED);
+    m_upperFeederMotor.set(ControlMode.PercentOutput, Constants.FEEDER_INTAKE_SPEED);
+    m_lowerFeederMotor.set(ControlMode.PercentOutput, Constants.FEEDER_INTAKE_SPEED);
   }
 
   /**
    * Sets feeder outtake speed
    */
   public void feederOuttake() {
-    m_feederMotor.set(ControlMode.PercentOutput, -Constants.FEEDER_INTAKE_SPEED);
+    m_upperFeederMotor.overrideLimitSwitchesEnable(false);
+    m_lowerFeederMotor.overrideLimitSwitchesEnable(false);
+    m_upperFeederMotor.set(ControlMode.PercentOutput, -Constants.FEEDER_INTAKE_SPEED);
+    m_lowerFeederMotor.set(ControlMode.PercentOutput, -Constants.FEEDER_INTAKE_SPEED);
   }
 
   /**
    * Sets feeder shoot speed
    */
   public void feederShoot() {
-    m_feederMotor.overrideLimitSwitchesEnable(false);
-    m_feederMotor.set(ControlMode.PercentOutput, Constants.FEEDER_SHOOT_SPEED);
+    m_upperFeederMotor.overrideLimitSwitchesEnable(false);
+    m_lowerFeederMotor.overrideLimitSwitchesEnable(false);
+    m_upperFeederMotor.set(ControlMode.PercentOutput, Constants.FEEDER_SHOOT_SPEED);
+    m_lowerFeederMotor.set(ControlMode.PercentOutput, Constants.FEEDER_SHOOT_SPEED);
   }
 
   /**
    * Stops feeder motor
    */
   public void feederStop() {
-    m_feederMotor.overrideLimitSwitchesEnable(true);
-    m_feederMotor.stopMotor();
+    m_upperFeederMotor.overrideLimitSwitchesEnable(true);
+    m_lowerFeederMotor.overrideLimitSwitchesEnable(true);
+    m_upperFeederMotor.stopMotor();
+    m_lowerFeederMotor.stopMotor();
   }
 
   /**
@@ -189,6 +205,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void close() {
     Flywheel.masterMotor = null;
     Flywheel.slaveMotor = null;
-    m_feederMotor = null;
+    m_upperFeederMotor = null;
+    m_lowerFeederMotor = null;
   }
 }
