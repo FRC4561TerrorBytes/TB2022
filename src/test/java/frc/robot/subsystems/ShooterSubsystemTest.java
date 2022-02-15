@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +33,8 @@ public class ShooterSubsystemTest {
 
 
   private WPI_TalonFX m_flywheelMasterMotor, m_flywheelSlaveMotor;
-  private WPI_TalonFX m_feederMotor;
+  private WPI_TalonSRX m_upperFeederMotor;
+  private WPI_TalonSRX m_lowerFeederMotor;
   private Counter m_lidar;
 
   @BeforeEach
@@ -40,10 +42,11 @@ public class ShooterSubsystemTest {
     // Create mock hardware devices
     m_flywheelMasterMotor = mock(WPI_TalonFX.class);
     m_flywheelSlaveMotor = mock(WPI_TalonFX.class);
-    m_feederMotor = mock(WPI_TalonFX.class);
+    m_upperFeederMotor = mock(WPI_TalonSRX.class);
+    m_lowerFeederMotor = mock(WPI_TalonSRX.class);
     m_lidar = mock(Counter.class);
 
-    m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, m_flywheelSlaveMotor, m_feederMotor, m_lidar);
+    m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, m_flywheelSlaveMotor, m_upperFeederMotor, m_lowerFeederMotor, m_lidar);
 
     m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware, Constants.FLYWHEEL_MASTER_CONFIG);
   }
@@ -75,7 +78,8 @@ public class ShooterSubsystemTest {
   @DisplayName("Test if robot can set feeder intake speed")
   public void feederIntake(){
     m_shooterSubsystem.feederIntake();
-    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(Constants.FEEDER_INTAKE_SPEED));
+    verify(m_upperFeederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(Constants.FEEDER_INTAKE_SPEED));
+    verify(m_lowerFeederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(Constants.FEEDER_INTAKE_SPEED));
   }
 
   @Test
@@ -83,7 +87,9 @@ public class ShooterSubsystemTest {
   @DisplayName("Test if robot can set feeder outtake speed")
   public void feederOuttake(){
     m_shooterSubsystem.feederOuttake();
-    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(-Constants.FEEDER_INTAKE_SPEED));
+    verify(m_upperFeederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(-Constants.FEEDER_INTAKE_SPEED));
+    verify(m_lowerFeederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(-Constants.FEEDER_INTAKE_SPEED));
+
   }
 
   @Test
@@ -91,8 +97,8 @@ public class ShooterSubsystemTest {
   @DisplayName("Test if robot can set feeder shooter speed")
   public void feederShoot(){
     m_shooterSubsystem.feederShoot();
-    verify(m_feederMotor, times(1)).overrideLimitSwitchesEnable(ArgumentMatchers.eq(false));
-    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(Constants.FEEDER_SHOOT_SPEED));
+    verify(m_upperFeederMotor, times(1)).overrideLimitSwitchesEnable(ArgumentMatchers.eq(false));
+    verify(m_lowerFeederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(Constants.FEEDER_SHOOT_SPEED));
   }
 
   @Test
@@ -100,7 +106,7 @@ public class ShooterSubsystemTest {
   @DisplayName("Test if robot can stop feeder motor")
   public void feederStop(){
     m_shooterSubsystem.feederStop();
-    verify(m_feederMotor, times(1)).overrideLimitSwitchesEnable(ArgumentMatchers.eq(true));
-    verify(m_feederMotor, times(1)).stopMotor();
+    verify(m_upperFeederMotor, times(1)).overrideLimitSwitchesEnable(ArgumentMatchers.eq(true));
+    verify(m_lowerFeederMotor, times(1)).stopMotor();
   }
 }
