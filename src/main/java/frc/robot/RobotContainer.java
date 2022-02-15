@@ -145,6 +145,6 @@ public class RobotContainer {
   public void defaultShuffleboardTab() {
     m_pi.setDriverMode(true);
     ShuffleboardTab defaultTab = Shuffleboard.getTab(Constants.DEFAULT_TAB);
-    defaultTab.add(m_automodeChooser);
+    defaultTab.add("Auto Mode", m_automodeChooser);
   }
 }

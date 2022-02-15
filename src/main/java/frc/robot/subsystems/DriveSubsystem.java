@@ -69,7 +69,6 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
   private double m_turnScalar = 1.0; 
   private double m_metersPerTick = 0.0;
-  private double m_inertialVelocity = 0.0;
   private double m_deadband = 0.0;
 
   /**
@@ -218,7 +217,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void teleopPID(double speedRequest, double turnRequest) {
     // Calculate next PID turn output
-    double turnOutput = m_turnPIDController.calculate(getAngle(), turnRequest);
+    double turnOutput = m_turnPIDController.calculate(getAngle(), getTurnRate(), turnRequest);
 
     // Calculate next speed output
     double speedOutput = m_tractionControlController.calculate(getInertialVelocity(), speedRequest);
@@ -351,7 +350,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return -m_navx.getRate();
+    return m_navx.getRate();
   }
 
   /**
@@ -359,10 +358,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @return Velocity of the robot as measured by the NAVX
    */
   public double getInertialVelocity() {
-    // Return inertial velocity to nearest cm/sec
-    m_inertialVelocity = m_navx.getVelocityY();
-    m_inertialVelocity = Math.copySign(Math.floor(Math.abs(m_inertialVelocity) * 100) / 100, m_inertialVelocity);
-    return m_inertialVelocity;
+    return m_navx.getVelocityY();
   }
 
   /**

@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants;
 
 public class TurnPIDController extends PIDController {
+  //private PolynomialSplineFunction m_turnInputCurve;
   private HashMap<Double, Double> m_turnInputMap = new HashMap<Double, Double>();
   private double m_turnScalar = 0.0;
   private double m_deadband = 0.0;
@@ -34,14 +35,16 @@ public class TurnPIDController extends PIDController {
   /**
    * Returns next output of TurnPIDController
    * @param currentAngle current yaw angle of robot (degrees)
+   * @param turnRate current yaw turn rate of robot (degrees/sec)
    * @param turnRequest turn request [-1.0, +1.0]
    * 
   * @return optimal turn output [-1.0, +1.0]
    */
-  public double calculate(double currentAngle, double turnRequest) {
+  public double calculate(double currentAngle, double turnRate, double turnRequest) {
     // Start turning if input is greater than deadband
     if (Math.abs(turnRequest) >= m_deadband) {
       // Get scaled turnRequest
+      turnRequest = Math.copySign(Math.floor(Math.abs(turnRequest) * 1000) / 1000, turnRequest) + 0.0;
       double scaledTurnRequest = m_turnInputMap.get(turnRequest);
       // Add delta to setpoint scaled by factor
       super.setSetpoint(currentAngle + (scaledTurnRequest * m_turnScalar));
@@ -49,7 +52,7 @@ public class TurnPIDController extends PIDController {
     } else { 
       // When turning is complete, set setpoint to current angle
       if (m_isTurning) {
-        super.setSetpoint(currentAngle);
+        super.setSetpoint(currentAngle + (turnRate * Constants.ROBOT_LOOP_PERIOD));
         m_isTurning = false;
       }
     }
