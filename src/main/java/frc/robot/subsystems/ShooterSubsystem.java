@@ -15,6 +15,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.TalonPIDConfig;
@@ -113,8 +114,20 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     tab.addNumber("Shooter Distance", () -> getLIDAR());
   }
 
+  /**
+   * Create smart dashboard indicator
+   */
+  public void smartDashboard() {
+    boolean upperSensor = m_upperFeederMotor.isFwdLimitSwitchClosed() == 1 ? true : false;
+    boolean lowerSensor = m_lowerFeederMotor.isFwdLimitSwitchClosed() == 1 ? true : false;
+    SmartDashboard.putBoolean("Ball 1", !upperSensor);
+    SmartDashboard.putBoolean("Ball 2", lowerSensor);
+  }
+
   @Override
-  public void periodic() {}
+  public void periodic() {
+    smartDashboard();
+  }
 
   /**
    * Moves flywheel to a speed
