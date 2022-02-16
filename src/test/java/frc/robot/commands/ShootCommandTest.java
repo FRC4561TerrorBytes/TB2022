@@ -11,7 +11,8 @@ import static org.mockito.Mockito.when;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxLimitSwitch;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,10 +35,11 @@ public class ShootCommandTest {
   private ShootCommand m_shootCommand;
   private ShooterSubsystem.Hardware m_shooterHardware;
 
-
   private WPI_TalonFX m_flywheelMasterMotor, m_flywheelSlaveMotor;
-  private WPI_TalonSRX m_upperFeederMotor;
-  private WPI_TalonSRX m_lowerFeederMotor;
+  private CANSparkMax m_upperFeederMotor;
+  private CANSparkMax m_lowerFeederMotor;
+  private SparkMaxLimitSwitch m_upperFeederSensor;
+  private SparkMaxLimitSwitch m_lowerFeederSensor;
   private Counter m_lidar;
 
   @BeforeEach
@@ -45,11 +47,19 @@ public class ShootCommandTest {
     // Create mock hardware devices
     m_flywheelMasterMotor = mock(WPI_TalonFX.class);
     m_flywheelSlaveMotor = mock(WPI_TalonFX.class);
-    m_upperFeederMotor = mock(WPI_TalonSRX.class);
-    m_lowerFeederMotor = mock(WPI_TalonSRX.class);
+    m_upperFeederMotor = mock(CANSparkMax.class);
+    m_lowerFeederMotor = mock(CANSparkMax.class);
+    m_upperFeederSensor = mock(SparkMaxLimitSwitch.class);
+    m_lowerFeederSensor = mock(SparkMaxLimitSwitch.class);
     m_lidar = mock(Counter.class);
 
-    m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, m_flywheelSlaveMotor, m_upperFeederMotor, m_lowerFeederMotor, m_lidar);
+    m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, 
+                                                      m_flywheelSlaveMotor, 
+                                                      m_upperFeederMotor, 
+                                                      m_lowerFeederMotor, 
+                                                      m_upperFeederSensor, 
+                                                      m_lowerFeederSensor, 
+                                                      m_lidar);
 
     m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware, Constants.FLYWHEEL_MASTER_CONFIG);
     m_shootCommand = new ShootCommand(m_shooterSubsystem, 200.0);
@@ -77,8 +87,10 @@ public class ShootCommandTest {
     when(m_flywheelMasterMotor.getClosedLoopError()).thenReturn(0.0);
     when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(682.666);
     m_shootCommand.execute();
-    verify(m_upperFeederMotor, times(1)).overrideLimitSwitchesEnable(false);
-    verify(m_lowerFeederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA));
+    verify(m_upperFeederSensor, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
+    verify(m_lowerFeederSensor, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
+    verify(m_lowerFeederMotor, times(1)).set(AdditionalMatchers.eq(Constants.FEEDER_SHOOT_SPEED, DELTA));
+    verify(m_upperFeederMotor, times(1)).set(AdditionalMatchers.eq(Constants.FEEDER_SHOOT_SPEED, DELTA));
   }
 
   @Test
@@ -89,7 +101,7 @@ public class ShootCommandTest {
     when(m_flywheelMasterMotor.getClosedLoopError()).thenReturn(150.0);
     when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(682.666);
     m_shootCommand.execute();
-    verify(m_upperFeederMotor, times(1)).overrideLimitSwitchesEnable(true);
+    verify(m_upperFeederMotor, times(1)).stopMotor();
     verify(m_lowerFeederMotor, times(1)).stopMotor();
   }
 
@@ -99,8 +111,7 @@ public class ShootCommandTest {
   public void end(){
     m_shootCommand.end(true);
     verify(m_flywheelMasterMotor, times(1)).stopMotor();
-    verify(m_upperFeederMotor, times(1)).overrideLimitSwitchesEnable(true);
+    verify(m_upperFeederMotor, times(1)).stopMotor();
     verify(m_lowerFeederMotor, times(1)).stopMotor();
-    
   }
 }

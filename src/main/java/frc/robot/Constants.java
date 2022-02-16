@@ -198,14 +198,15 @@ public final class Constants {
   // Shooter hardware ports
   public static final int FLYWHEEL_MASTER_MOTOR_PORT = 7;
   public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 8;
-  public static final int FEEDER_MOTOR_PORT = 9;
+  public static final int UPPER_FEEDER_MOTOR_PORT = 9;
+  public static final int LOWER_FEEDER_MOTOR_PORT = 10;
   public static final int LIDAR_PORT = 0;
 
   // Climber hardware ports
-  public static final int CLIMBER_MOTOR_PORT = 9;
-  public static final int CLIMBER_WINCH_MOTOR_PORT = 10;
-  public static final int CLIMBER_MASTER_TELESCOPE_MOTOR_PORT = 11;
-  public static final int CLIMBER_SLAVE_TELESCOPE_MOTOR_PORT = 12;
+  public static final int CLIMBER_MOTOR_PORT = 11;
+  public static final int CLIMBER_WINCH_MOTOR_PORT = 12;
+  public static final int CLIMBER_MASTER_TELESCOPE_MOTOR_PORT = 13;
+  public static final int CLIMBER_SLAVE_TELESCOPE_MOTOR_PORT = 14;
   public static final int CLIMBER_ULTRASONIC_PORT = 0;
 
   // Automode Constants

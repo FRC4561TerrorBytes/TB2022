@@ -5,11 +5,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Counter;
@@ -25,20 +25,24 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
 
   public static class Hardware {
     private WPI_TalonFX flywheelMasterMotor, flywheelSlaveMotor;
-    private WPI_TalonSRX upperFeederMotor;
-    private WPI_TalonSRX lowerFeederMotor;
+    private CANSparkMax upperFeederMotor, lowerFeederMotor;
+    private SparkMaxLimitSwitch upperFeederSensor, lowerFeederSensor;
 
     private Counter lidar;
 
     public Hardware(WPI_TalonFX flywheelMasterMotor, 
                     WPI_TalonFX flywheelSlaveMotor, 
-                    WPI_TalonSRX upperFeederMotor,
-                    WPI_TalonSRX lowerFeederMotor,
+                    CANSparkMax upperFeederMotor,
+                    CANSparkMax lowerFeederMotor,
+                    SparkMaxLimitSwitch upperFeederSensor,
+                    SparkMaxLimitSwitch lowerFeederSensor,
                     Counter lidar) {
       this.flywheelMasterMotor = flywheelMasterMotor;
       this.flywheelSlaveMotor = flywheelSlaveMotor;
       this.upperFeederMotor = upperFeederMotor;
       this.lowerFeederMotor = lowerFeederMotor;
+      this.upperFeederSensor = upperFeederSensor;
+      this.lowerFeederSensor = lowerFeederSensor;
       this.lidar = lidar;
     }
   }
@@ -52,8 +56,10 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     private static TalonPIDConfig masterConfig;
   }
 
-  private WPI_TalonSRX m_upperFeederMotor;
-  private WPI_TalonSRX m_lowerFeederMotor;
+  private CANSparkMax m_upperFeederMotor;
+  private CANSparkMax m_lowerFeederMotor;
+  private SparkMaxLimitSwitch m_upperFeederSensor;
+  private SparkMaxLimitSwitch m_lowerFeederSensor;
   private Counter m_lidar;
   private final double LIDAR_OFFSET = 10.0;
   /**
@@ -69,12 +75,15 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     Flywheel.slaveMotor = shooterHardware.flywheelSlaveMotor;
     m_upperFeederMotor = shooterHardware.upperFeederMotor;
     m_lowerFeederMotor = shooterHardware.lowerFeederMotor;
+    m_upperFeederSensor = shooterHardware.upperFeederSensor;
+    m_lowerFeederSensor = shooterHardware.lowerFeederSensor;
     m_lidar = shooterHardware.lidar;
 
     Flywheel.masterConfig = flywheelMasterConfig;
 
-    m_upperFeederMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
-    m_lowerFeederMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    // Enable beam beak sensors for feeder motors
+    m_upperFeederSensor.enableLimitSwitch(true);
+    m_lowerFeederSensor.enableLimitSwitch(true);
 
     // Initialize config for flywheel PID
     Flywheel.masterConfig.initializeTalonPID(Flywheel.masterMotor, TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice(), false, false);
@@ -82,8 +91,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     Flywheel.slaveMotor.setInverted(true);
 
     // Configure LIDAR settings
-    m_lidar.setMaxPeriod(1.00); //set the max period that can be measured
-    m_lidar.setSemiPeriodMode(true); //Set the counter to period measurement
+    m_lidar.setMaxPeriod(1.00); // Set the max period that can be measured
+    m_lidar.setSemiPeriodMode(true); // Set the counter to period measurement
     m_lidar.reset();
   }
   
@@ -92,10 +101,14 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @return hardware object containing all necessary devices for this subsystem
    */
   public static Hardware initializeHardware() {
+    CANSparkMax upperFeederMotor = new CANSparkMax(Constants.UPPER_FEEDER_MOTOR_PORT, MotorType.kBrushless);
+    CANSparkMax lowerFeederMotor = new CANSparkMax(Constants.LOWER_FEEDER_MOTOR_PORT, MotorType.kBrushless);
     Hardware shooterHardware = new Hardware(new WPI_TalonFX(Constants.FLYWHEEL_MASTER_MOTOR_PORT),
                                             new WPI_TalonFX(Constants.FLYWHEEL_SLAVE_MOTOR_PORT),
-                                            new WPI_TalonSRX(Constants.FEEDER_MOTOR_PORT),
-                                            new WPI_TalonSRX(Constants.FEEDER_MOTOR_PORT),
+                                            upperFeederMotor,
+                                            lowerFeederMotor,
+                                            upperFeederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed),
+                                            lowerFeederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen),
                                             new Counter(Constants.LIDAR_PORT));
     return shooterHardware;
   }
@@ -115,13 +128,11 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Create smart dashboard indicator
+   * Create SmartDashboard indicators
    */
   public void smartDashboard() {
-    boolean upperSensor = m_upperFeederMotor.isFwdLimitSwitchClosed() == 1 ? true : false;
-    boolean lowerSensor = m_lowerFeederMotor.isFwdLimitSwitchClosed() == 1 ? true : false;
-    SmartDashboard.putBoolean("Ball 1", !upperSensor);
-    SmartDashboard.putBoolean("Ball 2", lowerSensor);
+    SmartDashboard.putBoolean("Ball 1", m_upperFeederSensor.isPressed());
+    SmartDashboard.putBoolean("Ball 2", m_lowerFeederSensor.isPressed());
   }
 
   @Override
@@ -162,43 +173,43 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public boolean isFlywheelAtSpeed() {
     return (Math.abs(Flywheel.masterMotor.getClosedLoopError()) < Flywheel.masterConfig.getTolerance())
-                      && Flywheel.masterMotor.getClosedLoopTarget() != 0;
+            && Flywheel.masterMotor.getClosedLoopTarget() != 0;
   }
 
   /**
    * Sets feeder intake speed
    */
   public void feederIntake() {
-    m_upperFeederMotor.set(ControlMode.PercentOutput, Constants.FEEDER_INTAKE_SPEED);
-    m_lowerFeederMotor.set(ControlMode.PercentOutput, Constants.FEEDER_INTAKE_SPEED);
+    m_upperFeederSensor.enableLimitSwitch(true);
+    m_lowerFeederSensor.enableLimitSwitch(true);
+    m_upperFeederMotor.set(Constants.FEEDER_INTAKE_SPEED);
+    m_lowerFeederMotor.set(Constants.FEEDER_INTAKE_SPEED);
   }
 
   /**
    * Sets feeder outtake speed
    */
   public void feederOuttake() {
-    m_upperFeederMotor.overrideLimitSwitchesEnable(false);
-    m_lowerFeederMotor.overrideLimitSwitchesEnable(false);
-    m_upperFeederMotor.set(ControlMode.PercentOutput, -Constants.FEEDER_INTAKE_SPEED);
-    m_lowerFeederMotor.set(ControlMode.PercentOutput, -Constants.FEEDER_INTAKE_SPEED);
+    m_upperFeederSensor.enableLimitSwitch(false);
+    m_lowerFeederSensor.enableLimitSwitch(false);
+    m_upperFeederMotor.set(-Constants.FEEDER_INTAKE_SPEED);
+    m_lowerFeederMotor.set(-Constants.FEEDER_INTAKE_SPEED);
   }
 
   /**
    * Sets feeder shoot speed
    */
   public void feederShoot() {
-    m_upperFeederMotor.overrideLimitSwitchesEnable(false);
-    m_lowerFeederMotor.overrideLimitSwitchesEnable(false);
-    m_upperFeederMotor.set(ControlMode.PercentOutput, Constants.FEEDER_SHOOT_SPEED);
-    m_lowerFeederMotor.set(ControlMode.PercentOutput, Constants.FEEDER_SHOOT_SPEED);
+    m_upperFeederSensor.enableLimitSwitch(false);
+    m_lowerFeederSensor.enableLimitSwitch(false);
+    m_upperFeederMotor.set(Constants.FEEDER_SHOOT_SPEED);
+    m_lowerFeederMotor.set(Constants.FEEDER_SHOOT_SPEED);
   }
 
   /**
    * Stops feeder motor
    */
   public void feederStop() {
-    m_upperFeederMotor.overrideLimitSwitchesEnable(true);
-    m_lowerFeederMotor.overrideLimitSwitchesEnable(true);
     m_upperFeederMotor.stopMotor();
     m_lowerFeederMotor.stopMotor();
   }
@@ -211,7 +222,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     if(m_lidar.get() < 1)
       return 0;
     else
-      return ((m_lidar.getPeriod()*1000000.0/10.0) - LIDAR_OFFSET) / 100.0; //convert to distance. sensor is high 10 us for every centimeter. 
+      return ((m_lidar.getPeriod()*1000000.0/10.0) - LIDAR_OFFSET) / 100.0; // convert to distance. sensor is high 10 us for every centimeter. 
   }
 
   @Override
@@ -220,5 +231,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     Flywheel.slaveMotor = null;
     m_upperFeederMotor = null;
     m_lowerFeederMotor = null;
+    m_upperFeederSensor = null;
+    m_lowerFeederSensor = null;
   }
 }

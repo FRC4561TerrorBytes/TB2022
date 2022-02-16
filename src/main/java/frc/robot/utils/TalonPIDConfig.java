@@ -152,6 +152,8 @@ public class TalonPIDConfig {
     talon.configAllowableClosedloopError(PID_SLOT, m_tolerance);
     talon.configClosedLoopPeakOutput(PID_SLOT, 1.0);
 
+    talon.config_IntegralZone(PID_SLOT, m_tolerance * 2);
+
     m_kF = 1023 / rpmToTicksPer100ms(m_maxRPM);
     talon.config_kF(PID_SLOT, m_kF);
 
