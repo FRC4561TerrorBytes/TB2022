@@ -21,9 +21,6 @@ public final class Constants {
   // Robot tick rate in seconds
   public static final double ROBOT_LOOP_PERIOD = 1.0 / 60.0;
 
-  // ShuffleBoard Default Tab name
-  public static final String DEFAULT_TAB = "Default";
-
   // Controller deadband
   public static final double CONTROLLER_DEADBAND = 0.12;
 
