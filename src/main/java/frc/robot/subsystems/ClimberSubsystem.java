@@ -14,6 +14,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.ClimberStateIterator;
@@ -79,6 +80,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
 
     m_telescopeSlaveMotor.set(ControlMode.Follower, m_telescopeMasterMotor.getDeviceID());
     m_telescopeSlaveMotor.setInverted(InvertType.OpposeMaster);
+
   }
 
   /**
@@ -98,6 +100,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
     tab.addNumber("Climber position", () -> m_telescopeMasterMotor.getSelectedSensorPosition());
     tab.addNumber("Winch position", () -> m_winchMotor.getSelectedSensorPosition());
+    SmartDashboard.putBoolean("Next Climber State Ready?", isClimbMotionFinished());
   }
 
   @Override
@@ -211,6 +214,23 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_winchMotor.set(ControlMode.MotionMagic, position);
   }
 
+  /**
+   * Check telescope motor position
+   */
+  public boolean telescopeMotionIsFinished(){
+   return m_telescopeMasterMotor.getActiveTrajectoryPosition() - m_telescopeMasterMotor.getClosedLoopTarget() < m_telescopeConfig.getTolerance();
+  }
+
+  /**
+   * Check winch motor position
+   */
+  public boolean winchMotionIsFinished(){
+    return m_winchMotor.getActiveTrajectoryPosition() - m_winchMotor.getClosedLoopTarget() < m_winchConfig.getTolerance();
+  }
+
+  public boolean isClimbMotionFinished(){
+   return telescopeMotionIsFinished() && winchMotionIsFinished();
+  }
   /**
    * Advance climber to next climb state.
    */
