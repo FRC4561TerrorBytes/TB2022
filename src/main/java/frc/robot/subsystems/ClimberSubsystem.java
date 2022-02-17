@@ -6,13 +6,17 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utils.ClimberStateIterator;
 import frc.robot.utils.TalonPIDConfig;
 
 public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
@@ -20,18 +24,33 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   private final String SUBSYSTEM_NAME = "Climber Subsystem";
   
   public static class Hardware {
-    private WPI_TalonFX climberMotor;
+    private WPI_TalonFX telescopeMasterMotor;
+    private WPI_TalonFX telescopSlaveMotor;
     private WPI_TalonFX winchMotor;
+    private AnalogPotentiometer ultrasonicSensor;
 
-    public Hardware(WPI_TalonFX climberMotor, WPI_TalonFX winchMotor) {
-      this.climberMotor = climberMotor;
+    public Hardware(WPI_TalonFX telescopeMasterMotor,
+                    WPI_TalonFX telescopeSlaveMotor,
+                    WPI_TalonFX winchMotor,
+                    AnalogPotentiometer ultrasonicSensor) {    
+      this.telescopeMasterMotor = telescopeMasterMotor;
+      this.telescopSlaveMotor = telescopeSlaveMotor;
       this.winchMotor = winchMotor;
+      this.ultrasonicSensor = ultrasonicSensor;
     }
   }
 
-  private WPI_TalonFX m_climberMotor;
+  private final double ULTRASONIC_FACTOR = 512 / 39.37;
+
+  private WPI_TalonFX m_telescopeMasterMotor;
+  private WPI_TalonFX m_telescopeSlaveMotor;
   private WPI_TalonFX m_winchMotor;
-  private TalonPIDConfig m_climberConfig;
+  private AnalogPotentiometer m_ultrasonicSensor;
+  private TalonPIDConfig m_telescopeConfig;
+  private TalonPIDConfig m_winchConfig;
+  private ClimberStateIterator m_climberStateIterator;
+  private ClimberStateIterator.ClimberState m_currentState;
+
 
   /**
    * Creates an instance of ClimberSubsystem
@@ -39,19 +58,27 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * ONLY ONE INSTANCE SHOULD EXIST AT ANY TIME!!!!!!
    * <p>
    * @param climberHardware Hardware devices required by climber 
-   * @param climberConfig PID config for climber
+   * @param telescopeConfig PID config for climber
    */
-  public ClimberSubsystem(Hardware climberHardware, TalonPIDConfig climberConfig) {
-    this.m_climberMotor = climberHardware.climberMotor;
+  public ClimberSubsystem(Hardware climberHardware, TalonPIDConfig telescopeConfig, TalonPIDConfig winchConfig) {
+    this.m_telescopeMasterMotor = climberHardware.telescopeMasterMotor;
+    this.m_telescopeSlaveMotor = climberHardware.telescopSlaveMotor;
     this.m_winchMotor = climberHardware.winchMotor;
-    this.m_climberConfig = climberConfig;
+    this.m_ultrasonicSensor = climberHardware.ultrasonicSensor;
+    this.m_telescopeConfig = telescopeConfig;
+    this.m_winchConfig = winchConfig;
+    this.m_climberStateIterator = new ClimberStateIterator();
+    this.m_currentState = m_climberStateIterator.getCurrentState();
 
-    m_climberConfig.initializeTalonPID(m_climberMotor, FeedbackDevice.IntegratedSensor);
-    m_climberMotor.setSelectedSensorPosition(0.0);
+    m_telescopeConfig.initializeTalonPID(m_telescopeMasterMotor, FeedbackDevice.IntegratedSensor);
+    m_telescopeMasterMotor.setSelectedSensorPosition(0.0);
     m_winchMotor.setSelectedSensorPosition(0.0);
 
-    m_climberMotor.setNeutralMode(NeutralMode.Brake);
+    m_telescopeMasterMotor.setNeutralMode(NeutralMode.Brake);
     m_winchMotor.setNeutralMode(NeutralMode.Brake);
+
+    m_telescopeSlaveMotor.set(ControlMode.Follower, m_telescopeMasterMotor.getDeviceID());
+    m_telescopeSlaveMotor.setInverted(InvertType.OpposeMaster);
   }
 
   /**
@@ -59,15 +86,17 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * @return hardware object containing all necessary devices for this subsystem
    */
   public static Hardware initializeHardware() {
-    Hardware climberHardware = new Hardware(new WPI_TalonFX(Constants.CLIMBER_MOTOR_PORT), 
-                                            new WPI_TalonFX(Constants.CLIMBER_WINCH_MOTOR_PORT));
+    Hardware climberHardware = new Hardware(new WPI_TalonFX(Constants.CLIMBER_MASTER_TELESCOPE_MOTOR_PORT),
+                                            new WPI_TalonFX(Constants.CLIMBER_SLAVE_TELESCOPE_MOTOR_PORT),
+                                            new WPI_TalonFX(Constants.CLIMBER_WINCH_MOTOR_PORT),
+                                            new AnalogPotentiometer(Constants.CLIMBER_ULTRASONIC_PORT));
 
     return climberHardware;
   }
 
   public void shuffleboard() {
     ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
-    tab.addNumber("Climber position", () -> m_climberMotor.getSelectedSensorPosition());
+    tab.addNumber("Climber position", () -> m_telescopeMasterMotor.getSelectedSensorPosition());
     tab.addNumber("Winch position", () -> m_winchMotor.getSelectedSensorPosition());
   }
 
@@ -76,65 +105,135 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     // This method will be called once per scheduler run
   }
 
+  public double getUltrasonicDistance() {
+    return m_ultrasonicSensor.get() * ULTRASONIC_FACTOR;
+  }
+
   /**
    * Moves climber to upper limit
    */
-  public void climberUp() {
-    m_climberMotor.set(ControlMode.MotionMagic, m_climberConfig.getUpperLimit());
+  public void telescopeUp() {
+    telescopeSetPosition(m_telescopeConfig.getUpperLimit());
   }
 
   /**
    * Moves climber to lower limit
    */
-  public void climberDown() {
-    m_climberMotor.set(ControlMode.MotionMagic, m_climberConfig.getLowerLimit());
+  public void telescopeDown() {
+    telescopeSetPosition(m_telescopeConfig.getLowerLimit());
   }
 
   /**
    * Move climber up manually
    * <p>
-   * Note: soft limits are disabled, call {@link ClimberSubsystem#climberStopManual()} to re-enable soft limits
+   * Note: soft limits are disabled, call {@link ClimberSubsystem#telescopeStopManual()} to re-enable soft limits
    */
-  public void climberUpManual() {
-    m_climberMotor.overrideSoftLimitsEnable(false);
-    m_climberMotor.set(ControlMode.PercentOutput, +1.0);
+  public void telescopeUpManual() {
+    m_telescopeMasterMotor.overrideSoftLimitsEnable(false);
+    m_telescopeMasterMotor.set(ControlMode.PercentOutput, +1.0);
   }
 
   /**
    * Move climber down manually
    * <p>
-   * Note: soft limits are disabled, call {@link ClimberSubsystem#climberStopManual()} to re-enable soft limits
+   * Note: soft limits are disabled, call {@link ClimberSubsystem#telescopeStopManual()} to re-enable soft limits
    */
-  public void climberDownManual() {
-    m_climberMotor.overrideSoftLimitsEnable(false);
-    m_climberMotor.set(ControlMode.PercentOutput, -1.0);
+  public void telescopeDownManual() {
+    m_telescopeMasterMotor.overrideSoftLimitsEnable(false);
+    m_telescopeMasterMotor.set(ControlMode.PercentOutput, -1.0);
   }
 
   /**
    * Stop climber after moving manually, and re-enable soft limits
    */
-  public void climberStopManual() {
-    m_climberMotor.overrideSoftLimitsEnable(true);
-    m_climberMotor.stopMotor();
+  public void telescopeStopManual() {
+    m_telescopeMasterMotor.overrideSoftLimitsEnable(true);
+    m_telescopeMasterMotor.stopMotor();
+  }
+
+  /**
+   * Moves telescope to set position.
+   * @param position position in falcon ticks.
+   */
+  public void telescopeSetPosition(double position) {
+    position = MathUtil.clamp(position, m_telescopeConfig.getLowerLimit(), m_telescopeConfig.getUpperLimit());
+    m_telescopeMasterMotor.set(ControlMode.MotionMagic, position);
   }
 
   /**
    * Moves winch to upper limit
    */
-  public void winchUp() {
-    m_winchMotor.set(ControlMode.PercentOutput, m_climberConfig.getUpperLimit());
+  public void winchIn() {
+    winchSetPosition(m_winchConfig.getLowerLimit());
   }
 
   /**
    * Moves winch to lower limit
    */
-  public void winchDown() {
-    m_winchMotor.set(ControlMode.PercentOutput, m_climberConfig.getLowerLimit());
+  public void winchOut() {
+    winchSetPosition(m_winchConfig.getUpperLimit());
+  }
+
+  /**
+   * Move winch in manually
+   * <p>
+   * Note: soft limits are disabled, call {@link ClimberSubsystem#winchStopManual()} to re-enable soft limits
+   */
+  public void winchInManual() {
+    m_winchMotor.overrideSoftLimitsEnable(false);
+    m_winchMotor.set(ControlMode.PercentOutput, -1.0);
+  }
+
+  /**
+   * Move winch out manually
+   * <p>
+   * Note: soft limits are disabled, call {@link ClimberSubsystem#winchStopManual()} to re-enable soft limits
+   */
+  public void winchOutManual() {
+    m_winchMotor.overrideSoftLimitsEnable(false);
+    m_winchMotor.set(ControlMode.PercentOutput, +1.0);
+  }
+
+  /**
+   * Stop winch after moving manually and re-enable soft limits.
+   */
+  public void winchStopManual() {
+    m_winchMotor.overrideSoftLimitsEnable(true);
+    m_winchMotor.stopMotor();
+  }
+
+  /**
+   * Moves winch to set position.
+   * @param position position in falcon ticks.
+   */
+  public void winchSetPosition(double position) {
+    position = MathUtil.clamp(position, m_winchConfig.getLowerLimit(), m_winchConfig.getUpperLimit());
+    m_winchMotor.set(ControlMode.MotionMagic, position);
+  }
+
+  /**
+   * Advance climber to next climb state.
+   */
+  public void nextClimberState() {
+    m_climberStateIterator.nextState();
+    m_currentState = m_climberStateIterator.getCurrentState();
+
+    telescopeSetPosition(m_currentState.getTelescopePosition());
+    winchSetPosition(m_currentState.getWinchPosition());
+  }
+
+  public void previousClimberState() {
+    m_climberStateIterator.previousState();
+    m_currentState = m_climberStateIterator.getCurrentState();
+
+    telescopeSetPosition(m_currentState.getTelescopePosition());
+    winchSetPosition(m_currentState.getWinchPosition());
   }
 
   @Override
   public void close() {
-    m_climberMotor = null;
+    m_telescopeMasterMotor = null;
+    m_telescopeSlaveMotor = null;
     m_winchMotor = null;
   }
 }

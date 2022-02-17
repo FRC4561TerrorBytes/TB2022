@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+
 import frc.robot.utils.TalonPIDConfig;
 
 /**
@@ -16,10 +19,13 @@ import frc.robot.utils.TalonPIDConfig;
  */
 public final class Constants {
   // Robot tick rate in seconds
-  public static final double ROBOT_LOOP_PERIOD = 1.0 / 120.0;
+  public static final double ROBOT_LOOP_PERIOD = 1.0 / 60.0;
 
   // Controller deadband
-  public static final double CONTROLLER_DEADBAND = 0.1;
+  public static final double CONTROLLER_DEADBAND = 0.12;
+
+  // Spline interpolator
+  private static final SplineInterpolator SPLINE_INTERPOLATOR = new SplineInterpolator();
 
   // Motor RPMs, encoder values, and gear ratios
   public static final int FALCON_500_MAX_RPM = 6380;
@@ -37,12 +43,20 @@ public final class Constants {
   public static final double DRIVE_MAX_LINEAR_SPEED = (FALCON_500_MAX_RPM / 60) * DRIVE_METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY; // 3.766 m/s
 
   // Drive PID values
-  public static final double DRIVE_kP = 0.01;
-  public static final double DRIVE_kD = 0.0001;
-  public static final double DRIVE_TURN_SCALAR = 45.0;
-  public static final String DRIVE_TRACTION_CONTROL_CURVE = "X / 3.766";
-  public static final String DRIVE_THROTTLE_INPUT_CURVE = "3.766 * X";
-  public static final int DRIVE_RESPONSE_EXPONENT = 1;
+  public static final double DRIVE_kP = 0.011;
+  public static final double DRIVE_kD = 0.0005;
+  public static final double DRIVE_TURN_SCALAR = 80.0;
+
+  private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };
+  private static final double DRIVE_THROTTLE_INPUT_CURVE_Y[] = { 0.0, 1.883, 3.766 };
+  private static final double DRIVE_TRACTION_CONTROL_CURVE_X[] = { 0.0, 1.883, 3.766 };
+  private static final double DRIVE_TRACTION_CONTROL_CURVE_Y[] = { 0.0, 0.5,   1.0 };
+  private static final double DRIVE_TURN_INPUT_CURVE_X[] = { 0.0, 0.5, 1.0 };
+  private static final double DRIVE_TURN_INPUT_CURVE_Y[] = { 0.0, 0.5, 1.0 };
+
+  public static final PolynomialSplineFunction DRIVE_THROTTLE_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_THROTTLE_INPUT_CURVE_X, DRIVE_THROTTLE_INPUT_CURVE_Y);
+  public static final PolynomialSplineFunction DRIVE_TRACTION_CONTROL_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TRACTION_CONTROL_CURVE_X, DRIVE_TRACTION_CONTROL_CURVE_Y);
+  public static final PolynomialSplineFunction DRIVE_TURN_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TURN_INPUT_CURVE_X, DRIVE_TURN_INPUT_CURVE_Y);
 
   // Intake Arm PID config
   public static final double INTAKE_ARM_kP = 0.0;
@@ -86,6 +100,7 @@ public final class Constants {
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
   private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = false;
+  public static final double FLYWHEEL_SHOOTING_RPM = 1000;
   public static final double FEEDER_INTAKE_SPEED = 1.0;
   public static final double FEEDER_SHOOT_SPEED = 1.0;
 
@@ -100,61 +115,96 @@ public final class Constants {
                                                                                 FLYWHEEL_kD,
                                                                                 FLYWHEEL_TOLERANCE);
 
-  // Climber PID variables
-  public static final double CLIMBER_kP = 0.0;
-  public static final double CLIMBER_kD = 0.0;
-  public static final double CLIMBER_TOLERANCE = 10;
-  public static final double CLIMBER_LOWER_LIMIT = 0;
-  public static final double CLIMBER_UPPER_LIMIT = 1500;
-  public static final double CLIMBER_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double CLIMBER_ACCLERATION = FALCON_500_MAX_RPM;
-  public static final int CLIMBER_MOTION_SMOOTHING = 1;
-  public static final int CLIMBER_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
-  public static final int CLIMBER_MAX_RPM = FALCON_500_MAX_RPM;
-  public static final boolean CLIMBER_SOFT_LIMITS = true;
-  public static final boolean CLIMBER_SENSOR_PHASE = false;
-  public static final boolean CLIMBER_INVERT_MOTOR = false;
+  // Telescope PID variables
+  public static final double TELESCOPE_kP = 0.0;
+  public static final double TELESCOPE_kD = 0.0;
+  public static final double TELESCOPE_TOLERANCE = 10;
+  public static final double TELESCOPE_LOWER_LIMIT = 0;
+  public static final double TELESCOPE_UPPER_LIMIT = 1500;
+  public static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM;
+  public static final double TELESCOPE_ACCLERATION = FALCON_500_MAX_RPM;
+  public static final int TELESCOPE_MOTION_SMOOTHING = 1;
+  public static final int TELESCOPE_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
+  public static final int TELESCOPE_MAX_RPM = FALCON_500_MAX_RPM;
+  public static final boolean TELESCOPE_SOFT_LIMITS = true;
+  public static final boolean TELESCOPE_SENSOR_PHASE = false;
+  public static final boolean TELESCOPE_INVERT_MOTOR = false;
 
-  // Climber PID config
-  public static final TalonPIDConfig CLIMBER_CONFIG = new TalonPIDConfig(CLIMBER_SENSOR_PHASE, 
-                                                                         CLIMBER_INVERT_MOTOR, 
-                                                                         CLIMBER_TICKS_PER_ROTATION, 
-                                                                         CLIMBER_MAX_RPM, 
-                                                                         CLIMBER_kP, 
+  // Telescope PID config
+  public static final TalonPIDConfig TELESCOPE_CONFIG = new TalonPIDConfig(TELESCOPE_SENSOR_PHASE, 
+                                                                         TELESCOPE_INVERT_MOTOR, 
+                                                                         TELESCOPE_TICKS_PER_ROTATION, 
+                                                                         TELESCOPE_MAX_RPM, 
+                                                                         TELESCOPE_kP, 
                                                                          0.0, 
-                                                                         CLIMBER_kD, 
-                                                                         CLIMBER_TOLERANCE, 
-                                                                         CLIMBER_LOWER_LIMIT, 
-                                                                         CLIMBER_UPPER_LIMIT, 
-                                                                         CLIMBER_SOFT_LIMITS, 
-                                                                         CLIMBER_VELOCITY, 
-                                                                         CLIMBER_ACCLERATION, 
-                                                                         CLIMBER_MOTION_SMOOTHING);
+                                                                         TELESCOPE_kD, 
+                                                                         TELESCOPE_TOLERANCE, 
+                                                                         TELESCOPE_LOWER_LIMIT, 
+                                                                         TELESCOPE_UPPER_LIMIT, 
+                                                                         TELESCOPE_SOFT_LIMITS, 
+                                                                         TELESCOPE_VELOCITY, 
+                                                                         TELESCOPE_ACCLERATION, 
+                                                                         TELESCOPE_MOTION_SMOOTHING);
+
+  // Winch PID variables
+  public static final double WINCH_kP = 0.0;
+  public static final double WINCH_kD = 0.0;
+  public static final double WINCH_TOLERANCE = 10;
+  public static final double WINCH_LOWER_LIMIT = 0;
+  public static final double WINCH_UPPER_LIMIT = 1500;
+  public static final double WINCH_VELOCITY = FALCON_500_MAX_RPM;
+  public static final double WINCH_ACCLERATION = FALCON_500_MAX_RPM;
+  public static final int WINCH_MOTION_SMOOTHING = 1;
+  public static final int WINCH_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
+  public static final int WINCH_MAX_RPM = FALCON_500_MAX_RPM;
+  public static final boolean WINCH_SOFT_LIMITS = true;
+  public static final boolean WINCH_SENSOR_PHASE = false;
+  public static final boolean WINCH_INVERT_MOTOR = false;
+
+  // Winch PID config
+  public static final TalonPIDConfig WINCH_CONFIG = new TalonPIDConfig(WINCH_SENSOR_PHASE, 
+                                                                         WINCH_INVERT_MOTOR, 
+                                                                         WINCH_TICKS_PER_ROTATION, 
+                                                                         WINCH_MAX_RPM, 
+                                                                         WINCH_kP, 
+                                                                         0.0, 
+                                                                         WINCH_kD, 
+                                                                         WINCH_TOLERANCE, 
+                                                                         WINCH_LOWER_LIMIT, 
+                                                                         WINCH_UPPER_LIMIT, 
+                                                                         WINCH_SOFT_LIMITS, 
+                                                                         WINCH_VELOCITY, 
+                                                                         WINCH_ACCLERATION, 
+                                                                         WINCH_MOTION_SMOOTHING);
 
   // Xbox controller ports
   public static final int PRIMARY_CONTROLLER_PORT = 0;
   public static final int SECONDARY_CONTROLLER_PORT = 1;
 
-  // Drive Motor Ports 
-  public static final int FRONT_LEFT_MOTOR_PORT = 0;
-  public static final int REAR_LEFT_MOTOR_PORT = 1;
+  // Drive hardware Ports 
+  public static final int FRONT_LEFT_MOTOR_PORT = 1;
+  public static final int REAR_LEFT_MOTOR_PORT = 2;
 
-  public static final int FRONT_RIGHT_MOTOR_PORT = 2;
-  public static final int REAR_RIGHT_MOTOR_PORT = 3;
+  public static final int FRONT_RIGHT_MOTOR_PORT = 3;
+  public static final int REAR_RIGHT_MOTOR_PORT = 4;
 
-  // Intake Motor Ports
-  public static final int ARM_MOTOR_PORT = 7;
-  public static final int INTAKE_ROLLER_PORT = 8;
+  // Intake hardware Ports
+  public static final int ARM_MOTOR_PORT = 5;
+  public static final int INTAKE_ROLLER_PORT = 6;
 
-  // Shooter motor ports
-  public static final int FLYWHEEL_MASTER_MOTOR_PORT = 4;
-  public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 5;
-  public static final int FEEDER_MOTOR_PORT = 6;
+  // Shooter hardware ports
+  public static final int FLYWHEEL_MASTER_MOTOR_PORT = 7;
+  public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 8;
+  public static final int FEEDER_MOTOR_PORT = 9;
+  public static final int LIDAR_PORT = 0;
 
-  // Climber motor ports
+  // Climber hardware ports
   public static final int CLIMBER_MOTOR_PORT = 9;
   public static final int CLIMBER_WINCH_MOTOR_PORT = 10;
+  public static final int CLIMBER_MASTER_TELESCOPE_MOTOR_PORT = 11;
+  public static final int CLIMBER_SLAVE_TELESCOPE_MOTOR_PORT = 12;
+  public static final int CLIMBER_ULTRASONIC_PORT = 0;
 
-  //Automode Constants
+  // Automode Constants
   public static final double TRACK_WIDTH = 0; // TODO: Find track width
 }

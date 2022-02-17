@@ -2,12 +2,9 @@ package frc.robot.utils;
 
 import java.util.HashMap;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
 
 public class TractionControlController {
   private final double MIN_DEADBAND = 0.001;
@@ -26,43 +23,30 @@ public class TractionControlController {
    * @param tractionControlCurve Expression characterising traction of the robot with "X" as the variable
    * @param throttleInputCurve Expression characterising throttle input with "X" as the variable
    */
-  public TractionControlController(double deadband, double maxLinearSpeed, String tractionControlCurve, String throttleInputCurve) {
+  public TractionControlController(double deadband, double maxLinearSpeed, PolynomialSplineFunction tractionControlCurve, PolynomialSplineFunction throttleInputCurve) {
     m_deadband = MathUtil.clamp(deadband, MIN_DEADBAND, MAX_DEADBAND);
     m_maxLinearSpeed = Math.floor(maxLinearSpeed * 1000) / 1000;
-
-    // Get Mozilla Rhino JavaScript engine
-    ScriptEngine jsEngine = new ScriptEngineManager().getEngineByName("rhino");
 
     // Fill traction control hashmap
     int maxSpeedCount = (int)(maxLinearSpeed * 1000.0);
     for (int i = 0; i <= maxSpeedCount; i++) {
       double key = (double)i / 1000;
-      try {
-        // Evaluate JavaScript, replacing "X" with value and clamp value between [0.0, +1.0]
-        double value = Double.valueOf(jsEngine.eval(tractionControlCurve.replace("X", String.valueOf(key))).toString());
-        value = MathUtil.clamp(value, 0.0, +1.0);
-        // Add both positive and negative values to map
-        m_tractionControlMap.put(+key, +value);
-        m_tractionControlMap.put(-key, -value);
-      } catch (ScriptException e) {
-        DriverStation.reportError(e.getMessage(), true);
-      }
+      // Evaluate and clamp value between [0.0, +1.0]
+      double value = MathUtil.clamp(tractionControlCurve.value(key), 0.0, +1.0);
+      // Add both positive and negative values to map
+      m_tractionControlMap.put(+key, +value);
+      m_tractionControlMap.put(-key, -value);
     }
 
     // Fill throttle input hashmap
     for (int i = 0; i <= 1000; i++) {
       double key = (double)i / 1000;
-      try {
-        double deadbandKey = MathUtil.applyDeadband(key, m_deadband);
-        // Evaluate JavaScript, replacing "X" with value and clamp value between [0.0, +MAX_LINEAR_SPEED]
-        double value = Double.valueOf(jsEngine.eval(throttleInputCurve.replace("X", String.valueOf(deadbandKey))).toString());
-        value = MathUtil.clamp(value, 0.0, +maxLinearSpeed);
-        // Add both positive and negative values to map
-        m_throttleInputMap.put(+key, +value);
-        m_throttleInputMap.put(-key, -value);
-      } catch (ScriptException e) {
-        DriverStation.reportError(e.getMessage(), true);
-      }
+      double deadbandKey = MathUtil.applyDeadband(key, m_deadband);
+      // Evaluate value between [0.0, +MAX_LINEAR_SPEED]
+      double value = MathUtil.clamp(throttleInputCurve.value(deadbandKey), 0.0, +maxLinearSpeed);
+      // Add both positive and negative values to map
+      m_throttleInputMap.put(+key, +value);
+      m_throttleInputMap.put(-key, -value);
     }
   }
 

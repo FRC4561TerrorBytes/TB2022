@@ -145,7 +145,15 @@ public class AutoTrajectory {
    * Get Ramsete command to run
    * @return Ramsete command that will stop when complete
    */
-  public Command getCommand() {
+  public Command getCommandAndStop() {
     return m_ramseteCommand.andThen(() -> m_subsystem.stop());
+  }
+  
+  /**
+   * Get Ramsete command to run
+   * @return Ramsete command
+   */
+  public Command getCommand() {
+    return m_ramseteCommand;
   }
 }

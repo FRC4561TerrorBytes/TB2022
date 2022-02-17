@@ -2,11 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.commands;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -23,11 +24,13 @@ import org.mockito.ArgumentMatchers;
 
 import edu.wpi.first.wpilibj.Counter;
 import frc.robot.Constants;
+import frc.robot.subsystems.ShooterSubsystem;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ShooterSubsystemTest {
+public class ShootCommandTest {
   private final double DELTA = 2e-3;
   private ShooterSubsystem m_shooterSubsystem;
+  private ShootCommand m_shootCommand;
   private ShooterSubsystem.Hardware m_shooterHardware;
 
 
@@ -46,6 +49,7 @@ public class ShooterSubsystemTest {
     m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, m_flywheelSlaveMotor, m_feederMotor, m_lidar);
 
     m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware, Constants.FLYWHEEL_MASTER_CONFIG);
+    m_shootCommand = new ShootCommand(m_shooterSubsystem, 200.0);
   }
 
   @AfterEach
@@ -56,51 +60,44 @@ public class ShooterSubsystemTest {
 
   @Test
   @Order(1)
-  @DisplayName("Test if robot can set flywheel speed")
-  public void setFlywheelSpeed() {
-    m_shooterSubsystem.setFlywheelSpeed(200);
+  @DisplayName("Test if robot can start flywheel")
+  public void initialize() {
+      m_shootCommand.initialize();
     verify(m_flywheelMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(682.666, DELTA));
   }
 
   @Test
   @Order(2)
-  @DisplayName("Test if robot can stop flywheel")
-  public void stopFlywheel() {
-    m_shooterSubsystem.flywheelStop();
-    verify(m_flywheelMasterMotor, times(1)).stopMotor();
+  @DisplayName("Test if robot can run feeder wheel when flywheel at speed")
+  public void executeMotorAtSpeed() {
+    m_shootCommand.initialize();
+    when(m_flywheelMasterMotor.getClosedLoopError()).thenReturn(0.0);
+    when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(682.666);
+    m_shootCommand.execute();
+    verify(m_feederMotor, times(1)).overrideLimitSwitchesEnable(false);
+    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA));
   }
 
   @Test
   @Order(3)
-  @DisplayName("Test if robot can set feeder intake speed")
-  public void feederIntake(){
-    m_shooterSubsystem.feederIntake();
-    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(Constants.FEEDER_INTAKE_SPEED));
+  @DisplayName("Test if robot stops feeder when flywheel not at speed")
+  public void executeMotorNotAtSpeed(){
+    m_shootCommand.initialize();
+    when(m_flywheelMasterMotor.getClosedLoopError()).thenReturn(150.0);
+    when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(682.666);
+    m_shootCommand.execute();
+    verify(m_feederMotor, times(1)).overrideLimitSwitchesEnable(true);
+    verify(m_feederMotor, times(1)).stopMotor();
   }
 
   @Test
   @Order(4)
-  @DisplayName("Test if robot can set feeder outtake speed")
-  public void feederOuttake(){
-    m_shooterSubsystem.feederOuttake();
-    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(-Constants.FEEDER_INTAKE_SPEED));
-  }
-
-  @Test
-  @Order(5)
-  @DisplayName("Test if robot can set feeder shooter speed")
-  public void feederShoot(){
-    m_shooterSubsystem.feederShoot();
-    verify(m_feederMotor, times(1)).overrideLimitSwitchesEnable(ArgumentMatchers.eq(false));
-    verify(m_feederMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), ArgumentMatchers.eq(Constants.FEEDER_SHOOT_SPEED));
-  }
-
-  @Test
-  @Order(6)
-  @DisplayName("Test if robot can stop feeder motor")
-  public void feederStop(){
-    m_shooterSubsystem.feederStop();
-    verify(m_feederMotor, times(1)).overrideLimitSwitchesEnable(ArgumentMatchers.eq(true));
+  @DisplayName("Test if robot can stop feeder wheel and flywheel")
+  public void end(){
+    m_shootCommand.end(true);
+    verify(m_flywheelMasterMotor, times(1)).stopMotor();
+    verify(m_feederMotor, times(1)).overrideLimitSwitchesEnable(true);
     verify(m_feederMotor, times(1)).stopMotor();
+    
   }
 }

@@ -6,14 +6,12 @@ package frc.robot;
 
 import org.photonvision.PhotonCamera;
 
-import edu.wpi.first.cscore.HttpCamera;
-import edu.wpi.first.cscore.MjpegServer;
-import edu.wpi.first.cscore.VideoSource;
-import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -24,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.OuttakeCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -45,7 +44,8 @@ public class RobotContainer {
                                                                            Constants.DRIVE_METERS_PER_TICK,
                                                                            Constants.DRIVE_MAX_LINEAR_SPEED,
                                                                            Constants.DRIVE_TRACTION_CONTROL_CURVE,
-                                                                           Constants.DRIVE_THROTTLE_INPUT_CURVE);
+                                                                           Constants.DRIVE_THROTTLE_INPUT_CURVE,
+                                                                           Constants.DRIVE_TURN_INPUT_CURVE);
 
   private static final IntakeSubsystem INTAKE_SUBSYSTEM = new IntakeSubsystem(IntakeSubsystem.initializeHardware(), 
                                                                               Constants.INTAKE_ARM_CONFIG, 
@@ -55,7 +55,8 @@ public class RobotContainer {
                                                                                  Constants.FLYWHEEL_MASTER_CONFIG);
 
   private static final ClimberSubsystem CLIMBER_SUBSYSTEM = new ClimberSubsystem(ClimberSubsystem.initializeHardware(),
-                                                                                 Constants.CLIMBER_CONFIG);
+                                                                                 Constants.TELESCOPE_CONFIG,
+                                                                                 Constants.WINCH_CONFIG);
 
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
 
@@ -64,14 +65,8 @@ public class RobotContainer {
 
   private static PhotonCamera m_pi = new PhotonCamera("photonvision");
 
-  private static HttpCamera m_camera = new HttpCamera("DriverCam", "photonvision.local:1181");
-
-  private static MjpegServer m_piServer = new MjpegServer("PiServer", 1181);
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
-    initializeCamera();
     
     // Configure the button bindings
     configureButtonBindings();
@@ -85,6 +80,7 @@ public class RobotContainer {
     );
 
     // Initialize Shuffleboard tabs
+    defaultShuffleboardTab();
     DRIVE_SUBSYSTEM.shuffleboard();
     INTAKE_SUBSYSTEM.shuffleboard();
     SHOOTER_SUBSYSTEM.shuffleboard();
@@ -93,7 +89,6 @@ public class RobotContainer {
     // Initialize Automode Chooser in Shuffleboard
     AutomodeChooser();
 
-    PortForwarder.add(5800, "photonvision.local", 5800);
   }
 
   private void AutomodeChooser() {
@@ -132,6 +127,7 @@ public class RobotContainer {
     primaryButtonRBumper.whenHeld(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     primaryButtonLBumper.whenHeld(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
+    primaryTriggerRight.whileActiveOnce(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.FLYWHEEL_SHOOTING_RPM));
   }
 
   /**
@@ -144,9 +140,10 @@ public class RobotContainer {
     return m_automodeChooser.getSelected();
   }
 
-  public void initializeCamera() {
+  @SuppressWarnings("unused")
+  public void defaultShuffleboardTab() {
     m_pi.setDriverMode(true);
-    m_camera.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
-    m_piServer.setSource(m_camera);
+    Shuffleboard.selectTab("SmartDashboard");
+    SmartDashboard.putData("Auto Mode", m_automodeChooser);
   }
 }
