@@ -21,6 +21,9 @@ public final class Constants {
   // Robot tick rate in seconds
   public static final double ROBOT_LOOP_PERIOD = 1.0 / 60.0;
 
+  // Automode Constants
+  public static final double TRACK_WIDTH = 0.66167; // TODO: Find track width
+
   // Controller deadband
   public static final double CONTROLLER_DEADBAND = 0.12;
 
@@ -205,6 +208,5 @@ public final class Constants {
   public static final int CLIMBER_SLAVE_TELESCOPE_MOTOR_PORT = 12;
   public static final int CLIMBER_ULTRASONIC_PORT = 0;
 
-  // Automode Constants
-  public static final double TRACK_WIDTH = 0; // TODO: Find track width
+  
 }
