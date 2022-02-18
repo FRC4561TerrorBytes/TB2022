@@ -108,7 +108,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
                                             upperFeederMotor,
                                             lowerFeederMotor,
                                             upperFeederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed),
-                                            lowerFeederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen),
+                                            lowerFeederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed),
                                             new Counter(Constants.LIDAR_PORT));
     return shooterHardware;
   }
