@@ -62,6 +62,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   private SparkMaxLimitSwitch m_lowerFeederSensor;
   private Counter m_lidar;
   private final double LIDAR_OFFSET = 10.0;
+
   /**
    * Creates an instance of ShooterSubsystem
    * <p>
@@ -91,7 +92,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     Flywheel.slaveMotor.setInverted(true);
 
     // Configure LIDAR settings
-    m_lidar.setMaxPeriod(1.00); // Set the max period that can be measured
+    m_lidar.setMaxPeriod(1.0); // Set the max period that can be measured
     m_lidar.setSemiPeriodMode(true); // Set the counter to period measurement
     m_lidar.reset();
   }
@@ -110,6 +111,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
                                             upperFeederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed),
                                             lowerFeederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed),
                                             new Counter(Constants.LIDAR_PORT));
+
     return shooterHardware;
   }
 
@@ -219,7 +221,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @return distance in Meters
    */
   public double getLIDAR() {
-    if(m_lidar.get() < 1)
+    if (m_lidar.get() < 1)
       return 0;
     else
       return ((m_lidar.getPeriod()*1000000.0/10.0) - LIDAR_OFFSET) / 100.0; // convert to distance. sensor is high 10 us for every centimeter. 
