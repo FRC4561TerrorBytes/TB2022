@@ -19,13 +19,29 @@ public class FiveBallAutoAdvanced extends SequentialCommandGroup {
   /** Creates a new FourBallAutoAdvanced. */
   public FiveBallAutoAdvanced(ShooterSubsystem shooterSubsystem, DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem) {
     addCommands(
+      // shoots preloaded ball
       new ShootCommand(shooterSubsystem, 1000.0),
+
+      // leaves tarmac, gets new ball and returns to tarmac  
       new AutoTrajectory(driveSubsystem, "FourBallAuto_1", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      
+      // shoots new ball
       new ShootCommand(shooterSubsystem, 1000.0),
+
+      // leaves tarmac, gets new ball and returns to tarmac  
       new AutoTrajectory(driveSubsystem, "FourBallAuto_2", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+     
+     // shoots new ball
       new ShootCommand(shooterSubsystem, 1000.0),
+      
+      // leaves tarmac, gets new ball and returns to tarmac
       new AutoTrajectory(driveSubsystem, "FiveBallAuto_1", 1.8, 1.5).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
-      new AutoTrajectory(driveSubsystem, "FiveBallAuto_2", 1.8, 1.5).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem))
+      
+      // shoots ball
+      new ShootCommand(shooterSubsystem, 1000.0),
+
+      // leaves tarmac
+      new AutoTrajectory(driveSubsystem, "FiveBallAuto_2", 1.8, 1.5).getCommandAndStop()
     );
   }
 }
