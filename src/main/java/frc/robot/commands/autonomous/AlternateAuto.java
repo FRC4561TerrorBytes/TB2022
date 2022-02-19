@@ -16,7 +16,7 @@ import frc.robot.utils.AutoTrajectory;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AlternateAuto extends SequentialCommandGroup {
   /** Creates a new AlternateAuto. */
-  public AlternateAuto(ShooterSubsystem shooterSubsystem, DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem){
+  public AlternateAuto(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
     addCommands(
       // shoots preloaded balls
       new ShootCommand(shooterSubsystem, 1000.0),

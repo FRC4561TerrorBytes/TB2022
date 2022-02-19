@@ -17,7 +17,7 @@ import frc.robot.utils.AutoTrajectory;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class FiveBallAutoAdvanced extends SequentialCommandGroup {
   /** Creates a new FourBallAutoAdvanced. */
-  public FiveBallAutoAdvanced(ShooterSubsystem shooterSubsystem, DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem) {
+  public FiveBallAutoAdvanced(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
     addCommands(
       // shoots preloaded ball
       new ShootCommand(shooterSubsystem, 1000.0),
