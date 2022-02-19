@@ -22,7 +22,7 @@ public final class Constants {
   public static final double ROBOT_LOOP_PERIOD = 1.0 / 60.0;
 
   // Automode Constants
-  public static final double TRACK_WIDTH = 0.66167; // TODO: Find track width
+  public static final double TRACK_WIDTH = 0.66167;
 
   // Controller deadband
   public static final double CONTROLLER_DEADBAND = 0.12;
