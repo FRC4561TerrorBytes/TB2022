@@ -18,16 +18,12 @@ import frc.robot.utils.AutoTrajectory;
 public class FourBallAuto extends SequentialCommandGroup {
   /** Creates a new FourBallAuto. */
   public FourBallAuto(ShooterSubsystem shooterSubsystem, DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem) {
-    // Add your commands in the addCommands() call, e.g
-    // addCommands(new FooCommand(), new BarCommand());
-    
     addCommands(
       new ShootCommand(shooterSubsystem, 1000.0),
       new AutoTrajectory(driveSubsystem, "FourBallAuto_1", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       new ShootCommand(shooterSubsystem, 1000.0),
       new AutoTrajectory(driveSubsystem, "FourBallAuto_2", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       new AutoTrajectory(driveSubsystem, "FourBallAuto_3", 1.8, 1.5).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem))
-
     );
   }
 }

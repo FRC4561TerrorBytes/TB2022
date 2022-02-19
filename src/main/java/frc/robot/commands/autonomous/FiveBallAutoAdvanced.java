@@ -18,8 +18,6 @@ import frc.robot.utils.AutoTrajectory;
 public class FiveBallAutoAdvanced extends SequentialCommandGroup {
   /** Creates a new FourBallAutoAdvanced. */
   public FiveBallAutoAdvanced(ShooterSubsystem shooterSubsystem, DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new ShootCommand(shooterSubsystem, 1000.0),
       new AutoTrajectory(driveSubsystem, "FourBallAuto_1", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
