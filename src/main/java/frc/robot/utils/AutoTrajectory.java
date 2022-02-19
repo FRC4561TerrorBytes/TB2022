@@ -28,9 +28,6 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 
-/**
- * Add your docs here.
- */
 public class AutoTrajectory {
   // Ramsete Command values
   private final DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(Constants.TRACK_WIDTH);
@@ -84,7 +81,8 @@ public class AutoTrajectory {
         m_subsystem 
     );
   }
-/**
+
+  /**
    * Creates new path trajectory using a physical x,y coordinate points
    * @param subsystem DriveSubsystem required for drivetrain movement
    * @param waypoints list of x, y coordinate pairs in trajectory
