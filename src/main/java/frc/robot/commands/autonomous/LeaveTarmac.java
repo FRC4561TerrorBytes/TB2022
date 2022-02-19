@@ -16,6 +16,6 @@ public class LeaveTarmac extends SequentialCommandGroup {
   public LeaveTarmac(DriveSubsystem driveSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoTrajectory(driveSubsystem, "Leave Tarmac", 1.85, 1.85).getCommandAndStop());
+    addCommands(new AutoTrajectory(driveSubsystem, "LeaveTarmac", 1.85, 1.85).getCommandAndStop());
   }
 }
