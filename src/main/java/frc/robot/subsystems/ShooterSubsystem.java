@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import javax.sound.sampled.Line;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -12,6 +14,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -61,7 +64,9 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   private SparkMaxLimitSwitch m_upperFeederSensor;
   private SparkMaxLimitSwitch m_lowerFeederSensor;
   private Counter m_lidar;
-  private final double LIDAR_OFFSET = 10.0;
+  private final double LIDAR_OFFSET = 9.0;
+
+  private LinearFilter m_LIDARFilter;
 
   /**
    * Creates an instance of ShooterSubsystem
@@ -92,6 +97,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     Flywheel.slaveMotor.setInverted(true);
 
     // Configure LIDAR settings
+    m_LIDARFilter = LinearFilter.singlePoleIIR(0.4, Constants.ROBOT_LOOP_PERIOD);
     m_lidar.setMaxPeriod(1.0); // Set the max period that can be measured
     m_lidar.setSemiPeriodMode(true); // Set the counter to period measurement
     m_lidar.reset();
@@ -140,6 +146,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   @Override
   public void periodic() {
     smartDashboard();
+    System.out.println("LIDAR Distance: " + getLIDAR());
   }
 
   /**
@@ -221,10 +228,14 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @return distance in Meters
    */
   public double getLIDAR() {
+    double lidarOutput = 0;
+    double lidarPeriod = m_LIDARFilter.calculate(m_lidar.getPeriod());
     if (m_lidar.get() < 1)
-      return 0;
-    else
-      return ((m_lidar.getPeriod()*1000000.0/10.0) - LIDAR_OFFSET) / 100.0; // convert to distance. sensor is high 10 us for every centimeter. 
+      return lidarOutput;
+    else {
+      lidarOutput = ((lidarPeriod*1000000.0/10.0) - LIDAR_OFFSET) / 100.0; // convert to distance. sensor is high 10 us for every centimeter. 37.592
+      return Math.copySign(Math.floor(Math.abs(lidarOutput) * 100) / 100, lidarOutput);
+    }
   }
 
   @Override
