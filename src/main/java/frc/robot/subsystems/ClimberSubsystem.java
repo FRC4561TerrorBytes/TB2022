@@ -67,7 +67,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_ultrasonicSensor = climberHardware.ultrasonicSensor;
     this.m_telescopeConfig = telescopeConfig;
     this.m_winchConfig = winchConfig;
-    this.m_climberStateIterator = new ClimberStateIterator();
+    this.m_climberStateIterator = new ClimberStateIterator(Constants.TELESCOPE_UPPER_LIMIT, Constants.WINCH_UPPER_LIMIT);
     this.m_currentState = m_climberStateIterator.getCurrentState();
 
     m_telescopeConfig.initializeTalonPID(m_telescopeMasterMotor, FeedbackDevice.IntegratedSensor);
@@ -222,6 +222,9 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     winchSetPosition(m_currentState.getWinchPosition());
   }
 
+  /**
+   * Move climber to previous state.
+   */
   public void previousClimberState() {
     m_climberStateIterator.previousState();
     m_currentState = m_climberStateIterator.getCurrentState();
