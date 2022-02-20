@@ -9,12 +9,12 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShootCommand extends CommandBase {
   private ShooterSubsystem m_shooterSubsystem;
-  private double m_rpm;
+  private double m_distance;
 
   /** Creates a new ShootCommand. */
-  public ShootCommand(ShooterSubsystem shooterSubsystem, Double rpm) {
+  public ShootCommand(ShooterSubsystem shooterSubsystem, Double distance) {
     this.m_shooterSubsystem = shooterSubsystem;
-    this.m_rpm = rpm;
+    this.m_distance = distance;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooterSubsystem);
   }
@@ -22,7 +22,7 @@ public class ShootCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooterSubsystem.setFlywheelSpeed(m_rpm); 
+    m_shooterSubsystem.setFlywheelAuto(m_distance); 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
