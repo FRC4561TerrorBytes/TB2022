@@ -6,13 +6,12 @@ package frc.robot;
 
 import org.photonvision.PhotonCamera;
 
-import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -45,7 +44,8 @@ public class RobotContainer {
                                                                            Constants.DRIVE_METERS_PER_TICK,
                                                                            Constants.DRIVE_MAX_LINEAR_SPEED,
                                                                            Constants.DRIVE_TRACTION_CONTROL_CURVE,
-                                                                           Constants.DRIVE_THROTTLE_INPUT_CURVE);
+                                                                           Constants.DRIVE_THROTTLE_INPUT_CURVE,
+                                                                           Constants.DRIVE_TURN_INPUT_CURVE);
 
   private static final IntakeSubsystem INTAKE_SUBSYSTEM = new IntakeSubsystem(IntakeSubsystem.initializeHardware(), 
                                                                               Constants.INTAKE_ARM_CONFIG, 
@@ -87,8 +87,6 @@ public class RobotContainer {
 
     // Initialize Automode Chooser in Shuffleboard
     AutomodeChooser();
-
-    PortForwarder.add(5800, "photonvision.local", 5800);
   }
 
   private void AutomodeChooser() {
@@ -143,7 +141,7 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   public void defaultShuffleboardTab() {
     m_pi.setDriverMode(true);
-    ShuffleboardTab defaultTab = Shuffleboard.getTab(Constants.DEFAULT_TAB);
-    defaultTab.add(m_automodeChooser);
+    Shuffleboard.selectTab("SmartDashboard");
+    SmartDashboard.putData("Auto Mode", m_automodeChooser);
   }
 }

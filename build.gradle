@@ -65,8 +65,7 @@ dependencies {
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
 
-    implementation 'org.mozilla:rhino:1.7.13'
-    implementation 'org.mozilla:rhino-engine:1.7.13'
+    implementation 'org.apache.commons:commons-math3:3.+'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
     testImplementation 'org.mockito:mockito-core:3.+'

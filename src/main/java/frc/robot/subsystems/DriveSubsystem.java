@@ -14,8 +14,9 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.TractionControlController;
+import frc.robot.utils.TurnPIDController;
 
 
 public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
@@ -49,7 +51,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
   private String SUBSYSTEM_NAME = "Drive Subsystem";
 
-  private PIDController m_drivePIDController;
+  private TurnPIDController m_turnPIDController;
   private TractionControlController m_tractionControlController;
   private DifferentialDriveOdometry m_odometry;
 
@@ -67,9 +69,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
   private double m_turnScalar = 1.0; 
   private double m_metersPerTick = 0.0;
-  private double m_inertialVelocity = 0.0;
   private double m_deadband = 0.0;
-  private boolean m_wasTurning = false;
 
   /**
    * Create an instance of DriveSubsystem
@@ -86,9 +86,9 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param tractionControlCurve Expression characterising traction of the robot with "X" as the variable
    * @param throttleInputCurve Expression characterising throttle input with "X" as the variable
    */
-  public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turnScalar, double deadband, double metersPerTick,
-                        double maxLinearSpeed, String tractionControlCurve, String throttleInputCurve) {
-    m_drivePIDController = new PIDController(kP, 0.0, kD, Constants.ROBOT_LOOP_PERIOD);
+  public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turnScalar, double deadband, double metersPerTick, double maxLinearSpeed, 
+                        PolynomialSplineFunction tractionControlCurve, PolynomialSplineFunction throttleInputCurve, PolynomialSplineFunction turnInputCurve) {
+    m_turnPIDController = new TurnPIDController(kP, kD, turnScalar, deadband, turnInputCurve);
     m_tractionControlController = new TractionControlController(deadband, maxLinearSpeed, tractionControlCurve, throttleInputCurve);
 
     this.m_lMasterMotor = drivetrainHardware.lMasterMotor;
@@ -148,10 +148,10 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
     // Initialise PID subsystem setpoint and input
     resetAngle();
-    m_drivePIDController.setSetpoint(0.0);
+    m_turnPIDController.setSetpoint(0.0);
 
     // Set drive PID tolerance
-    m_drivePIDController.setTolerance(TOLERANCE);
+    m_turnPIDController.setTolerance(TOLERANCE);
 
     // Initialise odometry
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
@@ -216,40 +216,22 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param turnRequest Turn input [-1.0, +1.0]
    */
   public void teleopPID(double speedRequest, double turnRequest) {
-    // Get current angle of robot
-    double currentAngle = getAngle();
-
-    // Start turning if input is greater than deadband
-    if (Math.abs(turnRequest) >= m_deadband) {
-      // Apply deadband to turnRequest
-      double scaledTurnRequest = turnRequest + (turnRequest * m_deadband) - Math.copySign(m_deadband, turnRequest);
-      // Add delta to setpoint scaled by factor
-      m_drivePIDController.setSetpoint(currentAngle + (scaledTurnRequest * m_turnScalar));
-      m_wasTurning = true;
-    } else { 
-      // When turning is complete, set setpoint to current angle
-      if (m_wasTurning) {
-        m_drivePIDController.setSetpoint(currentAngle);
-        m_wasTurning = false;
-      }
-    }
-
     // Calculate next PID turn output
-    double turnOutput = m_drivePIDController.calculate(currentAngle);
+    double turnOutput = m_turnPIDController.calculate(getAngle(), getTurnRate(), turnRequest);
 
-    // Calculate next motor speed output
-    double optimalSpeedOutput = m_tractionControlController.calculate(getInertialVelocity(), speedRequest);
+    // Calculate next speed output
+    double speedOutput = m_tractionControlController.calculate(getInertialVelocity(), speedRequest);
 
     // Run motors with appropriate values
-    m_lMasterMotor.set(ControlMode.PercentOutput, optimalSpeedOutput, DemandType.ArbitraryFeedForward, -turnOutput);
-    m_rMasterMotor.set(ControlMode.PercentOutput, optimalSpeedOutput, DemandType.ArbitraryFeedForward, +turnOutput);
+    m_lMasterMotor.set(ControlMode.PercentOutput, speedOutput, DemandType.ArbitraryFeedForward, -turnOutput);
+    m_rMasterMotor.set(ControlMode.PercentOutput, speedOutput, DemandType.ArbitraryFeedForward, +turnOutput);
   }
 
   /**
    * Maintain robot angle using PID
    */
   public void maintainAngle() {
-    double turnOutput = m_drivePIDController.calculate(getAngle());
+    double turnOutput = m_turnPIDController.calculate(getAngle());
 
     m_lMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, -turnOutput);
     m_rMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, +turnOutput);
@@ -261,16 +243,16 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void aimToAngle(double angleDelta) throws InterruptedException {
     angleDelta = MathUtil.clamp(angleDelta, -m_turnScalar, +m_turnScalar);
-    m_drivePIDController.setSetpoint(getAngle() + angleDelta);
+    m_turnPIDController.setSetpoint(getAngle() + angleDelta);
     long loopTime = (long)Constants.ROBOT_LOOP_PERIOD * 1000;
 
     do {
-      double turnOutput = m_drivePIDController.calculate(getAngle());
+      double turnOutput = m_turnPIDController.calculate(getAngle());
       m_lMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, -turnOutput);
       m_rMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, +turnOutput);
       
       Thread.sleep(loopTime);
-    } while (!m_drivePIDController.atSetpoint());
+    } while (!m_turnPIDController.atSetpoint());
   }
 
   /**
@@ -281,11 +263,11 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   public boolean turnToAngle(double angleSetpoint) {
     MathUtil.clamp(angleSetpoint, -180.0, +180.0);
     resetAngle();
-    m_drivePIDController.setSetpoint(angleSetpoint);
+    m_turnPIDController.setSetpoint(angleSetpoint);
 
     double currentAngle = getAngle();
     while (Math.abs(currentAngle) <= Math.abs(angleSetpoint)) {
-      double output = m_drivePIDController.calculate(currentAngle, m_drivePIDController.getSetpoint());
+      double output = m_turnPIDController.calculate(currentAngle, m_turnPIDController.getSetpoint());
       m_lMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, -output);
       m_rMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, +output);
       currentAngle = getAngle();
@@ -368,7 +350,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return -m_navx.getRate();
+    return m_navx.getRate();
   }
 
   /**
@@ -376,10 +358,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @return Velocity of the robot as measured by the NAVX
    */
   public double getInertialVelocity() {
-    // Return inertial velocity to nearest cm/sec
-    m_inertialVelocity = m_navx.getVelocityY();
-    m_inertialVelocity = Math.copySign(Math.floor(Math.abs(m_inertialVelocity) * 100) / 100, m_inertialVelocity);
-    return m_inertialVelocity;
+    return m_navx.getVelocityY();
   }
 
   /**
@@ -428,8 +407,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void resetDrivePID() {
     resetAngle();
-    m_drivePIDController.setSetpoint(0.0);
-    m_drivePIDController.reset();
+    m_turnPIDController.setSetpoint(0.0);
+    m_turnPIDController.reset();
   }
 
   /**
@@ -437,7 +416,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @return current setpoint in degrees
    */
   public double getDrivePIDSetpoint() {
-    return m_drivePIDController.getSetpoint();
+    return m_turnPIDController.getSetpoint();
   }
 
   @Override
