@@ -9,6 +9,9 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+
 import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.MathUtil;
@@ -47,6 +50,16 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     }
   }
 
+  public enum SelectedGoal {
+    Low(0),
+    High(1);
+
+    int value;
+    private SelectedGoal(int value) {
+      this.value = value;
+    }
+  }
+
   @SuppressWarnings("unused")
   private static class Flywheel {
     private static final double MAX_SPEED_RPM = Constants.FALCON_500_MAX_RPM;
@@ -62,6 +75,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   private SparkMaxLimitSwitch m_lowerFeederSensor;
   private Counter m_lidar;
   private final double LIDAR_OFFSET = 10.0;
+  private PolynomialSplineFunction[] m_shooterOutputCurves = new PolynomialSplineFunction[2];
+  private SelectedGoal m_selectedGoal;
 
   /**
    * Creates an instance of ShooterSubsystem
@@ -71,7 +86,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @param shooterHardware Hardware devices for shooter
    * @param flywheelMasterConfig PID config for flywheel
    */
-  public ShooterSubsystem(Hardware shooterHardware, TalonPIDConfig flywheelMasterConfig) {
+  public ShooterSubsystem(Hardware shooterHardware, TalonPIDConfig flywheelMasterConfig, PolynomialSplineFunction lowerShooterCurve, PolynomialSplineFunction upperShooterCurve) {
     Flywheel.masterMotor = shooterHardware.flywheelMasterMotor;
     Flywheel.slaveMotor = shooterHardware.flywheelSlaveMotor;
     m_upperFeederMotor = shooterHardware.upperFeederMotor;
@@ -79,6 +94,9 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     m_upperFeederSensor = shooterHardware.upperFeederSensor;
     m_lowerFeederSensor = shooterHardware.lowerFeederSensor;
     m_lidar = shooterHardware.lidar;
+    m_shooterOutputCurves[0] = lowerShooterCurve;
+    m_shooterOutputCurves[1] = upperShooterCurve;
+    m_selectedGoal = SelectedGoal.Low;
 
     Flywheel.masterConfig = flywheelMasterConfig;
 
@@ -140,6 +158,19 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   @Override
   public void periodic() {
     smartDashboard();
+  }
+
+  public void toggleSelectedGoal() {
+    if (m_selectedGoal == SelectedGoal.Low) m_selectedGoal = SelectedGoal.High;
+    else m_selectedGoal = SelectedGoal.Low;
+  }
+
+  /**
+   * Automatically sets the flywheel speed based on distance from the goal.
+   * @param distance Distance in meters
+   */
+  public void setFlywheelAuto(double distance) {
+    setFlywheelSpeed(m_shooterOutputCurves[m_selectedGoal.value].value(distance));
   }
 
   /**

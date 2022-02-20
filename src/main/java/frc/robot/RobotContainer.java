@@ -52,7 +52,9 @@ public class RobotContainer {
                                                                               Constants.INTAKE_ROLLER_SPEED);
 
   private static final ShooterSubsystem SHOOTER_SUBSYSTEM = new ShooterSubsystem(ShooterSubsystem.initializeHardware(), 
-                                                                                 Constants.FLYWHEEL_MASTER_CONFIG);
+                                                                                 Constants.FLYWHEEL_MASTER_CONFIG,
+                                                                                 Constants.SHOOTER_LOW_CURVE,
+                                                                                 Constants.SHOOTER_HIGH_CURVE);
 
   private static final ClimberSubsystem CLIMBER_SUBSYSTEM = new ClimberSubsystem(ClimberSubsystem.initializeHardware(),
                                                                                  Constants.TELESCOPE_CONFIG,
@@ -121,7 +123,6 @@ public class RobotContainer {
     Trigger primaryTriggerRight = new Trigger(() -> PRIMARY_CONTROLLER.getRightTriggerAxis() > Constants.CONTROLLER_DEADBAND);
     Trigger primaryButtonTractionControl = new Trigger(() -> PRIMARY_CONTROLLER.getStartButton() && PRIMARY_CONTROLLER.getBackButton());
 
-    primaryTriggerRight.whileActiveOnce(new StartEndCommand(() -> SHOOTER_SUBSYSTEM.setFlywheelSpeed(3000), () -> SHOOTER_SUBSYSTEM.flywheelStop(), SHOOTER_SUBSYSTEM));
     primaryButtonRBumper.whenHeld(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     primaryButtonLBumper.whenHeld(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));

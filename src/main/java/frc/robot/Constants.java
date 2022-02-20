@@ -104,6 +104,14 @@ public final class Constants {
   public static final double FEEDER_INTAKE_SPEED = 1.0;
   public static final double FEEDER_SHOOT_SPEED = 1.0;
 
+  private static final double SHOOTER_LOW_CURVE_X[] = {0, 1, 2};
+  private static final double SHOOTER_LOW_CURVE_Y[] = {0, 0, 0};
+  private static final double SHOOTER_HIGH_CURVE_X[] = {0, 1, 2};
+  private static final double SHOOTER_HIGH_CURVE_Y[] = {0, 0, 0};
+
+  public static final PolynomialSplineFunction SHOOTER_LOW_CURVE = SPLINE_INTERPOLATOR.interpolate(SHOOTER_LOW_CURVE_X, SHOOTER_LOW_CURVE_Y);
+  public static final PolynomialSplineFunction SHOOTER_HIGH_CURVE = SPLINE_INTERPOLATOR.interpolate(SHOOTER_HIGH_CURVE_X, SHOOTER_HIGH_CURVE_Y);
+
 
   // Set PID for Flywheel
   public static final TalonPIDConfig FLYWHEEL_MASTER_CONFIG = new TalonPIDConfig(FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE,
