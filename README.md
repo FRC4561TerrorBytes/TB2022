@@ -24,4 +24,12 @@ We used the Falcon 500 motors for their power and for their built in enoders, al
 Key points:
 * Four bar linkage intake mechanism
 * Powered by 2 Falcon 500 brushless motors
-* Motion Profileing for smooth arm operation
+* Motion Profiling for smooth arm operation
+
+### [Shooter Subsystem](src\main\java\frc\robot\subsystems\ShooterSubsystem.java)
+The shooter subsystem controls the shooting mechanism of the robot. It uses 2 Falcon 500s for the flywheel and 2 NEOs for the feeder wheels. We use PID for the flywheel to ensure that the balls are being shot when the flywheel is at the correct speed. The feeder works with our intake to bring it balls and the feeder wheels will stop automatically when a ball is detected. Balls are detected using an infrared beam break sensor. The upper feeder wheel stops when the upper sensor is triggered, and the lower feeder wheel stops when both sensors are triggered. 
+
+Key points:
+* Powered by 2 Falcon 500s and 2 NEOs
+* 2 beam break sensors 
+* Automated feeder logic using OR gate
