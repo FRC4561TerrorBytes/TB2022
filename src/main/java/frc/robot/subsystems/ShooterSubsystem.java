@@ -164,6 +164,9 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     System.out.println("LIDAR Distance: " + getLIDAR());
   }
 
+  /**
+   * Toggles selected goal 
+   */
   public void toggleSelectedGoal() {
     if (m_selectedGoal == SelectedGoal.Low) m_selectedGoal = SelectedGoal.High;
     else m_selectedGoal = SelectedGoal.Low;
