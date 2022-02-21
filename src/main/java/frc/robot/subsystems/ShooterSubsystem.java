@@ -155,6 +155,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void smartDashboard() {
     SmartDashboard.putBoolean("Ball 1", m_upperFeederSensor.isPressed());
     SmartDashboard.putBoolean("Ball 2", m_lowerFeederSensor.isPressed());
+    SmartDashboard.putBoolean("Selected Goal", m_selectedGoal == SelectedGoal.Low);
   }
 
   @Override
