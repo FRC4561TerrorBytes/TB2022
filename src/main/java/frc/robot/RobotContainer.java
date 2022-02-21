@@ -24,8 +24,8 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.autonomous.AlternateAuto;
-import frc.robot.commands.autonomous.FiveBallAutoAdvanced;
-import frc.robot.commands.autonomous.FourBallAuto;
+import frc.robot.commands.autonomous.FourBallAutoAdvanced;
+import frc.robot.commands.autonomous.ThreeBallAuto;
 import frc.robot.commands.autonomous.LeaveTarmac;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -98,8 +98,8 @@ public class RobotContainer {
   private void AutomodeChooser() {
     // Creates dropdown box in DriverStation to manually choose automodes
     m_automodeChooser.setDefaultOption("Leave Tarmac", new LeaveTarmac(DRIVE_SUBSYSTEM));
-    m_automodeChooser.addOption("Four Ball Auto", new FourBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-    m_automodeChooser.addOption("Five Ball Auto Advanced", new FiveBallAutoAdvanced(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    m_automodeChooser.addOption("Three Ball Auto", new ThreeBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    m_automodeChooser.addOption("Four Ball Auto Advanced", new FourBallAutoAdvanced(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     m_automodeChooser.addOption("Alternate Auto", new AlternateAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
   }
 

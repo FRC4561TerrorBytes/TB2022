@@ -15,27 +15,33 @@ import frc.robot.utils.AutoTrajectory;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class FourBallAuto extends SequentialCommandGroup {
-  /** Creates a new FourBallAuto. */
-  public FourBallAuto(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
+public class FourBallAutoAdvanced extends SequentialCommandGroup {
+  /** Creates a new FourBallAutoAdvanced. */
+  public FourBallAutoAdvanced(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
     addCommands(
-      // shoots preloaded balls
+      // shoots preloaded ball
       new ShootCommand(shooterSubsystem, 1000.0),
-      
+
       // leaves tarmac, gets new ball and returns to tarmac  
-      new AutoTrajectory(driveSubsystem, "FourBallAuto_1", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_1", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
-      // shoots preloaded balls
+      // shoots new ball
       new ShootCommand(shooterSubsystem, 1000.0),
+
+      // leaves tarmac, gets new ball and returns to tarmac  
+      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_2", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
      
-      // leaves tarmac, gets new ball and returns to tarmac  
-      new AutoTrajectory(driveSubsystem, "FourBallAuto_2", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+     // shoots new ball
+      new ShootCommand(shooterSubsystem, 1000.0),
       
-      // shoots preloaded balls
+      // leaves tarmac, gets new ball and returns to tarmac
+      new AutoTrajectory(driveSubsystem, "FourBallAuto_1", 1.8, 1.5).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      
+      // shoots ball
       new ShootCommand(shooterSubsystem, 1000.0),
 
       // leaves tarmac
-      new AutoTrajectory(driveSubsystem, "FourBallAuto_3", 1.8, 1.5).getCommandAndStop()
+      new AutoTrajectory(driveSubsystem, "FourBallAuto_2", 1.8, 1.5).getCommandAndStop()
     );
   }
 }
