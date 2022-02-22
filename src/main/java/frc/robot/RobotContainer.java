@@ -73,7 +73,6 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    
     // Configure the button bindings
     configureButtonBindings();
 
@@ -85,20 +84,19 @@ public class RobotContainer {
       )
     );
 
+    // Initialize auto mode chooser in Shuffleboard
+    autoModeChooser();
+
     // Initialize Shuffleboard tabs
     defaultShuffleboardTab();
     DRIVE_SUBSYSTEM.shuffleboard();
     INTAKE_SUBSYSTEM.shuffleboard();
     SHOOTER_SUBSYSTEM.shuffleboard();
     CLIMBER_SUBSYSTEM.shuffleboard();
-
-    // Initialize Automode Chooser in Shuffleboard
-    AutomodeChooser();
-
   }
 
-  private void AutomodeChooser() {
-    // Creates dropdown box in DriverStation to manually choose automodes
+  private void autoModeChooser() {
+    // Creates dropdown box in SmartDashboard to manually choose auto modes
     m_automodeChooser.setDefaultOption("Leave Tarmac", new LeaveTarmac(DRIVE_SUBSYSTEM));
     m_automodeChooser.addOption("Shoot Drive Forward Auto", new ShootDriveForwardAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     m_automodeChooser.addOption("Three Ball Auto", new ThreeBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
@@ -106,7 +104,6 @@ public class RobotContainer {
     m_automodeChooser.addOption("Alternate Auto", new AlternateAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     m_automodeChooser.addOption("Do nothing", null);
   }
-
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
