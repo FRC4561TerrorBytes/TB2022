@@ -78,7 +78,7 @@ public class RobotContainer {
     configureButtonBindings();
 
      // Initialize Automode Chooser in Shuffleboard
-     AutomodeChooser();
+     autoModeChooser();
 
     // Set default commands for subsystems
     DRIVE_SUBSYSTEM.setDefaultCommand(
@@ -140,7 +140,7 @@ public class RobotContainer {
     CLIMBER_SUBSYSTEM.initialize();
   }
 
-  private void AutomodeChooser() {
+  private void autoModeChooser() {
     // Creates dropdown box in DriverStation to manually choose automodes
     m_automodeChooser.setDefaultOption("Leave Tarmac", new LeaveTarmac(DRIVE_SUBSYSTEM));
     m_automodeChooser.addOption("Shoot Drive Forward Auto", new ShootDriveForwardAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
