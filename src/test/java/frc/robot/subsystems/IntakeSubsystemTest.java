@@ -69,10 +69,10 @@ public class IntakeSubsystemTest {
 	@Order(2)
 	@DisplayName("Test if robot can move arm relative to previous setpoint")
 	public void armRelative() {
-		when(m_armMotor.getClosedLoopTarget()).thenReturn(-42.0);
+		when(m_armMotor.getClosedLoopTarget()).thenReturn(0.0);
 
 		m_intakeSubsystem.armPositionRelative(4.0);
-		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(-38.0, DELTA));
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(4.0, DELTA));
 	}
 
 	@Test

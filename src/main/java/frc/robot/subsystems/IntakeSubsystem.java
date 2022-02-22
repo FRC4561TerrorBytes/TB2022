@@ -154,7 +154,6 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
 
    /**
    * Intake balls
-   * @return Previous arm position
    */
   public void intake() {
     m_prevArmPosition = m_armPosition;
@@ -164,7 +163,6 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
 
   /**
    * Outtakes balls
-   * @return Previous arm position
    */
   public void outtake() {
     m_prevArmPosition = m_armPosition;
