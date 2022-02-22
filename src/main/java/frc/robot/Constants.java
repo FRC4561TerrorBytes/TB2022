@@ -62,8 +62,8 @@ public final class Constants {
   public static final double INTAKE_ARM_kP = 0.0;
   public static final double INTAKE_ARM_kD = 0.0;
   public static final double INTAKE_ARM_TOLERANCE = 10;
-  public static final double INTAKE_ARM_LOWER_LIMIT = -1500;
-  public static final double INTAKE_ARM_UPPER_LIMIT = 0;
+  public static final double INTAKE_ARM_LOWER_LIMIT = 0;
+  public static final double INTAKE_ARM_UPPER_LIMIT = 3413;
   public static final double INTAKE_ARM_VELOCITY = 1;
   public static final double INTAKE_ARM_ACCLERATION = 0.1;
   public static final int INTAKE_ARM_MOTION_SMOOTHING = 7;
