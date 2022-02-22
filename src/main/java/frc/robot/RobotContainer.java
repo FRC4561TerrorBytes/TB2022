@@ -88,6 +88,9 @@ public class RobotContainer {
       )
     );
 
+    // Initialize auto mode chooser in Shuffleboard
+    autoModeChooser();
+
     // Initialize Shuffleboard tabs
     defaultShuffleboardTab();
     DRIVE_SUBSYSTEM.shuffleboard();
