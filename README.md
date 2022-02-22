@@ -33,3 +33,14 @@ Key points:
 * Powered by 2 Falcon 500s and 2 NEOs
 * 2 beam break sensors 
 * Automated feeder logic using OR gate
+* Motion Profileing for smooth arm operation
+
+### [Climber Subsystem](src/main/java/frc/robot/subsystems/ClimberSubsystem.java)
+The climber subsystem controls the 3 dimensional movement of the robot both on the y and z planes. It uses 3 Falcon 500 motors total, 2 to power the telescoping arms that reach out to the next set of rungs in order to "traverse" bar to bar, and another on the winch, the mechanism that lets the robot lean the telescoping arms at an angle to be able to reach the next rung, which is diagonal from the current rung. The climber subsystem makes use of 2 sets of arms and hooks, one telescoping, and one fixed. The fixed arm acts as an anchor to hold the robot on a rung, while the telescoping arm reaches out and latches onto the next rung. The TalonFXs are used to find the relative position of the telescoping arm. 
+A state machine and iterator is used to make a climber sequence, which checks for driver input to continue from state to state or in order to go back a step in case a step is completed incorrectly. The state machine also checks to make sure that a step has been completed correctly, by checking if the number of ticks that the motors have rotated matches the correct output.
+
+Key points: 
+* Powered by 3 Falcon 500s
+* 2 Arms - Telescoping and Fixed w/ Hooks
+* Winch for changing telescoping arm reach angle
+* State machine and iterator for simple climber sequence w/ input from 2 driver buttons
