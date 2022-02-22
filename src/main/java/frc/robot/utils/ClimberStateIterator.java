@@ -6,68 +6,82 @@ import java.util.List;
 public class ClimberStateIterator {
 
   public static class ClimberState {
-    private final int telescopePosition;
-    private final int winchPosition;
+    private final double telescopePosition;
+    private final double winchPosition;
 
-    private ClimberState(int telescopePosition, int winchPosition) {
+    private ClimberState(double telescopePosition, double winchPosition) {
       this.telescopePosition = telescopePosition;
       this.winchPosition = winchPosition;
     }
 
-    public int getTelescopePosition() {
+    public double getTelescopePosition() {
       return telescopePosition;
     }
 
-    public int getWinchPosition() {
+    public double getWinchPosition() {
       return winchPosition;
     }
   }
 
-  private ArrayList<ClimberState> states;
-  private int currentState = 0;
+  private ArrayList<ClimberState> m_states;
+  private int m_currentState = 0;
 
-  public static final ClimberState ClimberStart = new ClimberState(0, 0);
-  public static final ClimberState TelescopeUp = new ClimberState(0, 0);
-  public static final ClimberState TelescopeDown = new ClimberState(0, 0);
-  public static final ClimberState TelescopeUnhook = new ClimberState(0, 0);
-  public static final ClimberState WinchOut = new ClimberState(0, 0);
-  public static final ClimberState TelescopeReach = new ClimberState(0, 0);
-  public static final ClimberState WinchHook = new ClimberState(0, 0);
-  public static final ClimberState TelescopeGrab = new ClimberState(0, 0);
-  public static final ClimberState RobotSwing = new ClimberState(0, 0);
-  public static final ClimberState WinchIn = new ClimberState(0, 0);
-  public static final ClimberState FinishClimb = new ClimberState(0, 0);
+  
+  private static ClimberState ClimberStart;
+  private static ClimberState TelescopeUp;
+  private static ClimberState TelescopeDown;
+  private static ClimberState TelescopeUnhook;
+  private static ClimberState WinchOut;
+  private static ClimberState TelescopeReach;
+  private static ClimberState WinchHook;
+  private static ClimberState TelescopeGrab;
+  private static ClimberState RobotSwing;
+  private static ClimberState WinchIn;
+  private static ClimberState FinishClimb;
 
-  public ClimberStateIterator() {
-    states = new ArrayList<ClimberState>(List.of(ClimberStart,
-                                                 TelescopeUp,
-                                                 TelescopeDown,
-                                                 TelescopeUnhook,
-                                                 WinchOut,
-                                                 TelescopeReach,
-                                                 WinchHook,
-                                                 TelescopeGrab,
-                                                 RobotSwing,
-                                                 WinchIn,
-                                                 FinishClimb));
-    currentState = 0;
+  public ClimberStateIterator(double telescopeUpperLimit, double winchUpperLimit) {
+    m_currentState = 0;
+
+    ClimberStart = new ClimberState(0, 0);
+    TelescopeUp = new ClimberState(telescopeUpperLimit, 0);
+    TelescopeDown = new ClimberState(0, 0);
+    TelescopeUnhook = new ClimberState(telescopeUpperLimit * 0.1, 0);
+    WinchOut = new ClimberState(telescopeUpperLimit * 0.1, winchUpperLimit * 0.5);
+    TelescopeReach = new ClimberState(telescopeUpperLimit, winchUpperLimit * 0.5);
+    WinchHook = new ClimberState(telescopeUpperLimit, winchUpperLimit * 0.25);
+    TelescopeGrab = new ClimberState(telescopeUpperLimit * 0.75, winchUpperLimit * 0.25);
+    RobotSwing = new ClimberState(telescopeUpperLimit * 0.5, winchUpperLimit);
+    WinchIn = new ClimberState(telescopeUpperLimit * 0.5, 0);
+    FinishClimb = new ClimberState(0, 0);
+
+    m_states = new ArrayList<ClimberState>(List.of(ClimberStart,
+                                                   TelescopeUp,
+                                                   TelescopeDown,
+                                                   TelescopeUnhook,
+                                                   WinchOut,
+                                                   TelescopeReach,
+                                                   WinchHook,
+                                                   TelescopeGrab,
+                                                   RobotSwing,
+                                                   WinchIn,
+                                                   FinishClimb));
   }
 
   public ClimberState getCurrentState() {
-    return states.get(currentState);
+    return m_states.get(m_currentState);
   }
 
   public void nextState() {
-    currentState++;
-    if (currentState > 10) {
-      currentState = 3;
+    m_currentState++;
+    if (m_currentState > 10) {
+      m_currentState = 3;
     }
   }
 
   public void previousState() {
-    currentState--;
-    if (currentState < 0) {
-      currentState = 0;
+    m_currentState--;
+    if (m_currentState < 0) {
+      m_currentState = 0;
     }
   }
 

@@ -14,6 +14,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.ClimberStateIterator;
@@ -67,7 +68,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_ultrasonicSensor = climberHardware.ultrasonicSensor;
     this.m_telescopeConfig = telescopeConfig;
     this.m_winchConfig = winchConfig;
-    this.m_climberStateIterator = new ClimberStateIterator();
+    this.m_climberStateIterator = new ClimberStateIterator(Constants.TELESCOPE_UPPER_LIMIT, Constants.WINCH_UPPER_LIMIT);
     this.m_currentState = m_climberStateIterator.getCurrentState();
 
     m_telescopeConfig.initializeTalonPID(m_telescopeMasterMotor, FeedbackDevice.IntegratedSensor);
@@ -94,15 +95,25 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     return climberHardware;
   }
 
+   /**
+   * Create Shuffleboard tab for this subsystem and display values
+   */
   public void shuffleboard() {
     ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
     tab.addNumber("Climber position", () -> m_telescopeMasterMotor.getSelectedSensorPosition());
     tab.addNumber("Winch position", () -> m_winchMotor.getSelectedSensorPosition());
   }
 
+  /**
+   * Create SmartDashboard indicators
+   */
+  public void smartDashboard() {
+    SmartDashboard.putBoolean("Climber Ready?", isClimbMotionFinished());
+  }
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    smartDashboard();
   }
 
   public double getUltrasonicDistance() {
@@ -212,7 +223,32 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Advance climber to next climb state.
+   * Check if telesope motion is finished
+   * @return true if telescope motion is complete
+   */
+  public boolean telescopeMotionIsFinished() {
+   return m_telescopeMasterMotor.getActiveTrajectoryPosition() - m_telescopeMasterMotor.getClosedLoopTarget() < m_telescopeConfig.getTolerance();
+  }
+
+  /**
+   * Check if winch motion is finished
+   * @return true if winch motion is complete
+   */
+  public boolean winchMotionIsFinished() {
+    m_winchMotor.getClosedLoopError();
+    return m_winchMotor.getActiveTrajectoryPosition() - m_winchMotor.getClosedLoopTarget() < m_winchConfig.getTolerance();
+  }
+
+  /**
+   * Check if climber motion is finished
+   * @return true if climber motion is complete
+   */
+  public boolean isClimbMotionFinished() {
+   return telescopeMotionIsFinished() && winchMotionIsFinished();
+  }
+
+  /**
+   * Advance climber to next climb state
    */
   public void nextClimberState() {
     m_climberStateIterator.nextState();
@@ -222,6 +258,9 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     winchSetPosition(m_currentState.getWinchPosition());
   }
 
+  /**
+   * Move climber to previous state.
+   */
   public void previousClimberState() {
     m_climberStateIterator.previousState();
     m_currentState = m_climberStateIterator.getCurrentState();
