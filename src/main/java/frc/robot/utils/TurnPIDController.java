@@ -9,14 +9,21 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants;
 
 public class TurnPIDController extends PIDController {
-  //private PolynomialSplineFunction m_turnInputCurve;
   private HashMap<Double, Double> m_turnInputMap = new HashMap<Double, Double>();
   private double m_turnScalar = 0.0;
   private double m_deadband = 0.0;
   private boolean m_isTurning = false;
 
-  public TurnPIDController(double kp, double kd, double turnScalar, double deadband, PolynomialSplineFunction turnInputCurve) {
-    super(kp, 0.0, kd, Constants.ROBOT_LOOP_PERIOD);
+  /**
+   * Create an instance of TurnPIDController
+   * @param kP The proportional coefficient
+   * @param kD The derivative coefficient
+   * @param turnScalar Value to turn input by (degrees)
+   * @param deadband Controller deadband
+   * @param turnInputCurve Turn input curve
+   */
+  public TurnPIDController(double kP, double kD, double turnScalar, double deadband, PolynomialSplineFunction turnInputCurve) {
+    super(kP, 0.0, kD, Constants.ROBOT_LOOP_PERIOD);
     this.m_turnScalar = turnScalar;
     this.m_deadband = deadband;
 
@@ -60,6 +67,10 @@ public class TurnPIDController extends PIDController {
     return MathUtil.clamp(super.calculate(currentAngle), -1.0, +1.0);
   }
 
+  /**
+   * Get if robot is turning
+   * @return true if turning
+   */
   public boolean isTurning() {
     return m_isTurning;
   }
