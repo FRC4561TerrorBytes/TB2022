@@ -22,6 +22,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.autonomous.AlternateAuto;
+import frc.robot.commands.autonomous.FourBallAutoAdvanced;
+import frc.robot.commands.autonomous.ThreeBallAuto;
+import frc.robot.commands.autonomous.LeaveTarmac;
+import frc.robot.commands.autonomous.ShootDriveForwardAuto;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -68,6 +73,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    
     // Configure the button bindings
     configureButtonBindings();
 
@@ -88,11 +94,16 @@ public class RobotContainer {
 
     // Initialize Automode Chooser in Shuffleboard
     AutomodeChooser();
+
   }
 
   private void AutomodeChooser() {
     // Creates dropdown box in DriverStation to manually choose automodes
-    // automodeChooser.addOption("Example Auto", new ExampleAuto());
+    m_automodeChooser.setDefaultOption("Leave Tarmac", new LeaveTarmac(DRIVE_SUBSYSTEM));
+    m_automodeChooser.addOption("Shoot Drive Forward Auto", new ShootDriveForwardAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    m_automodeChooser.addOption("Three Ball Auto", new ThreeBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    m_automodeChooser.addOption("Four Ball Auto Advanced", new FourBallAutoAdvanced(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    m_automodeChooser.addOption("Alternate Auto", new AlternateAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
   }
 
 
