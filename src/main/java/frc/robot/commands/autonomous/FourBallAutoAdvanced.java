@@ -19,29 +19,20 @@ public class FourBallAutoAdvanced extends SequentialCommandGroup {
   /** Creates a new FourBallAutoAdvanced. */
   public FourBallAutoAdvanced(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
     addCommands(
-      // shoots preloaded ball
-      new ShootCommand(shooterSubsystem, 1000.0),
-
       // leaves tarmac, gets new ball and returns to tarmac  
-      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_1", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      new AutoTrajectory(driveSubsystem, "FourBallAuto_1", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
-      // shoots new ball
-      new ShootCommand(shooterSubsystem, 1000.0),
-
-      // leaves tarmac, gets new ball and returns to tarmac  
-      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_2", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
-     
-     // shoots new ball
-      new ShootCommand(shooterSubsystem, 1000.0),
+      // shoots collected + preloaded ball
+      new ShootCommand(shooterSubsystem, 1000.0).withTimeout(3),
       
-      // leaves tarmac, gets new ball and returns to tarmac
-      new AutoTrajectory(driveSubsystem, "FourBallAuto_1", 1.8, 1.5).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      // leaves tarmac, gets 2 new balls and returns to tarmac
+      new AutoTrajectory(driveSubsystem, "FourBallAuto_2", 1.8, 1.5).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
-      // shoots ball
-      new ShootCommand(shooterSubsystem, 1000.0),
-
+      // shoots balls
+      new ShootCommand(shooterSubsystem, 1000.0).withTimeout(3),
+      
       // leaves tarmac
-      new AutoTrajectory(driveSubsystem, "FourBallAuto_2", 1.8, 1.5).getCommandAndStop()
+      new AutoTrajectory(driveSubsystem, "FourBallAuto_3", 1.8, 1.5).getCommandAndStop()
     );
   }
 }
