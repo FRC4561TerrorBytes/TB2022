@@ -85,7 +85,7 @@ public class RobotContainer {
         () -> DRIVE_SUBSYSTEM.teleopPID(PRIMARY_CONTROLLER.getLeftY(), PRIMARY_CONTROLLER.getRightX()), 
         DRIVE_SUBSYSTEM
       )
-    ); 
+    );
 
     // Initialize Shuffleboard tabs
     defaultShuffleboardTab();
