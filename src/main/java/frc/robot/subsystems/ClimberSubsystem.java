@@ -84,7 +84,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Initialize hardware devices for intake subsytem
+   * Initialize hardware devices for climber subsytem
    * @return hardware object containing all necessary devices for this subsystem
    */
   public static Hardware initializeHardware() {
