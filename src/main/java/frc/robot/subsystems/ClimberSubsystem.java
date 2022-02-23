@@ -227,7 +227,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if telescope motion is complete
    */
   public boolean telescopeMotionIsFinished() {
-   return m_telescopeMasterMotor.getActiveTrajectoryPosition() - m_telescopeMasterMotor.getClosedLoopTarget() < m_telescopeConfig.getTolerance();
+    return m_telescopeMasterMotor.getActiveTrajectoryPosition() - m_telescopeMasterMotor.getClosedLoopTarget() < m_telescopeConfig.getTolerance();
   }
 
   /**
@@ -235,7 +235,6 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if winch motion is complete
    */
   public boolean winchMotionIsFinished() {
-    m_winchMotor.getClosedLoopError();
     return m_winchMotor.getActiveTrajectoryPosition() - m_winchMotor.getClosedLoopTarget() < m_winchConfig.getTolerance();
   }
 
@@ -244,7 +243,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if climber motion is complete
    */
   public boolean isClimbMotionFinished() {
-   return telescopeMotionIsFinished() && winchMotionIsFinished();
+    return telescopeMotionIsFinished() && winchMotionIsFinished();
   }
 
   /**
