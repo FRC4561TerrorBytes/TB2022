@@ -31,8 +31,8 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   public enum ArmPosition {
-    Top(Constants.INTAKE_ARM_UPPER_LIMIT),
-    Bottom(Constants.INTAKE_ARM_LOWER_LIMIT);
+    Top(Constants.INTAKE_ARM_LOWER_LIMIT),
+    Bottom(Constants.INTAKE_ARM_UPPER_LIMIT);
 
     public final double value;
     private ArmPosition(double value) {
@@ -123,7 +123,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     setpoint = MathUtil.clamp(setpoint, m_armConfig.getLowerLimit(), m_armConfig.getUpperLimit());
     
     // Arm position is top if greater than halfway point, otherwise bottom
-    m_armPosition = (setpoint > ARM_MIDDLE_POSITION) ? ArmPosition.Top : ArmPosition.Bottom;
+    m_armPosition = (setpoint < ARM_MIDDLE_POSITION) ? ArmPosition.Top : ArmPosition.Bottom;
 
     // Move arm toward setpoint
     m_armMotor.set(ControlMode.MotionMagic, setpoint);
