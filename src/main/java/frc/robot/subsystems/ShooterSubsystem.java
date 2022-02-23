@@ -146,7 +146,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     tab.addNumber("Flywheel Motor Velocity", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getSelectedSensorVelocity()));
     tab.addNumber("Flywheel Motor Setpoint", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getClosedLoopTarget()));
     tab.addNumber("Flywheel Error", () -> Flywheel.masterMotor.getClosedLoopError());
-    tab.addNumber("Shooter Distance", () -> getLIDAR());
+    tab.addNumber("Shooter Distance", () -> getDistance());
   }
 
   /**
@@ -161,7 +161,6 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   @Override
   public void periodic() {
     smartDashboard();
-    System.out.println("LIDAR Distance: " + getLIDAR());
   }
 
   /**
@@ -255,10 +254,10 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Get Distance from LIDAR sensor
-   * @return distance in Meters
+   * Get distance from LIDAR sensor
+   * @return Distance in meters
    */
-  public double getLIDAR() {
+  public double getDistance() {
     double lidarOutput = 0;
     double lidarPeriod = m_LIDARFilter.calculate(m_lidar.getPeriod());
     if (m_lidar.get() < 1)
