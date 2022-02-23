@@ -115,7 +115,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     // Normalise setpoint
     setpoint = MathUtil.clamp(setpoint, m_armConfig.getLowerLimit(), m_armConfig.getUpperLimit());
     
-    // Arm position is top if greater than halfway point, otherwise bottom
+    // Arm position is top if less than halfway point, otherwise bottom
     m_armPosition = (setpoint < ARM_MIDDLE_POSITION) ? ArmPosition.Top : ArmPosition.Bottom;
 
     // Move arm toward setpoint
