@@ -59,10 +59,10 @@ public class IntakeSubsystemTest {
 	@DisplayName("Test if robot can toggle up or down")
 	public void toggleArm() {
 		m_intakeSubsystem.toggleArmPosition();
-		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_UPPER_LIMIT, DELTA));
 
 		m_intakeSubsystem.toggleArmPosition();
-		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_UPPER_LIMIT, DELTA));
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
 	}
 
 	@Test
@@ -80,7 +80,7 @@ public class IntakeSubsystemTest {
 	@DisplayName("Test if robot can intake")
 	public void intake() {
 		m_intakeSubsystem.intake();
-		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_UPPER_LIMIT, DELTA));
 		verify(m_rollerMotor, times(1)).set(AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
 	}
 
@@ -112,7 +112,7 @@ public class IntakeSubsystemTest {
 		m_intakeSubsystem.armSetPosition(IntakeSubsystem.ArmPosition.Bottom.value);
 		m_intakeSubsystem.intake();
 		m_intakeSubsystem.stop();
-		verify(m_armMotor, times(3)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_armMotor, times(3)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_UPPER_LIMIT, DELTA));
 		verify(m_rollerMotor, times(1)).set(AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
 		verify(m_rollerMotor, times(1)).stopMotor();
 	}
@@ -137,7 +137,7 @@ public class IntakeSubsystemTest {
 		m_intakeSubsystem.armSetPosition(IntakeSubsystem.ArmPosition.Bottom.value);
 		m_intakeSubsystem.outtake();
 		m_intakeSubsystem.stop();
-		verify(m_armMotor, times(3)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_LOWER_LIMIT, DELTA));
+		verify(m_armMotor, times(3)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_UPPER_LIMIT, DELTA));
 		verify(m_rollerMotor, times(1)).set(AdditionalMatchers.eq(-Constants.INTAKE_ROLLER_SPEED, DELTA));
 		verify(m_rollerMotor, times(1)).stopMotor();
 	}
