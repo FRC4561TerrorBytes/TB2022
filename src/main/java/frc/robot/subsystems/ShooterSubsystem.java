@@ -30,7 +30,6 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     private WPI_TalonFX flywheelMasterMotor, flywheelSlaveMotor;
     private CANSparkMax upperFeederMotor, lowerFeederMotor;
     private SparkMaxLimitSwitch upperFeederSensor, lowerFeederSensor;
-
     private Counter lidar;
 
     public Hardware(WPI_TalonFX flywheelMasterMotor, 
@@ -69,12 +68,14 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     private static TalonPIDConfig masterConfig;
   }
 
+  private final double LIDAR_OFFSET = 9.0;
+
   private CANSparkMax m_upperFeederMotor;
   private CANSparkMax m_lowerFeederMotor;
   private SparkMaxLimitSwitch m_upperFeederSensor;
   private SparkMaxLimitSwitch m_lowerFeederSensor;
   private Counter m_lidar;
-  private final double LIDAR_OFFSET = 9.0;
+
   private LinearFilter m_LIDARFilter;
   private PolynomialSplineFunction[] m_shooterOutputCurves = new PolynomialSplineFunction[2];
   private SelectedGoal m_selectedGoal;
@@ -260,10 +261,10 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public double getDistance() {
     double lidarOutput = 0;
     double lidarPeriod = m_LIDARFilter.calculate(m_lidar.getPeriod());
-    if (m_lidar.get() < 1)
+    if (m_lidar.get() < 1) {
       return lidarOutput;
-    else {
-      lidarOutput = ((lidarPeriod*1000000.0/10.0) - LIDAR_OFFSET) / 100.0; // convert to distance. sensor is high 10 us for every centimeter. 37.592
+    } else {
+      lidarOutput = ((lidarPeriod * 1000000.0 / 10.0) - LIDAR_OFFSET) / 100.0; // convert to distance. sensor is high 10 us for every centimeter.
       return Math.copySign(Math.floor(Math.abs(lidarOutput) * 100) / 100, lidarOutput);
     }
   }
