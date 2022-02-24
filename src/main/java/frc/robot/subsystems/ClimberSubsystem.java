@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.ClimberStateIterator;
 import frc.robot.utils.TalonPIDConfig;
+import frc.robot.utils.ClimberStateIterator.ClimberState;
 
 public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
 
@@ -93,6 +94,14 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
                                             new AnalogPotentiometer(Constants.CLIMBER_ULTRASONIC_PORT));
 
     return climberHardware;
+  }
+
+  /**
+   * Hold telescope down and winch in on init
+   */
+  public void initialize() {
+    telescopeSetPosition(m_telescopeConfig.getLowerLimit());
+    winchSetPosition(m_winchConfig.getLowerLimit());
   }
 
    /**

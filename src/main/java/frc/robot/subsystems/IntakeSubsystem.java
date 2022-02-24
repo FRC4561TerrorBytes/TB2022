@@ -87,6 +87,13 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * Hold arm up on init
+   */
+  public void initialize() {
+    armUp();
+  }
+
+  /**
    * Create Shuffleboard tab for this subsystem and display values
    */
   public void shuffleboard() {
@@ -184,5 +191,3 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     m_rollerMotor = null;
   }
 }
-
-

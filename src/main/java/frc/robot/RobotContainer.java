@@ -73,9 +73,11 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    
     // Configure the button bindings
     configureButtonBindings();
+
+     // Initialize Automode Chooser in Shuffleboard
+     AutomodeChooser();
 
     // Set default commands for subsystems
     DRIVE_SUBSYSTEM.setDefaultCommand(
@@ -91,21 +93,7 @@ public class RobotContainer {
     INTAKE_SUBSYSTEM.shuffleboard();
     SHOOTER_SUBSYSTEM.shuffleboard();
     CLIMBER_SUBSYSTEM.shuffleboard();
-
-    // Initialize Automode Chooser in Shuffleboard
-    AutomodeChooser();
-
   }
-
-  private void AutomodeChooser() {
-    // Creates dropdown box in DriverStation to manually choose automodes
-    m_automodeChooser.setDefaultOption("Leave Tarmac", new LeaveTarmac(DRIVE_SUBSYSTEM));
-    m_automodeChooser.addOption("Shoot Drive Forward Auto", new ShootDriveForwardAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-    m_automodeChooser.addOption("Three Ball Auto", new ThreeBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-    m_automodeChooser.addOption("Four Ball Auto Advanced", new FourBallAutoAdvanced(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-    m_automodeChooser.addOption("Alternate Auto", new AlternateAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-  }
-
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -140,8 +128,24 @@ public class RobotContainer {
   }
 
   /**
+   * Initialize robot
+   */
+  public void initialize() {
+    INTAKE_SUBSYSTEM.initialize();
+    CLIMBER_SUBSYSTEM.initialize();
+  }
+
+  private void AutomodeChooser() {
+    // Creates dropdown box in DriverStation to manually choose automodes
+    m_automodeChooser.setDefaultOption("Leave Tarmac", new LeaveTarmac(DRIVE_SUBSYSTEM));
+    m_automodeChooser.addOption("Shoot Drive Forward Auto", new ShootDriveForwardAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    m_automodeChooser.addOption("Three Ball Auto", new ThreeBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    m_automodeChooser.addOption("Four Ball Auto Advanced", new FourBallAutoAdvanced(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    m_automodeChooser.addOption("Alternate Auto", new AlternateAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+  }
+
+  /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
