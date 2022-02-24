@@ -141,14 +141,14 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   /**
    * Move arm to top position
    */
-  public void armUp(){
+  public void armUp() {
     armSetPosition(ArmPosition.Top.value);
   }
 
   /**
    * Move arm to bottom position
    */
-  public void armDown(){
+  public void armDown() {
     armSetPosition(ArmPosition.Bottom.value);
   }
 
