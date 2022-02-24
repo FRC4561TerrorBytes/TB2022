@@ -217,6 +217,13 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * Returns whether or not the feeder is full
+   */
+  public boolean isFeederFull() {
+    return m_upperFeederSensor.isPressed() && m_lowerFeederSensor.isPressed();
+  }
+
+  /**
    * Sets feeder intake speed
    */
   public void feederIntake() {
