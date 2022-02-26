@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.ClimberStateIterator;
 import frc.robot.utils.TalonPIDConfig;
-import frc.robot.utils.ClimberStateIterator.ClimberState;
 
 public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
 
