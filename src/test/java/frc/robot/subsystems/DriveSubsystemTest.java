@@ -62,7 +62,8 @@ public class DriveSubsystemTest {
                                           Constants.DRIVE_MAX_LINEAR_SPEED,
                                           Constants.DRIVE_TRACTION_CONTROL_CURVE,
                                           Constants.DRIVE_THROTTLE_INPUT_CURVE,
-                                          Constants.DRIVE_TURN_INPUT_CURVE);
+                                          Constants.DRIVE_TURN_INPUT_CURVE,
+                                          Constants.DRIVE_CURRENT_LIMIT_CONFIGURATION);
   }
 
   @AfterEach
