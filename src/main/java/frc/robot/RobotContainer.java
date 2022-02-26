@@ -77,9 +77,6 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings(); 
 
-     // Initialize Automode Chooser in Shuffleboard
-     autoModeChooser();
-
     // Set default commands for subsystems
     DRIVE_SUBSYSTEM.setDefaultCommand(
       new RunCommand(
@@ -87,9 +84,6 @@ public class RobotContainer {
         DRIVE_SUBSYSTEM
       )
     );
-
-    // Initialize auto mode chooser in Shuffleboard
-    autoModeChooser();
 
     // Initialize Shuffleboard tabs
     defaultShuffleboardTab();
@@ -165,6 +159,7 @@ public class RobotContainer {
   public void defaultShuffleboardTab() {
     m_pi.setDriverMode(true);
     Shuffleboard.selectTab("SmartDashboard");
+    autoModeChooser();
     SmartDashboard.putData("Auto Mode", m_automodeChooser);
   }
 }
