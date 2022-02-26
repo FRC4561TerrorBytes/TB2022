@@ -118,13 +118,13 @@ public final class Constants {
 
   // Set PID for Flywheel
   public static final TalonPIDConfig FLYWHEEL_MASTER_CONFIG = new TalonPIDConfig(FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE,
-                                                                                FLYWHEEL_MASTER_MOTOR_INVERTED,
-                                                                                FLYWHEEL_MAX_RPM,
-                                                                                FLYWHEEL_TICKS_PER_ROTATION,
-                                                                                FLYWHEEL_kP,
-                                                                                FLYWHEEL_kI,
-                                                                                FLYWHEEL_kD,
-                                                                                FLYWHEEL_TOLERANCE);
+                                                                                 FLYWHEEL_MASTER_MOTOR_INVERTED,
+                                                                                 FLYWHEEL_MAX_RPM,
+                                                                                 FLYWHEEL_TICKS_PER_ROTATION,
+                                                                                 FLYWHEEL_kP,
+                                                                                 FLYWHEEL_kI,
+                                                                                 FLYWHEEL_kD,
+                                                                                 FLYWHEEL_TOLERANCE);
 
   // Telescope PID variables
   public static final double TELESCOPE_kP = 0.0;
@@ -143,19 +143,19 @@ public final class Constants {
 
   // Telescope PID config
   public static final TalonPIDConfig TELESCOPE_CONFIG = new TalonPIDConfig(TELESCOPE_SENSOR_PHASE, 
-                                                                         TELESCOPE_INVERT_MOTOR, 
-                                                                         TELESCOPE_TICKS_PER_ROTATION, 
-                                                                         TELESCOPE_MAX_RPM, 
-                                                                         TELESCOPE_kP, 
-                                                                         0.0, 
-                                                                         TELESCOPE_kD, 
-                                                                         TELESCOPE_TOLERANCE, 
-                                                                         TELESCOPE_LOWER_LIMIT, 
-                                                                         TELESCOPE_UPPER_LIMIT, 
-                                                                         TELESCOPE_SOFT_LIMITS, 
-                                                                         TELESCOPE_VELOCITY, 
-                                                                         TELESCOPE_ACCLERATION, 
-                                                                         TELESCOPE_MOTION_SMOOTHING);
+                                                                           TELESCOPE_INVERT_MOTOR, 
+                                                                           TELESCOPE_TICKS_PER_ROTATION, 
+                                                                           TELESCOPE_MAX_RPM, 
+                                                                           TELESCOPE_kP, 
+                                                                           0.0, 
+                                                                           TELESCOPE_kD, 
+                                                                           TELESCOPE_TOLERANCE, 
+                                                                           TELESCOPE_LOWER_LIMIT, 
+                                                                           TELESCOPE_UPPER_LIMIT, 
+                                                                           TELESCOPE_SOFT_LIMITS, 
+                                                                           TELESCOPE_VELOCITY, 
+                                                                           TELESCOPE_ACCLERATION, 
+                                                                           TELESCOPE_MOTION_SMOOTHING);
 
   // Winch PID variables
   public static final double WINCH_kP = 0.0;
@@ -174,19 +174,19 @@ public final class Constants {
 
   // Winch PID config
   public static final TalonPIDConfig WINCH_CONFIG = new TalonPIDConfig(WINCH_SENSOR_PHASE, 
-                                                                         WINCH_INVERT_MOTOR, 
-                                                                         WINCH_TICKS_PER_ROTATION, 
-                                                                         WINCH_MAX_RPM, 
-                                                                         WINCH_kP, 
-                                                                         0.0, 
-                                                                         WINCH_kD, 
-                                                                         WINCH_TOLERANCE, 
-                                                                         WINCH_LOWER_LIMIT, 
-                                                                         WINCH_UPPER_LIMIT, 
-                                                                         WINCH_SOFT_LIMITS, 
-                                                                         WINCH_VELOCITY, 
-                                                                         WINCH_ACCLERATION, 
-                                                                         WINCH_MOTION_SMOOTHING);
+                                                                       WINCH_INVERT_MOTOR, 
+                                                                       WINCH_TICKS_PER_ROTATION, 
+                                                                       WINCH_MAX_RPM, 
+                                                                       WINCH_kP, 
+                                                                       0.0, 
+                                                                       WINCH_kD, 
+                                                                       WINCH_TOLERANCE, 
+                                                                       WINCH_LOWER_LIMIT, 
+                                                                       WINCH_UPPER_LIMIT, 
+                                                                       WINCH_SOFT_LIMITS, 
+                                                                       WINCH_VELOCITY, 
+                                                                       WINCH_ACCLERATION, 
+                                                                       WINCH_MOTION_SMOOTHING);
 
   // Xbox controller ports
   public static final int PRIMARY_CONTROLLER_PORT = 0;
