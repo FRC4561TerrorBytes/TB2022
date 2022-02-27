@@ -62,13 +62,13 @@ public final class Constants {
   public static final PolynomialSplineFunction DRIVE_TURN_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TURN_INPUT_CURVE_X, DRIVE_TURN_INPUT_CURVE_Y);
 
   // Intake Arm PID config
-  public static final double INTAKE_ARM_kP = 0.0;
+  public static final double INTAKE_ARM_kP = 0.16;
   public static final double INTAKE_ARM_kD = 0.0;
-  public static final double INTAKE_ARM_TOLERANCE = 10;
+  public static final double INTAKE_ARM_TOLERANCE = 100;
   public static final double INTAKE_ARM_LOWER_LIMIT = 0;
-  public static final double INTAKE_ARM_UPPER_LIMIT = 3413;
+  public static final double INTAKE_ARM_UPPER_LIMIT = 3100;
   public static final double INTAKE_ARM_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double INTAKE_ARM_ACCLERATION = FALCON_500_MAX_RPM;
+  public static final double INTAKE_ARM_ACCLERATION = FALCON_500_MAX_RPM * 8;
   public static final int INTAKE_ARM_MOTION_SMOOTHING = 7;
   public static final int INTAKE_ARM_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int INTAKE_ARM_MAX_RPM = FALCON_500_MAX_RPM;
