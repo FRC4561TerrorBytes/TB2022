@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -87,7 +88,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param throttleInputCurve Expression characterising throttle input with "X" as the variable
    */
   public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turnScalar, double deadband, double metersPerTick, double maxLinearSpeed, 
-                        PolynomialSplineFunction tractionControlCurve, PolynomialSplineFunction throttleInputCurve, PolynomialSplineFunction turnInputCurve) {
+                        PolynomialSplineFunction tractionControlCurve, PolynomialSplineFunction throttleInputCurve, PolynomialSplineFunction turnInputCurve,
+                        StatorCurrentLimitConfiguration currentLimitConfiguration) {
     m_turnPIDController = new TurnPIDController(kP, kD, turnScalar, deadband, turnInputCurve);
     m_tractionControlController = new TractionControlController(deadband, maxLinearSpeed, tractionControlCurve, throttleInputCurve);
 
@@ -145,6 +147,12 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     m_rMasterMotor.enableVoltageCompensation(true);
     m_rSlaveMotor.configVoltageCompSaturation(MAX_VOLTAGE);
     m_rSlaveMotor.enableVoltageCompensation(true);
+
+    // Enable current limits
+    m_lMasterMotor.configStatorCurrentLimit(currentLimitConfiguration);
+    m_lSlaveMotor.configStatorCurrentLimit(currentLimitConfiguration);
+    m_rMasterMotor.configStatorCurrentLimit(currentLimitConfiguration);
+    m_rSlaveMotor.configStatorCurrentLimit(currentLimitConfiguration);
 
     // Initialise PID subsystem setpoint and input
     resetAngle();
