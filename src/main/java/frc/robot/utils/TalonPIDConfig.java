@@ -22,7 +22,7 @@ public class TalonPIDConfig {
   private static final double MOTOR_DEADBAND = 0.01;
   private static final double MIN_TOLERANCE = 1.0;
   private static final int MIN_MOTION_SMOOTHING = 0;
-  private static final int MAX_MOTION_SMOOTHING = 7;
+  private static final int MAX_MOTION_SMOOTHING = 8;
   private static final int PID_SLOT = 0;
 
   private boolean m_motionMagic = false;
@@ -87,7 +87,7 @@ public class TalonPIDConfig {
    * @param tolerance tolerance of PID loop in ticks
    * @param velocity MotionMagic cruise velocity in RPM
    * @param accelerationRPMPerSec MotionMagic acceleration in RPM
-   * @param motionSmoothing MotionMagic smoothing factor [0, 7]
+   * @param motionSmoothing MotionMagic smoothing factor [0, 8]
    */
   public TalonPIDConfig(boolean sensorPhase, boolean invertMotor, double ticksPerRotation, double maxRPM,
                         double kP, double kI, double kD, double tolerance, 
