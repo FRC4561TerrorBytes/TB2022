@@ -176,8 +176,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * Automatically sets the flywheel speed based on distance from the goal.
    * @param distance Distance in meters
    */
-  public void setFlywheelAuto(double distance) {
-    setFlywheelSpeed(m_shooterOutputCurves[m_selectedGoal.value].value(distance));
+  public void setFlywheelAuto() {
+    setFlywheelSpeed(m_shooterOutputCurves[m_selectedGoal.value].value(getDistance()));
   }
 
   /**
