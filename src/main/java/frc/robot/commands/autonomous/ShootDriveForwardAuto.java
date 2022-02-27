@@ -19,7 +19,7 @@ public class ShootDriveForwardAuto extends SequentialCommandGroup {
   public ShootDriveForwardAuto(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
     addCommands(
       //Shoots single preloaded ball
-      new ShootCommand(shooterSubsystem, 1000.0).withTimeout(3),
+      new ShootCommand(shooterSubsystem).withTimeout(3),
       //Drives forward + exits tarmac
       new AutoTrajectory(driveSubsystem, "LeaveTarmac", 1.8, 1.5).getCommandAndStop()
     );
