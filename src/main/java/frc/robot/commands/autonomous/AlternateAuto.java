@@ -5,7 +5,7 @@
 package frc.robot.commands.autonomous;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShootManualCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -23,7 +23,7 @@ public class AlternateAuto extends SequentialCommandGroup {
       new AutoTrajectory(driveSubsystem, "AlternateAuto_1", 1.8, 1.5).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots balls
-      new ShootCommand(shooterSubsystem, 1000.0).withTimeout(3),
+      new ShootManualCommand(shooterSubsystem, 1000.0).withTimeout(3),
       
       // leaves tarmac
       new AutoTrajectory(driveSubsystem, "AlternateAuto_2", 1.8, 1.5).getCommandAndStop()
