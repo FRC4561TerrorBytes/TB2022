@@ -9,12 +9,11 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShootCommand extends CommandBase {
   private ShooterSubsystem m_shooterSubsystem;
-  private double m_distance;
 
   /** Creates a new ShootCommand. */
-  public ShootCommand(ShooterSubsystem shooterSubsystem, Double distance) {
+  public ShootCommand(ShooterSubsystem shooterSubsystem) {
     this.m_shooterSubsystem = shooterSubsystem;
-    this.m_distance = distance;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooterSubsystem);
   }
@@ -22,12 +21,17 @@ public class ShootCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooterSubsystem.setFlywheelAuto(m_distance); 
+    // Start flywheel
+    m_shooterSubsystem.setFlywheelAuto(); 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // Update flywheel speed based current distance
+    m_shooterSubsystem.setFlywheelAuto();
+
+    // Only run feeder if flywheel is at speed, else stop
     if (m_shooterSubsystem.isFlywheelAtSpeed()) m_shooterSubsystem.feederShoot();
     else m_shooterSubsystem.feederStop();
   }
@@ -35,6 +39,7 @@ public class ShootCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    // Stop flywheel and feeder
     m_shooterSubsystem.flywheelStop();
     m_shooterSubsystem.feederStop();
   }
