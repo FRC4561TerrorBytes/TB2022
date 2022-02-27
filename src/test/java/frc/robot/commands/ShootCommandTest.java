@@ -32,7 +32,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class ShootCommandTest {
   private final double DELTA = 2e-3;
   private ShooterSubsystem m_shooterSubsystem;
-  private ShootCommandManual m_shootCommand;
+  private ShootManualCommand m_shootCommand;
   private ShooterSubsystem.Hardware m_shooterHardware;
 
   private WPI_TalonFX m_flywheelMasterMotor, m_flywheelSlaveMotor;
@@ -62,7 +62,7 @@ public class ShootCommandTest {
                                                       m_lidar);
 
     m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware, Constants.FLYWHEEL_MASTER_CONFIG, Constants.SHOOTER_LOW_CURVE, Constants.SHOOTER_HIGH_CURVE);
-    m_shootCommand = new ShootCommandManual(m_shooterSubsystem, 200.0);
+    m_shootCommand = new ShootManualCommand(m_shooterSubsystem, 200.0);
   }
 
   @AfterEach
