@@ -11,7 +11,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,32 +20,25 @@ import frc.robot.utils.ClimberStateIterator;
 import frc.robot.utils.TalonPIDConfig;
 
 public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
-
-  private final String SUBSYSTEM_NAME = "Climber Subsystem";
-  
   public static class Hardware {
     private WPI_TalonFX telescopeMasterMotor;
     private WPI_TalonFX telescopSlaveMotor;
     private WPI_TalonFX winchMotor;
-    private AnalogPotentiometer ultrasonicSensor;
 
     public Hardware(WPI_TalonFX telescopeMasterMotor,
                     WPI_TalonFX telescopeSlaveMotor,
-                    WPI_TalonFX winchMotor,
-                    AnalogPotentiometer ultrasonicSensor) {    
+                    WPI_TalonFX winchMotor) {    
       this.telescopeMasterMotor = telescopeMasterMotor;
       this.telescopSlaveMotor = telescopeSlaveMotor;
       this.winchMotor = winchMotor;
-      this.ultrasonicSensor = ultrasonicSensor;
     }
   }
 
-  private final double ULTRASONIC_FACTOR = 512 / 39.37;
+  private final String SUBSYSTEM_NAME = "Climber Subsystem";
 
   private WPI_TalonFX m_telescopeMasterMotor;
   private WPI_TalonFX m_telescopeSlaveMotor;
   private WPI_TalonFX m_winchMotor;
-  private AnalogPotentiometer m_ultrasonicSensor;
   private TalonPIDConfig m_telescopeConfig;
   private TalonPIDConfig m_winchConfig;
   private ClimberStateIterator m_climberStateIterator;
@@ -65,7 +57,6 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_telescopeMasterMotor = climberHardware.telescopeMasterMotor;
     this.m_telescopeSlaveMotor = climberHardware.telescopSlaveMotor;
     this.m_winchMotor = climberHardware.winchMotor;
-    this.m_ultrasonicSensor = climberHardware.ultrasonicSensor;
     this.m_telescopeConfig = telescopeConfig;
     this.m_winchConfig = winchConfig;
     this.m_climberStateIterator = new ClimberStateIterator(Constants.TELESCOPE_UPPER_LIMIT, Constants.WINCH_UPPER_LIMIT);
@@ -89,8 +80,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   public static Hardware initializeHardware() {
     Hardware climberHardware = new Hardware(new WPI_TalonFX(Constants.CLIMBER_MASTER_TELESCOPE_MOTOR_PORT),
                                             new WPI_TalonFX(Constants.CLIMBER_SLAVE_TELESCOPE_MOTOR_PORT),
-                                            new WPI_TalonFX(Constants.CLIMBER_WINCH_MOTOR_PORT),
-                                            new AnalogPotentiometer(Constants.CLIMBER_ULTRASONIC_PORT));
+                                            new WPI_TalonFX(Constants.CLIMBER_WINCH_MOTOR_PORT));
 
     return climberHardware;
   }
@@ -122,10 +112,6 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   @Override
   public void periodic() {
     smartDashboard();
-  }
-
-  public double getUltrasonicDistance() {
-    return m_ultrasonicSensor.get() * ULTRASONIC_FACTOR;
   }
 
   /**

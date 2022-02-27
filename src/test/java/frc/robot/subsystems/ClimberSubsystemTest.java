@@ -21,7 +21,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.AdditionalMatchers;
 import org.mockito.ArgumentMatchers;
 
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import frc.robot.Constants;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -34,7 +33,6 @@ public class ClimberSubsystemTest {
 	private WPI_TalonFX m_telescopeMasterMotor;
 	private WPI_TalonFX m_telescopeSlaveMotor;
 	private WPI_TalonFX m_winchMotor;
-	private AnalogPotentiometer m_ultrasonicSensor;
 	
 	@BeforeEach
 	public void setup() {
@@ -42,10 +40,9 @@ public class ClimberSubsystemTest {
 		m_telescopeMasterMotor = mock(WPI_TalonFX.class);
 		m_telescopeSlaveMotor = mock(WPI_TalonFX.class);
 		m_winchMotor = mock(WPI_TalonFX.class);
-		m_ultrasonicSensor = mock(AnalogPotentiometer.class);
 		
 		// Create Hardware objects using mock objects
-		m_climberHardware = new ClimberSubsystem.Hardware(m_telescopeMasterMotor, m_telescopeSlaveMotor, m_winchMotor, m_ultrasonicSensor);
+		m_climberHardware = new ClimberSubsystem.Hardware(m_telescopeMasterMotor, m_telescopeSlaveMotor, m_winchMotor);
 		
 		// Create ClimberSubsystem object
 		m_climberSubsystem = new ClimberSubsystem(m_climberHardware, Constants.TELESCOPE_CONFIG, Constants.WINCH_CONFIG);
