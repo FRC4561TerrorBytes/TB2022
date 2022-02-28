@@ -17,13 +17,13 @@ Key points:
 * Odometry for accurate positioning during autonomous
 
 ### [Intake Subsystem](src/main/java/frc/robot/subsystems/IntakeSubsystem.java)
-The intake subsystem controls the cargo collection system of the robot. It uses 2 Falcon 500 motors to power the motion of the arms. The intake system uses a four bar linkage to extend arms and pull in cargo. We also used PID to correct the arm position, motion profiles to control motor acceleration during PID correction.
+The intake subsystem controls the cargo collection system of the robot. It uses 1 Falcon 500 motor to power the motion of the arm, and 1 NEO 550 for the intake roller. The intake system uses a four bar linkage to extend arms and pull in cargo. We also used PID to correct the arm position, motion profiles to control motor acceleration during PID correction.
 When intake is called the arm is brought down, ensuring the ball collection is on the ground.
 We used the Falcon 500 motors for their power and for their built in enoders, allowing for PID and motion profiling. 
 
 Key points:
 * Four bar linkage intake mechanism
-* Powered by 2 Falcon 500 brushless motors
+* Powered by 1 Falcon 500 and 1 NEO 550
 * Motion Profiling for smooth arm operation
 
 ### [Shooter Subsystem](src\main\java\frc\robot\subsystems\ShooterSubsystem.java)
@@ -33,7 +33,7 @@ Key points:
 * Powered by 2 Falcon 500s and 2 NEOs
 * 2 beam break sensors 
 * Automated feeder logic using OR gate
-* Motion Profileing for smooth arm operation
+* Motion profiling for smooth arm operation
 
 ### [Climber Subsystem](src/main/java/frc/robot/subsystems/ClimberSubsystem.java)
 The climber subsystem controls the 3 dimensional movement of the robot both on the y and z planes. It uses 3 Falcon 500 motors total, 2 to power the telescoping arms that reach out to the next set of rungs in order to "traverse" bar to bar, and another on the winch, the mechanism that lets the robot lean the telescoping arms at an angle to be able to reach the next rung, which is diagonal from the current rung. The climber subsystem makes use of 2 sets of arms and hooks, one telescoping, and one fixed. The fixed arm acts as an anchor to hold the robot on a rung, while the telescoping arm reaches out and latches onto the next rung. The TalonFXs are used to find the relative position of the telescoping arm. 
