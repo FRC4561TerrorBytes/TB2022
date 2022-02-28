@@ -224,5 +224,6 @@ public final class Constants {
   public static final int CLIMBER_SLAVE_TELESCOPE_MOTOR_PORT = 14;
   public static final int CLIMBER_ULTRASONIC_PORT = 0;
 
-  
+  // Accessories
+  public static final int BLINKIN_LED_CONTROLLER_PORT = 0;
 }
