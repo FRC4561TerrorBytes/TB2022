@@ -18,7 +18,7 @@ import edu.wpi.first.math.MathUtil;
  * Automates the configuration of Talon PID and MotionMagic parameters
  */
 public class TalonPIDConfig {
-  private static final double MECHANICAL_EFFICIENCY = 0.9;
+  private static final double MECHANICAL_EFFICIENCY = 0.85;
   private static final double MOTOR_DEADBAND = 0.01;
   private static final double MIN_TOLERANCE = 1.0;
   private static final int MIN_MOTION_SMOOTHING = 0;
