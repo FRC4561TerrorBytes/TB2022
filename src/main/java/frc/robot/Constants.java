@@ -136,11 +136,11 @@ public final class Constants {
   // Telescope PID variables
   public static final double TELESCOPE_kP = 0.0;
   public static final double TELESCOPE_kD = 0.0;
-  public static final double TELESCOPE_TOLERANCE = 10;
+  public static final double TELESCOPE_TOLERANCE = 100;
   public static final double TELESCOPE_LOWER_LIMIT = 0;
   public static final double TELESCOPE_UPPER_LIMIT = 1500;
   public static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double TELESCOPE_ACCLERATION = FALCON_500_MAX_RPM;
+  public static final double TELESCOPE_ACCLERATION = FALCON_500_MAX_RPM * 8;
   public static final int TELESCOPE_MOTION_SMOOTHING = 1;
   public static final int TELESCOPE_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int TELESCOPE_MAX_RPM = FALCON_500_MAX_RPM;
@@ -167,11 +167,11 @@ public final class Constants {
   // Winch PID variables
   public static final double WINCH_kP = 0.0;
   public static final double WINCH_kD = 0.0;
-  public static final double WINCH_TOLERANCE = 10;
+  public static final double WINCH_TOLERANCE = 100;
   public static final double WINCH_LOWER_LIMIT = 0;
   public static final double WINCH_UPPER_LIMIT = 1500;
   public static final double WINCH_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double WINCH_ACCLERATION = FALCON_500_MAX_RPM;
+  public static final double WINCH_ACCLERATION = FALCON_500_MAX_RPM * 4;
   public static final int WINCH_MOTION_SMOOTHING = 1;
   public static final int WINCH_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int WINCH_MAX_RPM = FALCON_500_MAX_RPM;
