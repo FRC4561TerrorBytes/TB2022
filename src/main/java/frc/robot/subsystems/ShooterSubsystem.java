@@ -5,9 +5,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxLimitSwitch;
 
@@ -102,14 +104,27 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
 
     Flywheel.masterConfig = flywheelMasterConfig;
 
+    // Reset feeder motors to default
+    m_upperFeederMotor.restoreFactoryDefaults();
+    m_lowerFeederMotor.restoreFactoryDefaults();
+
+    // Set feeder motors to brake mode
+    m_upperFeederMotor.setIdleMode(IdleMode.kBrake);
+    m_lowerFeederMotor.setIdleMode(IdleMode.kBrake);
+
+    // Set feeder motor inversion
+    m_upperFeederMotor.setInverted(false);
+    m_lowerFeederMotor.setInverted(false);
+
     // Enable beam beak sensors for feeder motors
     m_upperFeederSensor.enableLimitSwitch(true);
     m_lowerFeederSensor.enableLimitSwitch(true);
 
     // Initialize config for flywheel PID
-    Flywheel.masterConfig.initializeTalonPID(Flywheel.masterMotor, TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice(), false, false);
+    Flywheel.masterConfig.initializeTalonPID(Flywheel.masterMotor, FeedbackDevice.IntegratedSensor);
+    Flywheel.slaveMotor.configFactoryDefault();
     Flywheel.slaveMotor.set(ControlMode.Follower, Flywheel.masterMotor.getDeviceID());
-    Flywheel.slaveMotor.setInverted(true);
+    Flywheel.slaveMotor.setInverted(InvertType.OpposeMaster);
 
     // Configure LIDAR settings
     m_LIDARFilter = LinearFilter.singlePoleIIR(0.4, Constants.ROBOT_LOOP_PERIOD);
@@ -142,12 +157,12 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void shuffleboard() {
     ShuffleboardTab tab = Shuffleboard.getTab("Shooter Subsystem");
     Shuffleboard.getTab("SmartDashboard").addBoolean("Flywheel at Speed?", () -> isFlywheelAtSpeed());
-    tab.addNumber("Flywheel Motor Output", () -> Flywheel.masterMotor.getMotorOutputPercent());
-    tab.addNumber("Flywheel Current", () -> Flywheel.masterMotor.getSupplyCurrent());
-    tab.addNumber("Flywheel Motor Velocity", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getSelectedSensorVelocity()));
-    tab.addNumber("Flywheel Motor Setpoint", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getClosedLoopTarget()));
-    tab.addNumber("Flywheel Error", () -> Flywheel.masterMotor.getClosedLoopError());
-    tab.addNumber("Shooter Distance", () -> getDistance());
+    tab.addNumber("Flywheel Motor Output (%)", () -> Flywheel.masterMotor.getMotorOutputPercent());
+    tab.addNumber("Flywheel Current (A)", () -> Flywheel.masterMotor.getSupplyCurrent());
+    tab.addNumber("Flywheel Motor Velocity (RPM)", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getSelectedSensorVelocity()));
+    tab.addNumber("Flywheel Motor Setpoint (RPM)", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getClosedLoopTarget()));
+    tab.addNumber("Flywheel Error (RPM)", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getClosedLoopError()));
+    tab.addNumber("Shooter Distance (m)", () -> getDistance());
   }
 
   /**
@@ -156,7 +171,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void smartDashboard() {
     SmartDashboard.putBoolean("Ball 1", m_upperFeederSensor.isPressed());
     SmartDashboard.putBoolean("Ball 2", m_lowerFeederSensor.isPressed());
-    SmartDashboard.putBoolean("Selected Goal", m_selectedGoal == SelectedGoal.Low);
+    SmartDashboard.putBoolean("Selected Goal", m_selectedGoal == SelectedGoal.High);
   }
 
   @Override

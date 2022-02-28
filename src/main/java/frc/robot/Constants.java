@@ -105,13 +105,13 @@ public final class Constants {
   private static final double FLYWHEEL_kP = 0.15;
   private static final double FLYWHEEL_kI = 0.00015;
   private static final double FLYWHEEL_kD = 0.004;
-  private static final double FLYWHEEL_TOLERANCE = 100;
+  private static final double FLYWHEEL_TOLERANCE = 20;
   private static final double FLYWHEEL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
   private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = false;
-  public static final double FLYWHEEL_SHOOTING_RPM = 1000;
-  public static final double FEEDER_INTAKE_SPEED = 1.0;
+  public static final double FLYWHEEL_SHOOTING_RPM = 1500;
+  public static final double FEEDER_INTAKE_SPEED = 0.5;
   public static final double FEEDER_SHOOT_SPEED = 1.0;
 
   private static final double SHOOTER_LOW_CURVE_X[] = { 0.0, 0.5, 1.0 };
