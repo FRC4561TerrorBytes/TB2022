@@ -161,9 +161,9 @@ public class BlinkinLEDController {
   }
 
   /**
-   * Turn off connected LEDs
+   * Turn off LEDs
    */
   public void off() {
-    m_blinkin.set(BlinkinPattern.OFF.value);
+    setPattern(BlinkinPattern.OFF);
   }
 }

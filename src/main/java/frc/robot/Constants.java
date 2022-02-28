@@ -75,7 +75,7 @@ public final class Constants {
   public static final double INTAKE_ARM_LOWER_LIMIT = 0;
   public static final double INTAKE_ARM_UPPER_LIMIT = 3100;
   public static final double INTAKE_ARM_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double INTAKE_ARM_ACCLERATION = FALCON_500_MAX_RPM * 8;
+  public static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 8;
   public static final int INTAKE_ARM_MOTION_SMOOTHING = 7;
   public static final int INTAKE_ARM_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int INTAKE_ARM_MAX_RPM = FALCON_500_MAX_RPM;
@@ -98,7 +98,7 @@ public final class Constants {
                                                                             INTAKE_ARM_UPPER_LIMIT, 
                                                                             INTAKE_ARM_SOFT_LIMITS, 
                                                                             INTAKE_ARM_VELOCITY, 
-                                                                            INTAKE_ARM_ACCLERATION, 
+                                                                            INTAKE_ARM_ACCELERATION, 
                                                                             INTAKE_ARM_MOTION_SMOOTHING);
 
   // Shooter PID Values
@@ -140,7 +140,7 @@ public final class Constants {
   public static final double TELESCOPE_LOWER_LIMIT = 0;
   public static final double TELESCOPE_UPPER_LIMIT = 1500;
   public static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double TELESCOPE_ACCLERATION = FALCON_500_MAX_RPM * 8;
+  public static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM * 8;
   public static final int TELESCOPE_MOTION_SMOOTHING = 1;
   public static final int TELESCOPE_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int TELESCOPE_MAX_RPM = FALCON_500_MAX_RPM;
@@ -161,7 +161,7 @@ public final class Constants {
                                                                            TELESCOPE_UPPER_LIMIT, 
                                                                            TELESCOPE_SOFT_LIMITS, 
                                                                            TELESCOPE_VELOCITY, 
-                                                                           TELESCOPE_ACCLERATION, 
+                                                                           TELESCOPE_ACCELERATION, 
                                                                            TELESCOPE_MOTION_SMOOTHING);
 
   // Winch PID variables
@@ -171,7 +171,7 @@ public final class Constants {
   public static final double WINCH_LOWER_LIMIT = 0;
   public static final double WINCH_UPPER_LIMIT = 1500;
   public static final double WINCH_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double WINCH_ACCLERATION = FALCON_500_MAX_RPM * 4;
+  public static final double WINCH_ACCELERATION = FALCON_500_MAX_RPM * 4;
   public static final int WINCH_MOTION_SMOOTHING = 1;
   public static final int WINCH_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int WINCH_MAX_RPM = FALCON_500_MAX_RPM;
@@ -192,7 +192,7 @@ public final class Constants {
                                                                        WINCH_UPPER_LIMIT, 
                                                                        WINCH_SOFT_LIMITS, 
                                                                        WINCH_VELOCITY, 
-                                                                       WINCH_ACCLERATION, 
+                                                                       WINCH_ACCELERATION, 
                                                                        WINCH_MOTION_SMOOTHING);
 
   // Xbox controller ports
