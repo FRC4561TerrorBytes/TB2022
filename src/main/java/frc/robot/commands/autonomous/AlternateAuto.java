@@ -18,14 +18,13 @@ public class AlternateAuto extends SequentialCommandGroup {
   /** Creates a new AlternateAuto. */
   public AlternateAuto(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
     addCommands(
-
-      // leaves tarmac and intakes new ball and returns to hub
+      // Leaves tarmac and intakes new ball and returns to hub
       new AutoTrajectory(driveSubsystem, "AlternateAuto_1", 1.8, 1.5).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
-      // shoots balls
+      // Shoots balls
       new ShootManualCommand(shooterSubsystem, 1000.0).withTimeout(3),
       
-      // leaves tarmac
+      // Leaves tarmac
       new AutoTrajectory(driveSubsystem, "AlternateAuto_2", 1.8, 1.5).getCommandAndStop()
     );
   }

@@ -61,7 +61,13 @@ public class ShootCommandTest {
                                                       m_lowerFeederSensor, 
                                                       m_lidar);
 
-    m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware, Constants.FLYWHEEL_MASTER_CONFIG, Constants.SHOOTER_LOW_CURVE, Constants.SHOOTER_HIGH_CURVE);
+    m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware,
+                                              Constants.FLYWHEEL_MASTER_CONFIG,
+                                              Constants.FEEDER_INTAKE_SPEED,
+                                              Constants.FEEDER_SHOOT_SPEED,
+                                              Constants.SHOOTER_LOW_CURVE,
+                                              Constants.SHOOTER_HIGH_CURVE);
+                                              
     m_shootCommand = new ShootManualCommand(m_shooterSubsystem, 200.0);
   }
 

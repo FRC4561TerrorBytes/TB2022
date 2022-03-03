@@ -14,6 +14,8 @@ import frc.robot.utils.AutoTrajectory;
 public class LeaveTarmac extends SequentialCommandGroup {
   /** Creates a new LeaveTarmac. */
   public LeaveTarmac(DriveSubsystem driveSubsystem) {
-    addCommands(new AutoTrajectory(driveSubsystem, "LeaveTarmac", 1.85, 1.85).getCommandAndStop());
+    addCommands(
+      new AutoTrajectory(driveSubsystem, "LeaveTarmac", 1.85, 1.85).getCommandAndStop()
+    );
   }
 }

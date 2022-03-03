@@ -82,6 +82,10 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   private PolynomialSplineFunction[] m_shooterOutputCurves = new PolynomialSplineFunction[2];
   private SelectedGoal m_selectedGoal;
 
+  private double m_distance;
+  private double m_feederIntakeSpeed;
+  private double m_feederShootSpeed;
+
   /**
    * Creates an instance of ShooterSubsystem
    * <p>
@@ -89,8 +93,14 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * <p>
    * @param shooterHardware Hardware devices for shooter
    * @param flywheelMasterConfig PID config for flywheel
+   * @param feederIntakeSpeed Feeder intake speed in % [0.0, +1.0]
+   * @param feederShootSpeed Feeder shoot speed in % [0.0, +1.0]
+   * @param lowerShooterCurve Curve relating distance to flywheel speed for low goal
+   * @param upperShooterCurve Curve relating distance to flywheel speed for high goal
    */
-  public ShooterSubsystem(Hardware shooterHardware, TalonPIDConfig flywheelMasterConfig, PolynomialSplineFunction lowerShooterCurve, PolynomialSplineFunction upperShooterCurve) {
+  public ShooterSubsystem(Hardware shooterHardware, TalonPIDConfig flywheelMasterConfig,
+                          double feederIntakeSpeed, double feederShootSpeed, 
+                          PolynomialSplineFunction lowerShooterCurve, PolynomialSplineFunction upperShooterCurve) {
     Flywheel.masterMotor = shooterHardware.flywheelMasterMotor;
     Flywheel.slaveMotor = shooterHardware.flywheelSlaveMotor;
     m_upperFeederMotor = shooterHardware.upperFeederMotor;
@@ -177,6 +187,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   @Override
   public void periodic() {
     smartDashboard();
+    updateDistance();
   }
 
   /**
@@ -244,8 +255,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void feederIntake() {
     m_upperFeederSensor.enableLimitSwitch(true);
     m_lowerFeederSensor.enableLimitSwitch(true);
-    m_upperFeederMotor.set(Constants.FEEDER_INTAKE_SPEED);
-    m_lowerFeederMotor.set(Constants.FEEDER_INTAKE_SPEED);
+    m_upperFeederMotor.set(+m_feederIntakeSpeed);
+    m_lowerFeederMotor.set(+m_feederIntakeSpeed);
   }
 
   /**
@@ -254,8 +265,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void feederOuttake() {
     m_upperFeederSensor.enableLimitSwitch(false);
     m_lowerFeederSensor.enableLimitSwitch(false);
-    m_upperFeederMotor.set(-Constants.FEEDER_INTAKE_SPEED);
-    m_lowerFeederMotor.set(-Constants.FEEDER_INTAKE_SPEED);
+    m_upperFeederMotor.set(-m_feederIntakeSpeed);
+    m_lowerFeederMotor.set(-m_feederIntakeSpeed);
   }
 
   /**
@@ -264,8 +275,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void feederShoot() {
     m_upperFeederSensor.enableLimitSwitch(false);
     m_lowerFeederSensor.enableLimitSwitch(false);
-    m_upperFeederMotor.set(Constants.FEEDER_SHOOT_SPEED);
-    m_lowerFeederMotor.set(Constants.FEEDER_SHOOT_SPEED);
+    m_upperFeederMotor.set(+m_feederShootSpeed);
+    m_lowerFeederMotor.set(+m_feederShootSpeed);
   }
 
   /**
@@ -277,18 +288,25 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Get distance from LIDAR sensor
-   * @return Distance in meters
+   * Update and filter distance readings from LIDAR
    */
-  public double getDistance() {
+  public void updateDistance() {
     double lidarOutput = 0;
     double lidarPeriod = m_LIDARFilter.calculate(m_lidar.getPeriod());
     if (m_lidar.get() < 1) {
-      return lidarOutput;
+      m_distance = lidarOutput;
     } else {
       lidarOutput = ((lidarPeriod * 1000000.0 / 10.0) - LIDAR_OFFSET) / 100.0; // convert to distance. sensor is high 10 us for every centimeter.
-      return Math.copySign(Math.floor(Math.abs(lidarOutput) * 100) / 100, lidarOutput);
+      m_distance = Math.copySign(Math.floor(Math.abs(lidarOutput) * 100) / 100, lidarOutput);
     }
+  }
+
+  /**
+   * Get latest filtered distance reading from LIDAR
+   * @return Distance in meters
+   */
+  public double getDistance() {
+    return m_distance;
   }
 
   @Override

@@ -65,8 +65,9 @@ public final class Constants {
 
   private static final double CURRENT_LIMIT = 60.0;
   private static final double CURRENT_THRESHOLD = 120.0;
+  private static final double CURRENT_THRESHOLD_TIME = 6 * ROBOT_LOOP_PERIOD;
   
-  public static final StatorCurrentLimitConfiguration DRIVE_CURRENT_LIMIT_CONFIGURATION = new StatorCurrentLimitConfiguration(true, CURRENT_LIMIT, CURRENT_THRESHOLD, 2 * ROBOT_LOOP_PERIOD);
+  public static final StatorCurrentLimitConfiguration DRIVE_CURRENT_LIMIT_CONFIGURATION = new StatorCurrentLimitConfiguration(true, CURRENT_LIMIT, CURRENT_THRESHOLD, CURRENT_THRESHOLD_TIME);
 
   // Intake Arm PID config
   public static final double INTAKE_ARM_kP = 0.16;
@@ -83,7 +84,7 @@ public final class Constants {
   public static final boolean INTAKE_ARM_SENSOR_PHASE = false;
   public static final boolean INTAKE_ARM_INVERT_MOTOR = false;
 
-  public static final double INTAKE_ROLLER_SPEED = 0.5;
+  public static final double INTAKE_ROLLER_SPEED = 1.0;
 
   // Intake Arm PID config
   public static final TalonPIDConfig INTAKE_ARM_CONFIG = new TalonPIDConfig(INTAKE_ARM_SENSOR_PHASE, 
@@ -110,7 +111,7 @@ public final class Constants {
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
   private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = false;
-  public static final double FLYWHEEL_SHOOTING_RPM = 1500;
+  public static final double FLYWHEEL_SHOOTING_RPM = 1700;
   public static final double FEEDER_INTAKE_SPEED = 0.5;
   public static final double FEEDER_SHOOT_SPEED = 1.0;
 

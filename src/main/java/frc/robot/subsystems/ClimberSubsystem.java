@@ -51,7 +51,8 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * ONLY ONE INSTANCE SHOULD EXIST AT ANY TIME!!!!!!
    * <p>
    * @param climberHardware Hardware devices required by climber 
-   * @param telescopeConfig PID config for climber
+   * @param telescopeConfig PID config for telescopes
+   * @param winchConfig PID config for winch
    */
   public ClimberSubsystem(Hardware climberHardware, TalonPIDConfig telescopeConfig, TalonPIDConfig winchConfig) {
     this.m_telescopeMasterMotor = climberHardware.telescopeMasterMotor;
@@ -64,6 +65,8 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
 
     m_telescopeConfig.initializeTalonPID(m_telescopeMasterMotor, FeedbackDevice.IntegratedSensor);
     m_telescopeMasterMotor.setSelectedSensorPosition(0.0);
+
+    m_winchConfig.initializeTalonPID(m_winchMotor, FeedbackDevice.IntegratedSensor);
     m_winchMotor.setSelectedSensorPosition(0.0);
 
     m_telescopeMasterMotor.setNeutralMode(NeutralMode.Brake);

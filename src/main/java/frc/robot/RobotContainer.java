@@ -59,6 +59,8 @@ public class RobotContainer {
 
   private static final ShooterSubsystem SHOOTER_SUBSYSTEM = new ShooterSubsystem(ShooterSubsystem.initializeHardware(), 
                                                                                  Constants.FLYWHEEL_MASTER_CONFIG,
+                                                                                 Constants.FEEDER_INTAKE_SPEED,
+                                                                                 Constants.FEEDER_SHOOT_SPEED,
                                                                                  Constants.SHOOTER_LOW_CURVE,
                                                                                  Constants.SHOOTER_HIGH_CURVE);
 
@@ -123,6 +125,7 @@ public class RobotContainer {
     primaryButtonRBumper.whenHeld(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
     primaryButtonLBumper.whenHeld(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
+    primaryButtonY.whenPressed(new InstantCommand(() -> SHOOTER_SUBSYSTEM.toggleSelectedGoal(), SHOOTER_SUBSYSTEM));
     primaryTriggerRight.whileActiveOnce(new ShootManualCommand(SHOOTER_SUBSYSTEM, Constants.FLYWHEEL_SHOOTING_RPM));
     primaryDPadUp.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(), () -> CLIMBER_SUBSYSTEM.telescopeStopManual(), CLIMBER_SUBSYSTEM));
     primaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(), () -> CLIMBER_SUBSYSTEM.telescopeStopManual(), CLIMBER_SUBSYSTEM));
@@ -131,20 +134,23 @@ public class RobotContainer {
   }
 
   /**
-   * Initialize robot
+   * Initialize robot state
    */
   public void initialize() {
     INTAKE_SUBSYSTEM.initialize();
     CLIMBER_SUBSYSTEM.initialize();
   }
 
+  /**
+   * Add auto modes to chooser
+   */
   private void autoModeChooser() {
-    // Creates dropdown box in DriverStation to manually choose automodes
     m_automodeChooser.setDefaultOption("Leave Tarmac", new LeaveTarmac(DRIVE_SUBSYSTEM));
     m_automodeChooser.addOption("Shoot Drive Forward Auto", new ShootDriveForwardAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     m_automodeChooser.addOption("Three Ball Auto", new ThreeBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     m_automodeChooser.addOption("Four Ball Auto Advanced", new FourBallAutoAdvanced(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     m_automodeChooser.addOption("Alternate Auto", new AlternateAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    m_automodeChooser.addOption("Do nothing", null);
   }
 
   /**
@@ -152,11 +158,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
     return m_automodeChooser.getSelected();
   }
 
-  @SuppressWarnings("unused")
+  /**
+   * Configure default Shuffleboard tab
+   */
   public void defaultShuffleboardTab() {
     m_pi.setDriverMode(true);
     Shuffleboard.selectTab("SmartDashboard");
