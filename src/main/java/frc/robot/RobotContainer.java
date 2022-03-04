@@ -141,6 +141,10 @@ public class RobotContainer {
     CLIMBER_SUBSYSTEM.initialize();
   }
 
+  public void teleopInit() {
+    DRIVE_SUBSYSTEM.teleopInit();
+  }
+
   /**
    * Add auto modes to chooser
    */

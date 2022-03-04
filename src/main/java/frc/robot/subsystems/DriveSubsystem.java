@@ -181,6 +181,14 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * Initialize turn PID on teleop init
+   */
+  public void teleopInit() {
+    resetAngle();
+    m_turnPIDController.setSetpoint(0.0);
+  }
+
+  /**
    * Create Shuffleboard tab for this subsystem and display values
    */
   public void shuffleboard() {
@@ -290,8 +298,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param rightVolts Right voltage [-12, +12]
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    m_lMasterMotor.setVoltage(-leftVolts);
-    m_rMasterMotor.setVoltage(+rightVolts);
+    m_lMasterMotor.setVoltage(leftVolts);
+    m_rMasterMotor.setVoltage(rightVolts);
   }
 
   /**
