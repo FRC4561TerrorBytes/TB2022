@@ -141,6 +141,9 @@ public class RobotContainer {
     CLIMBER_SUBSYSTEM.initialize();
   }
 
+  /**
+   * Initialize robot for teleop
+   */
   public void teleopInit() {
     DRIVE_SUBSYSTEM.teleopInit();
   }
