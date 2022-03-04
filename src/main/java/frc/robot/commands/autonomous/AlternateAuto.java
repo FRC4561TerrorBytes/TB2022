@@ -19,7 +19,7 @@ public class AlternateAuto extends SequentialCommandGroup {
   public AlternateAuto(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
     addCommands(
       // Leaves tarmac and intakes new ball and returns to hub
-      new AutoTrajectory(driveSubsystem, "AlternateAuto_1", 1.8, 1.5).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      new AutoTrajectory(driveSubsystem, "AlternateAuto_1", 1.8, 1.5).getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // Shoots balls
       new ShootManualCommand(shooterSubsystem, 1000.0).withTimeout(3),

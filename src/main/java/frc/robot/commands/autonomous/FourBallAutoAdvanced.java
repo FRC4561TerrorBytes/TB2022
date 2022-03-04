@@ -20,13 +20,13 @@ public class FourBallAutoAdvanced extends SequentialCommandGroup {
   public FourBallAutoAdvanced(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
     addCommands(
       // Leaves tarmac, gets new ball and returns to tarmac  
-      new AutoTrajectory(driveSubsystem, "FourBallAuto_1", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      new AutoTrajectory(driveSubsystem, "FourBallAuto_1", 1.8, 1.8).getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // Shoots collected + preloaded ball
       new ShootManualCommand(shooterSubsystem, 1000.0).withTimeout(3),
       
       // Leaves tarmac, gets 2 new balls and returns to tarmac
-      new AutoTrajectory(driveSubsystem, "FourBallAuto_2", 1.8, 1.5).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      new AutoTrajectory(driveSubsystem, "FourBallAuto_2", 1.8, 1.5).getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // Shoots balls
       new ShootManualCommand(shooterSubsystem, 1000.0).withTimeout(3),

@@ -20,13 +20,13 @@ public class ThreeBallAuto extends SequentialCommandGroup {
   public ThreeBallAuto(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
     addCommands(
       // leaves tarmac, gets new ball and returns to tarmac  
-      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_1", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_1", 1.8, 1.8).getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots 1 collected + 1 preloaded balls
       new ShootManualCommand(shooterSubsystem, 1000.0).withTimeout(3),
      
       // leaves tarmac, gets new ball and returns to tarmac  
-      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_2", 1.8, 1.8).getCommandAndStop().alongWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_2", 1.8, 1.8).getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots last ball
       new ShootManualCommand(shooterSubsystem, 1000.0).withTimeout(3),
