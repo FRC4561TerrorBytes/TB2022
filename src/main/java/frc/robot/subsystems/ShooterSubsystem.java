@@ -103,14 +103,16 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
                           PolynomialSplineFunction lowerShooterCurve, PolynomialSplineFunction upperShooterCurve) {
     Flywheel.masterMotor = shooterHardware.flywheelMasterMotor;
     Flywheel.slaveMotor = shooterHardware.flywheelSlaveMotor;
-    m_upperFeederMotor = shooterHardware.upperFeederMotor;
-    m_lowerFeederMotor = shooterHardware.lowerFeederMotor;
-    m_upperFeederSensor = shooterHardware.upperFeederSensor;
-    m_lowerFeederSensor = shooterHardware.lowerFeederSensor;
-    m_lidar = shooterHardware.lidar;
-    m_shooterOutputCurves[0] = lowerShooterCurve;
-    m_shooterOutputCurves[1] = upperShooterCurve;
-    m_selectedGoal = SelectedGoal.Low;
+    this.m_upperFeederMotor = shooterHardware.upperFeederMotor;
+    this.m_lowerFeederMotor = shooterHardware.lowerFeederMotor;
+    this.m_upperFeederSensor = shooterHardware.upperFeederSensor;
+    this.m_lowerFeederSensor = shooterHardware.lowerFeederSensor;
+    this.m_lidar = shooterHardware.lidar;
+    this.m_shooterOutputCurves[0] = lowerShooterCurve;
+    this.m_shooterOutputCurves[1] = upperShooterCurve;
+    this.m_selectedGoal = SelectedGoal.Low;
+    this.m_feederIntakeSpeed = feederIntakeSpeed;
+    this.m_feederShootSpeed = feederShootSpeed;
 
     Flywheel.masterConfig = flywheelMasterConfig;
 
