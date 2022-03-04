@@ -76,8 +76,8 @@ public final class Constants {
   public static final double INTAKE_ARM_LOWER_LIMIT = 0;
   public static final double INTAKE_ARM_UPPER_LIMIT = 3100;
   public static final double INTAKE_ARM_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 8;
-  public static final int INTAKE_ARM_MOTION_SMOOTHING = 7;
+  public static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 4;
+  public static final int INTAKE_ARM_MOTION_SMOOTHING = 8;
   public static final int INTAKE_ARM_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int INTAKE_ARM_MAX_RPM = FALCON_500_MAX_RPM;
   public static final boolean INTAKE_ARM_SOFT_LIMITS = true;
