@@ -77,7 +77,7 @@ public class AutoTrajectory {
         new PIDController(kP, 0, kD),
         new PIDController(kP, 0, kD),
         // RamseteCommand passes volts to the callback
-        m_subsystem::tankDriveVolts,
+        m_subsystem::autoTankDriveVolts,
         m_subsystem 
     );
   }
@@ -134,7 +134,7 @@ public class AutoTrajectory {
         new PIDController(kP, 0, kD),
         new PIDController(kP, 0, kD),
         // RamseteCommand passes volts to the callback
-        m_subsystem::tankDriveVolts,
+        m_subsystem::autoTankDriveVolts,
         m_subsystem 
     );
   }

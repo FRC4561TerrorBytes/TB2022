@@ -184,8 +184,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * Initialize turn PID on teleop init
    */
   public void teleopInit() {
-    resetAngle();
-    m_turnPIDController.setSetpoint(0.0);
+    resetDrivePID();
   }
 
   /**
@@ -201,13 +200,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   @Override
-  public void periodic() {
-    // Update the odometry in the periodic block
-    // Negate gyro angle because gyro is positive going clockwise which doesn't match WPILib convention
-    m_odometry.update(Rotation2d.fromDegrees(-getAngle()), 
-                      -m_lMasterMotor.getSelectedSensorPosition() * m_metersPerTick,
-                      +m_rMasterMotor.getSelectedSensorPosition() * m_metersPerTick);
-  }
+  public void periodic() {}
 
   /**
    * Call this repeatedly to drive without PID during teleoperation
@@ -272,32 +265,13 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Turn robot to set angle
-   * @param angleSetpoint In degrees [-180, +180]
-   * @return True when complete
-   */
-  public boolean turnToAngle(double angleSetpoint) {
-    MathUtil.clamp(angleSetpoint, -180.0, +180.0);
-    resetAngle();
-    m_turnPIDController.setSetpoint(angleSetpoint);
-
-    double currentAngle = getAngle();
-    while (Math.abs(currentAngle) <= Math.abs(angleSetpoint)) {
-      double output = m_turnPIDController.calculate(currentAngle, m_turnPIDController.getSetpoint());
-      m_lMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, -output);
-      m_rMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, +output);
-      currentAngle = getAngle();
-    }
-
-    return true;
-  }
-
-  /**
    * Controls the left and right sides of the drive directly with voltages.
+   * <p>
+   * Only use this method to drive during autonomous!
    * @param leftVolts Left voltage [-12, +12]
    * @param rightVolts Right voltage [-12, +12]
    */
-  public void tankDriveVolts(double leftVolts, double rightVolts) {
+  public void autoTankDriveVolts(double leftVolts, double rightVolts) {
     m_lMasterMotor.setVoltage(leftVolts);
     m_rMasterMotor.setVoltage(rightVolts);
   }
@@ -331,10 +305,25 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * Update robot odometry
+   * <p>
+   * Repeatedly call this method at a steady rate to keep track of robot position
+   */
+  public void updateOdometry() {
+    // Negate gyro angle because gyro is positive going clockwise which doesn't match WPILib convention
+    m_odometry.update(Rotation2d.fromDegrees(-getAngle()), 
+                      -m_lMasterMotor.getSelectedSensorPosition() * m_metersPerTick,
+                      +m_rMasterMotor.getSelectedSensorPosition() * m_metersPerTick);
+  }
+
+  /**
    * Returns the currently estimated pose of the robot
+   * <p>
+   * This method is called periodically by the Ramsete command to update and obtain the latest pose
    * @return The pose
    */
   public Pose2d getPose() {
+    updateOdometry();
     return m_odometry.getPoseMeters();
   }
 
