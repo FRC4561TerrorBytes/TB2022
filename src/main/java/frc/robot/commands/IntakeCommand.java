@@ -55,6 +55,10 @@ public class IntakeCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    if (m_controller != null) {
+      m_controller.setRumble(RumbleType.kLeftRumble, 0.0);
+      m_controller.setRumble(RumbleType.kRightRumble, 0.0);
+    }
     m_intakeSubsystem.stop();
     m_shooterSubsystem.feederStop();
   }
