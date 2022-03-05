@@ -80,6 +80,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
 
   private LinearFilter m_LIDARFilter;
   private PolynomialSplineFunction[] m_shooterOutputCurves = new PolynomialSplineFunction[2];
+  private double[] m_maxDistance = new double[2];
   private SelectedGoal m_selectedGoal;
 
   private double m_distance;
@@ -110,6 +111,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_lidar = shooterHardware.lidar;
     this.m_shooterOutputCurves[0] = lowerShooterCurve;
     this.m_shooterOutputCurves[1] = upperShooterCurve;
+    this.m_maxDistance[0] = lowerShooterCurve.getKnots()[lowerShooterCurve.getKnots().length - 1];
+    this.m_maxDistance[1] = upperShooterCurve.getKnots()[upperShooterCurve.getKnots().length - 1];
     this.m_selectedGoal = SelectedGoal.Low;
     this.m_feederIntakeSpeed = feederIntakeSpeed;
     this.m_feederShootSpeed = feederShootSpeed;
@@ -205,7 +208,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @param distance Distance in meters
    */
   public void setFlywheelAuto() {
-    setFlywheelSpeed(m_shooterOutputCurves[m_selectedGoal.value].value(getDistance()));
+    double distance = MathUtil.clamp(getDistance(), 0.0, m_maxDistance[m_selectedGoal.value]);
+    setFlywheelSpeed(m_shooterOutputCurves[m_selectedGoal.value].value(distance));
   }
 
   /**
