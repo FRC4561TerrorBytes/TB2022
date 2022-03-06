@@ -72,6 +72,7 @@ public final class Constants {
   // Intake Arm PID config
   public static final double INTAKE_ARM_kP = 0.16;
   public static final double INTAKE_ARM_kD = 0.0;
+  public static final double INTAKE_ARM_MECHANICAL_EFFICIENCY = 0.9;
   public static final double INTAKE_ARM_TOLERANCE = 100;
   public static final double INTAKE_ARM_LOWER_LIMIT = 0;
   public static final double INTAKE_ARM_UPPER_LIMIT = 3100;
@@ -94,6 +95,7 @@ public final class Constants {
                                                                             INTAKE_ARM_kP, 
                                                                             0.0, 
                                                                             INTAKE_ARM_kD, 
+                                                                            INTAKE_ARM_MECHANICAL_EFFICIENCY,
                                                                             INTAKE_ARM_TOLERANCE, 
                                                                             INTAKE_ARM_LOWER_LIMIT, 
                                                                             INTAKE_ARM_UPPER_LIMIT, 
@@ -106,6 +108,7 @@ public final class Constants {
   private static final double FLYWHEEL_kP = 0.15;
   private static final double FLYWHEEL_kI = 0.00015;
   private static final double FLYWHEEL_kD = 0.004;
+  private static final double FLYWHEEL_MECHANICAL_EFFICIENCY = 1.0;
   private static final double FLYWHEEL_TOLERANCE = 20;
   private static final double FLYWHEEL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
@@ -132,11 +135,13 @@ public final class Constants {
                                                                                  FLYWHEEL_kP,
                                                                                  FLYWHEEL_kI,
                                                                                  FLYWHEEL_kD,
+                                                                                 FLYWHEEL_MECHANICAL_EFFICIENCY,
                                                                                  FLYWHEEL_TOLERANCE);
 
   // Telescope PID variables
   public static final double TELESCOPE_kP = 0.0;
   public static final double TELESCOPE_kD = 0.0;
+  public static final double TELESCOPE_MECHANICAL_EFFICIENCY = 0.9;
   public static final double TELESCOPE_TOLERANCE = 100;
   public static final double TELESCOPE_LOWER_LIMIT = 0;
   public static final double TELESCOPE_UPPER_LIMIT = 1500;
@@ -157,6 +162,7 @@ public final class Constants {
                                                                            TELESCOPE_kP, 
                                                                            0.0, 
                                                                            TELESCOPE_kD, 
+                                                                           TELESCOPE_MECHANICAL_EFFICIENCY,
                                                                            TELESCOPE_TOLERANCE, 
                                                                            TELESCOPE_LOWER_LIMIT, 
                                                                            TELESCOPE_UPPER_LIMIT, 
@@ -168,6 +174,7 @@ public final class Constants {
   // Winch PID variables
   public static final double WINCH_kP = 0.0;
   public static final double WINCH_kD = 0.0;
+  public static final double WINCH_MECHANICAL_EFFICIENCY = 0.9;
   public static final double WINCH_TOLERANCE = 100;
   public static final double WINCH_LOWER_LIMIT = 0;
   public static final double WINCH_UPPER_LIMIT = 1500;
@@ -188,6 +195,7 @@ public final class Constants {
                                                                        WINCH_kP, 
                                                                        0.0, 
                                                                        WINCH_kD, 
+                                                                       WINCH_MECHANICAL_EFFICIENCY,
                                                                        WINCH_TOLERANCE, 
                                                                        WINCH_LOWER_LIMIT, 
                                                                        WINCH_UPPER_LIMIT, 

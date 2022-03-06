@@ -18,7 +18,6 @@ import edu.wpi.first.math.MathUtil;
  * Automates the configuration of Talon PID and MotionMagic parameters
  */
 public class TalonPIDConfig {
-  private static final double MECHANICAL_EFFICIENCY = 0.85;
   private static final double MOTOR_DEADBAND = 0.01;
   private static final double MIN_TOLERANCE = 1.0;
   private static final int MIN_MOTION_SMOOTHING = 0;
@@ -55,15 +54,16 @@ public class TalonPIDConfig {
    * @param kP proportional gain
    * @param kI integral gain
    * @param kD derivative gain
+   * @param mechanicalEfficiency mechanical efficiency of mechanism [0.0, +1.0]
    * @param tolerance tolerance of PID loop in ticks per 100ms
    */
   public TalonPIDConfig(boolean sensorPhase, boolean invertMotor,
                         double maxRPM, double ticksPerRotation,
                         double kP, double kI, double kD, 
-                        double tolerance) {
+                        double mechanicalEfficiency, double tolerance) {
     this.m_sensorPhase = sensorPhase;
     this.m_invertMotor = invertMotor;
-    this.m_maxRPM = maxRPM * MECHANICAL_EFFICIENCY;
+    this.m_maxRPM = maxRPM * MathUtil.clamp(mechanicalEfficiency, 0.0, 1.0);
     this.m_ticksPerRotation = ticksPerRotation;
     this.m_kP = kP;
     this.m_kI = kI;
@@ -84,19 +84,20 @@ public class TalonPIDConfig {
    * @param kP proportional gain
    * @param kI integral gain
    * @param kD derivative gain
+   * @param mechanicalEfficiency mechanical efficiency of mechanism [0.0, +1.0]
    * @param tolerance tolerance of PID loop in ticks
    * @param velocity MotionMagic cruise velocity in RPM
    * @param accelerationRPMPerSec MotionMagic acceleration in RPM
    * @param motionSmoothing MotionMagic smoothing factor [0, 8]
    */
   public TalonPIDConfig(boolean sensorPhase, boolean invertMotor, double ticksPerRotation, double maxRPM,
-                        double kP, double kI, double kD, double tolerance, 
+                        double kP, double kI, double kD, double mechanicalEfficiency, double tolerance, 
                         double lowerLimit, double upperLimit, boolean enableSoftLimits,
                         double velocityRPM, double accelerationRPMPerSec, int motionSmoothing) {
     this.m_sensorPhase = sensorPhase;
     this.m_invertMotor = invertMotor;
     this.m_ticksPerRotation = ticksPerRotation;
-    this.m_maxRPM = maxRPM * MECHANICAL_EFFICIENCY;
+    this.m_maxRPM = maxRPM * MathUtil.clamp(mechanicalEfficiency, 0.0, 1.0);
     this.m_kP = kP;
     this.m_kI = kI;
     this.m_kD = kD;
