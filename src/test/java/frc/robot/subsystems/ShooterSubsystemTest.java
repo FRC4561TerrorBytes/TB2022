@@ -94,7 +94,6 @@ public class ShooterSubsystemTest {
   public void feederIntake(){
     m_shooterSubsystem.feederIntake();
     verify(m_upperFeederSensor, times(2)).enableLimitSwitch(ArgumentMatchers.eq(true));
-    verify(m_lowerFeederSensor, times(2)).enableLimitSwitch(ArgumentMatchers.eq(true));
     verify(m_upperFeederMotor, times(1)).set(AdditionalMatchers.eq(Constants.FEEDER_INTAKE_SPEED, DELTA));
     verify(m_lowerFeederMotor, times(1)).set(AdditionalMatchers.eq(Constants.FEEDER_INTAKE_SPEED, DELTA));
   }
@@ -105,7 +104,6 @@ public class ShooterSubsystemTest {
   public void feederOuttake(){
     m_shooterSubsystem.feederOuttake();
     verify(m_upperFeederSensor, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
-    verify(m_lowerFeederSensor, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
     verify(m_upperFeederMotor, times(1)).set(AdditionalMatchers.eq(-Constants.FEEDER_INTAKE_SPEED, DELTA));
     verify(m_lowerFeederMotor, times(1)).set(AdditionalMatchers.eq(-Constants.FEEDER_INTAKE_SPEED, DELTA));
 
@@ -117,7 +115,6 @@ public class ShooterSubsystemTest {
   public void feederShoot(){
     m_shooterSubsystem.feederShoot();
     verify(m_upperFeederSensor, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
-    verify(m_lowerFeederSensor, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
     verify(m_lowerFeederMotor, times(1)).set(AdditionalMatchers.eq(Constants.FEEDER_SHOOT_SPEED, DELTA));
     verify(m_upperFeederMotor, times(1)).set(AdditionalMatchers.eq(Constants.FEEDER_SHOOT_SPEED, DELTA));
   }

@@ -76,7 +76,7 @@ public class ClimberSubsystemTest {
 	public void climberUpManual() {
 		m_climberSubsystem.telescopeUpManual();
 		verify(m_telescopeMasterMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
-		verify(m_telescopeMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(1.0, DELTA));
+		verify(m_telescopeMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(0.5, DELTA));
 
 		m_climberSubsystem.telescopeStopManual();
 		verify(m_telescopeMasterMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
@@ -89,7 +89,7 @@ public class ClimberSubsystemTest {
 	public void climberDownManual() {
 		m_climberSubsystem.telescopeDownManual();
 		verify(m_telescopeMasterMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
-		verify(m_telescopeMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-1.0, DELTA));
+		verify(m_telescopeMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-0.5, DELTA));
 
 		m_climberSubsystem.telescopeStopManual();
 		verify(m_telescopeMasterMotor, times(1)).overrideSoftLimitsEnable(ArgumentMatchers.eq(false));
