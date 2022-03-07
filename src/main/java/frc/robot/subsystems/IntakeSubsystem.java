@@ -169,6 +169,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   public void intake() {
     m_prevArmPosition = m_armPosition;
     armDown();
+    m_rollerMotor.setOpenLoopRampRate(1.0);
     m_rollerMotor.set(+m_rollerSpeed);
   }
 
@@ -178,6 +179,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   public void outtake() {
     m_prevArmPosition = m_armPosition;
     armDown();
+    m_rollerMotor.setOpenLoopRampRate(1.0);
     m_rollerMotor.set(-m_rollerSpeed);
   }
 
@@ -185,6 +187,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * Stop roller and return arm to previous position
    */
   public void stop() {
+    m_rollerMotor.setOpenLoopRampRate(0.0);
     m_rollerMotor.stopMotor();
     armSetPosition(m_prevArmPosition.value);
   }

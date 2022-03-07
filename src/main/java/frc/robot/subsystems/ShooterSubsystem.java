@@ -129,11 +129,11 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
 
     // Set feeder motor inversion
     m_upperFeederMotor.setInverted(false);
-    m_lowerFeederMotor.setInverted(false);
+    m_lowerFeederMotor.setInverted(true);
 
-    // Enable beam beak sensors for feeder motors
+    // Enable beam beak sensor for only top feeder motor
     m_upperFeederSensor.enableLimitSwitch(true);
-    m_lowerFeederSensor.enableLimitSwitch(true);
+    m_lowerFeederSensor.enableLimitSwitch(false);
 
     // Initialize config for flywheel PID
     Flywheel.masterConfig.initializeTalonPID(Flywheel.masterMotor, FeedbackDevice.IntegratedSensor);
@@ -171,7 +171,6 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void shuffleboard() {
     ShuffleboardTab tab = Shuffleboard.getTab("Shooter Subsystem");
-    Shuffleboard.getTab("SmartDashboard").addBoolean("Flywheel at Speed?", () -> isFlywheelAtSpeed());
     tab.addNumber("Flywheel Motor Output (%)", () -> Flywheel.masterMotor.getMotorOutputPercent());
     tab.addNumber("Flywheel Current (A)", () -> Flywheel.masterMotor.getSupplyCurrent());
     tab.addNumber("Flywheel Motor Velocity (RPM)", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getSelectedSensorVelocity()));
@@ -185,7 +184,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void smartDashboard() {
     SmartDashboard.putBoolean("Ball 1", m_upperFeederSensor.isPressed());
-    SmartDashboard.putBoolean("Ball 2", m_lowerFeederSensor.isPressed());
+    SmartDashboard.putBoolean("Ball 2", m_lowerFeederSensor.isPressed() && m_upperFeederSensor.isPressed());
     SmartDashboard.putBoolean("Selected Goal", m_selectedGoal == SelectedGoal.High);
   }
 
@@ -208,8 +207,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @param distance Distance in meters
    */
   public void setFlywheelAuto() {
-    double distance = MathUtil.clamp(getDistance(), 0.0, m_maxDistance[m_selectedGoal.value]);
-    setFlywheelSpeed(m_shooterOutputCurves[m_selectedGoal.value].value(distance));
+    //double distance = MathUtil.clamp(getDistance(), 0.0, m_maxDistance[m_selectedGoal.value]);
+    setFlywheelSpeed(m_shooterOutputCurves[m_selectedGoal.value].value(0.0));
   }
 
   /**
@@ -260,9 +259,9 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void feederIntake() {
     m_upperFeederSensor.enableLimitSwitch(true);
-    m_lowerFeederSensor.enableLimitSwitch(true);
     m_upperFeederMotor.set(+m_feederIntakeSpeed);
-    m_lowerFeederMotor.set(+m_feederIntakeSpeed);
+    if (m_lowerFeederSensor.isPressed() && m_upperFeederSensor.isPressed()) m_lowerFeederMotor.stopMotor();
+    else m_lowerFeederMotor.set(+m_feederIntakeSpeed);
   }
 
   /**
@@ -270,7 +269,6 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void feederOuttake() {
     m_upperFeederSensor.enableLimitSwitch(false);
-    m_lowerFeederSensor.enableLimitSwitch(false);
     m_upperFeederMotor.set(-m_feederIntakeSpeed);
     m_lowerFeederMotor.set(-m_feederIntakeSpeed);
   }
@@ -280,7 +278,6 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void feederShoot() {
     m_upperFeederSensor.enableLimitSwitch(false);
-    m_lowerFeederSensor.enableLimitSwitch(false);
     m_upperFeederMotor.set(+m_feederShootSpeed);
     m_lowerFeederMotor.set(+m_feederShootSpeed);
   }

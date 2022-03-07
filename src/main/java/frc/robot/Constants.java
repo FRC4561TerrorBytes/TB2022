@@ -48,9 +48,10 @@ public final class Constants {
   public static final double DRIVE_MAX_LINEAR_SPEED = (FALCON_500_MAX_RPM / 60) * DRIVE_METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY; // 3.766 m/s
 
   // Drive PID values
-  public static final double DRIVE_kP = 0.011;
-  public static final double DRIVE_kD = 0.0005;
+  public static final double DRIVE_kP = 0.008;
+  public static final double DRIVE_kD = 0.00012;
   public static final double DRIVE_TURN_SCALAR = 80.0;
+  public static final double DRIVE_LOOKAHEAD = 6;
 
   private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };
   private static final double DRIVE_THROTTLE_INPUT_CURVE_Y[] = { 0.0, 1.883, 3.766 };
@@ -70,15 +71,15 @@ public final class Constants {
   public static final StatorCurrentLimitConfiguration DRIVE_CURRENT_LIMIT_CONFIGURATION = new StatorCurrentLimitConfiguration(true, CURRENT_LIMIT, CURRENT_THRESHOLD, CURRENT_THRESHOLD_TIME);
 
   // Intake Arm PID config
-  public static final double INTAKE_ARM_kP = 0.16;
+  public static final double INTAKE_ARM_kP = 0.8;
   public static final double INTAKE_ARM_kD = 0.0;
-  public static final double INTAKE_ARM_MECHANICAL_EFFICIENCY = 0.9;
-  public static final double INTAKE_ARM_TOLERANCE = 100;
+  public static final double INTAKE_ARM_MECHANICAL_EFFICIENCY = 0.8;
+  public static final double INTAKE_ARM_TOLERANCE = 10;
   public static final double INTAKE_ARM_LOWER_LIMIT = 0;
   public static final double INTAKE_ARM_UPPER_LIMIT = 3100;
   public static final double INTAKE_ARM_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 4;
-  public static final int INTAKE_ARM_MOTION_SMOOTHING = 8;
+  public static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 12;
+  public static final int INTAKE_ARM_MOTION_SMOOTHING = 5;
   public static final int INTAKE_ARM_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int INTAKE_ARM_MAX_RPM = FALCON_500_MAX_RPM;
   public static final boolean INTAKE_ARM_SOFT_LIMITS = true;
@@ -105,23 +106,23 @@ public final class Constants {
                                                                             INTAKE_ARM_MOTION_SMOOTHING);
 
   // Shooter PID Values
-  private static final double FLYWHEEL_kP = 0.15;
-  private static final double FLYWHEEL_kI = 0.00015;
-  private static final double FLYWHEEL_kD = 0.004;
-  private static final double FLYWHEEL_MECHANICAL_EFFICIENCY = 1.0;
-  private static final double FLYWHEEL_TOLERANCE = 20;
+  private static final double FLYWHEEL_kP = 0.0;
+  private static final double FLYWHEEL_kI = 0.0;
+  private static final double FLYWHEEL_kD = 0.0;
+  private static final double FLYWHEEL_MECHANICAL_EFFICIENCY = 0.995;
+  private static final double FLYWHEEL_TOLERANCE = 150;
   private static final double FLYWHEEL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
-  private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = false;
+  private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = true;
   public static final double FLYWHEEL_SHOOTING_RPM = 1700;
   public static final double FEEDER_INTAKE_SPEED = 0.5;
-  public static final double FEEDER_SHOOT_SPEED = 1.0;
+  public static final double FEEDER_SHOOT_SPEED = 0.4;
 
   private static final double SHOOTER_LOW_CURVE_X[] = { 0.0, 0.5, 1.0 };
   private static final double SHOOTER_LOW_CURVE_Y[] = { 1700.0, 1700.0, 1700.0 };
   private static final double SHOOTER_HIGH_CURVE_X[] = { 0.0, 0.5, 1.0 };
-  private static final double SHOOTER_HIGH_CURVE_Y[] = { 1800.0, 1800.0, 1800.0 };
+  private static final double SHOOTER_HIGH_CURVE_Y[] = { 2500.0, 2500.0, 2500.0 };
 
   public static final PolynomialSplineFunction SHOOTER_LOW_CURVE = SPLINE_INTERPOLATOR.interpolate(SHOOTER_LOW_CURVE_X, SHOOTER_LOW_CURVE_Y);
   public static final PolynomialSplineFunction SHOOTER_HIGH_CURVE = SPLINE_INTERPOLATOR.interpolate(SHOOTER_HIGH_CURVE_X, SHOOTER_HIGH_CURVE_Y);
@@ -144,7 +145,7 @@ public final class Constants {
   public static final double TELESCOPE_MECHANICAL_EFFICIENCY = 0.9;
   public static final double TELESCOPE_TOLERANCE = 100;
   public static final double TELESCOPE_LOWER_LIMIT = 0;
-  public static final double TELESCOPE_UPPER_LIMIT = 1500;
+  public static final double TELESCOPE_UPPER_LIMIT = 280000;
   public static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM;
   public static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM * 8;
   public static final int TELESCOPE_MOTION_SMOOTHING = 1;
@@ -152,7 +153,7 @@ public final class Constants {
   public static final int TELESCOPE_MAX_RPM = FALCON_500_MAX_RPM;
   public static final boolean TELESCOPE_SOFT_LIMITS = true;
   public static final boolean TELESCOPE_SENSOR_PHASE = false;
-  public static final boolean TELESCOPE_INVERT_MOTOR = false;
+  public static final boolean TELESCOPE_INVERT_MOTOR = true;
 
   // Telescope PID config
   public static final TalonPIDConfig TELESCOPE_CONFIG = new TalonPIDConfig(TELESCOPE_SENSOR_PHASE, 

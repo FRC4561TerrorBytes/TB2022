@@ -35,12 +35,13 @@ public class IntakeCommand extends CommandBase {
   @Override
   public void initialize() {
     m_intakeSubsystem.intake();
-    m_shooterSubsystem.feederIntake();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_shooterSubsystem.feederIntake();
+    
     if (m_controller == null) return;
 
     if (m_shooterSubsystem.isFeederFull()) {

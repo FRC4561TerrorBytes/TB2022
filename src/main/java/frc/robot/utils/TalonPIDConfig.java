@@ -18,6 +18,7 @@ import edu.wpi.first.math.MathUtil;
  * Automates the configuration of Talon PID and MotionMagic parameters
  */
 public class TalonPIDConfig {
+  private static final double MAX_VOLTAGE = 12.0;
   private static final double MOTOR_DEADBAND = 0.01;
   private static final double MIN_TOLERANCE = 1.0;
   private static final int MIN_MOTION_SMOOTHING = 0;
@@ -160,6 +161,10 @@ public class TalonPIDConfig {
 
     // Configure motor deadband
     talon.configNeutralDeadband(MOTOR_DEADBAND);
+
+    // Enable voltage compensation
+    talon.configVoltageCompSaturation(MAX_VOLTAGE);
+    talon.enableVoltageCompensation(true);
 
     // Configure MotionMagic values
     if (m_motionMagic) {  

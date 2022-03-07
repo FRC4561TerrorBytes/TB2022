@@ -11,6 +11,7 @@ import frc.robot.Constants;
 public class TurnPIDController extends PIDController {
   private HashMap<Double, Double> m_turnInputMap = new HashMap<Double, Double>();
   private double m_turnScalar = 0.0;
+  private double m_lookAhead = 0.0;
   private double m_deadband = 0.0;
   private boolean m_isTurning = false;
 
@@ -22,10 +23,11 @@ public class TurnPIDController extends PIDController {
    * @param deadband Controller deadband
    * @param turnInputCurve Turn input curve
    */
-  public TurnPIDController(double kP, double kD, double turnScalar, double deadband, PolynomialSplineFunction turnInputCurve) {
+  public TurnPIDController(double kP, double kD, double turnScalar, double deadband, double lookAhead, PolynomialSplineFunction turnInputCurve) {
     super(kP, 0.0, kD, Constants.ROBOT_LOOP_PERIOD);
     this.m_turnScalar = turnScalar;
     this.m_deadband = deadband;
+    this.m_lookAhead = lookAhead;
 
     // Fill turn input hashmap
     for (int i = 0; i <= 1000; i++) {
@@ -59,7 +61,7 @@ public class TurnPIDController extends PIDController {
     } else { 
       // When turning is complete, set setpoint to current angle
       if (m_isTurning) {
-        super.setSetpoint(currentAngle + (turnRate * Constants.ROBOT_LOOP_PERIOD));
+        super.setSetpoint(currentAngle + (turnRate * m_lookAhead * Constants.ROBOT_LOOP_PERIOD));
         m_isTurning = false;
       }
     }

@@ -82,15 +82,16 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param kD Derivative gain
    * @param turnScalar Scalar for turn input (degrees)
    * @param deadband Deadband for controller input [+0.001, +0.1]
+   * @param lookAhead Turn PID lookahead, in number of loops
    * @param metersPerTick Meters traveled per encoder tick (meters)
    * @param maxLinearSpeed Maximum linear speed of the robot (m/s)
    * @param tractionControlCurve Expression characterising traction of the robot with "X" as the variable
    * @param throttleInputCurve Expression characterising throttle input with "X" as the variable
    */
-  public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turnScalar, double deadband, double metersPerTick, double maxLinearSpeed, 
+  public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turnScalar, double deadband, double lookAhead, double metersPerTick, double maxLinearSpeed, 
                         PolynomialSplineFunction tractionControlCurve, PolynomialSplineFunction throttleInputCurve, PolynomialSplineFunction turnInputCurve,
                         StatorCurrentLimitConfiguration currentLimitConfiguration) {
-    m_turnPIDController = new TurnPIDController(kP, kD, turnScalar, deadband, turnInputCurve);
+    m_turnPIDController = new TurnPIDController(kP, kD, turnScalar, deadband, lookAhead, turnInputCurve);
     m_tractionControlController = new TractionControlController(deadband, maxLinearSpeed, tractionControlCurve, throttleInputCurve);
 
     this.m_lMasterMotor = drivetrainHardware.lMasterMotor;

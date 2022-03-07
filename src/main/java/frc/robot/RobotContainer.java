@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.OuttakeCommand;
-import frc.robot.commands.ShootManualCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.commands.autonomous.AlternateAuto;
 import frc.robot.commands.autonomous.FourBallAutoAdvanced;
 import frc.robot.commands.autonomous.LeaveTarmac;
@@ -46,6 +46,7 @@ public class RobotContainer {
                                                                            Constants.DRIVE_kD,
                                                                            Constants.DRIVE_TURN_SCALAR,
                                                                            Constants.CONTROLLER_DEADBAND,
+                                                                           Constants.DRIVE_LOOKAHEAD,
                                                                            Constants.DRIVE_METERS_PER_TICK,
                                                                            Constants.DRIVE_MAX_LINEAR_SPEED,
                                                                            Constants.DRIVE_TRACTION_CONTROL_CURVE,
@@ -69,7 +70,6 @@ public class RobotContainer {
                                                                                  Constants.WINCH_CONFIG);
 
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
-
 
   private static SendableChooser<SequentialCommandGroup> m_automodeChooser = new SendableChooser<>();
 
@@ -129,18 +129,21 @@ public class RobotContainer {
     Trigger primaryWinchInManual = new Trigger(() -> PRIMARY_CONTROLLER.getStartButton() && PRIMARY_CONTROLLER.getPOV() == 270);
 
     // Primary controller bindings
-    primaryButtonRBumper.whenHeld(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
+    primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM));
     primaryButtonLBumper.whenHeld(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
     primaryButtonY.whenPressed(new InstantCommand(() -> SHOOTER_SUBSYSTEM.toggleSelectedGoal(), SHOOTER_SUBSYSTEM));
-    primaryTriggerRight.whileActiveOnce(new ShootManualCommand(SHOOTER_SUBSYSTEM, Constants.FLYWHEEL_SHOOTING_RPM));
-    primaryDPadUp.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.nextClimberState(), CLIMBER_SUBSYSTEM));
-    primaryDPadDown.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.previousClimberState(), CLIMBER_SUBSYSTEM));
+    primaryTriggerRight.whileActiveOnce(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
+    // primaryDPadUp.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.nextClimberState(), CLIMBER_SUBSYSTEM));
+    // primaryDPadDown.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.previousClimberState(), CLIMBER_SUBSYSTEM));
 
-    primaryTelescopeUpManual.whenActive(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(), () -> CLIMBER_SUBSYSTEM.telescopeStopManual(), CLIMBER_SUBSYSTEM));
-    primaryTelescopeDownManual.whenActive(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(), () -> CLIMBER_SUBSYSTEM.telescopeStopManual(), CLIMBER_SUBSYSTEM));
-    primaryWinchInManual.whenActive(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
-    primaryWinchOutManual.whenActive(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
+    primaryDPadUp.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpRelative(), () -> CLIMBER_SUBSYSTEM.telescopeStopManual(), CLIMBER_SUBSYSTEM));
+    primaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownRelative(), () -> CLIMBER_SUBSYSTEM.telescopeStopManual(), CLIMBER_SUBSYSTEM));
+
+    primaryTelescopeUpManual.whileActiveOnce(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(), () -> CLIMBER_SUBSYSTEM.telescopeStopManual(), CLIMBER_SUBSYSTEM));
+    primaryTelescopeDownManual.whileActiveOnce(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(), () -> CLIMBER_SUBSYSTEM.telescopeStopManual(), CLIMBER_SUBSYSTEM));
+    primaryWinchInManual.whileActiveOnce(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
+    primaryWinchOutManual.whileActiveOnce(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
   }
 
   /**
