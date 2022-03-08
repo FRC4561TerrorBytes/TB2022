@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -140,6 +141,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     Flywheel.slaveMotor.configFactoryDefault();
     Flywheel.slaveMotor.set(ControlMode.Follower, Flywheel.masterMotor.getDeviceID());
     Flywheel.slaveMotor.setInverted(InvertType.OpposeMaster);
+    Flywheel.masterMotor.setNeutralMode(NeutralMode.Coast);
+    Flywheel.slaveMotor.setNeutralMode(NeutralMode.Coast);
 
     // Configure LIDAR settings
     m_LIDARFilter = LinearFilter.singlePoleIIR(0.4, Constants.ROBOT_LOOP_PERIOD);
@@ -255,7 +258,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Sets feeder intake speed
+   * Intake balls into feeder
    */
   public void feederIntake() {
     m_upperFeederSensor.enableLimitSwitch(true);
@@ -265,7 +268,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Sets feeder outtake speed
+   * Outtake balls out of feeder
    */
   public void feederOuttake() {
     m_upperFeederSensor.enableLimitSwitch(false);
@@ -274,7 +277,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Sets feeder shoot speed
+   * Shoot balls out of feeder
    */
   public void feederShoot() {
     m_upperFeederSensor.enableLimitSwitch(false);
@@ -283,7 +286,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Stops feeder motor
+   * Stops feeder motors
    */
   public void feederStop() {
     m_upperFeederMotor.stopMotor();
