@@ -273,8 +273,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param rightVolts Right voltage [-12, +12]
    */
   public void autoTankDriveVolts(double leftVolts, double rightVolts) {
-    m_lMasterMotor.setVoltage(leftVolts);
-    m_rMasterMotor.setVoltage(rightVolts);
+    m_lMasterMotor.setVoltage(-leftVolts);
+    m_rMasterMotor.setVoltage(-rightVolts);
   }
 
   /**

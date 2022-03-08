@@ -24,7 +24,7 @@ public final class Constants {
   public static final double ROBOT_LOOP_PERIOD = 1.0 / 60.0;
 
   // Automode Constants
-  public static final double TRACK_WIDTH = 0.66167;
+  public static final double TRACK_WIDTH = 0.60787;
 
   // Controller deadband
   public static final double CONTROLLER_DEADBAND = 0.12;
@@ -106,17 +106,17 @@ public final class Constants {
                                                                             INTAKE_ARM_MOTION_SMOOTHING);
 
   // Shooter PID Values
-  private static final double FLYWHEEL_kP = 0.0;
+  private static final double FLYWHEEL_kP = 0.001;
   private static final double FLYWHEEL_kI = 0.0;
   private static final double FLYWHEEL_kD = 0.0;
   private static final double FLYWHEEL_MECHANICAL_EFFICIENCY = 0.995;
-  private static final double FLYWHEEL_TOLERANCE = 150;
+  private static final double FLYWHEEL_TOLERANCE = 80;
   private static final double FLYWHEEL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
   private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = true;
   public static final double FLYWHEEL_SHOOTING_RPM = 1700;
-  public static final double FEEDER_INTAKE_SPEED = 0.5;
+  public static final double FEEDER_INTAKE_SPEED = 0.6;
   public static final double FEEDER_SHOOT_SPEED = 0.4;
 
   private static final double SHOOTER_LOW_CURVE_X[] = { 0.0, 0.5, 1.0 };
@@ -232,7 +232,6 @@ public final class Constants {
   public static final int CLIMBER_WINCH_MOTOR_PORT = 12;
   public static final int CLIMBER_MASTER_TELESCOPE_MOTOR_PORT = 13;
   public static final int CLIMBER_SLAVE_TELESCOPE_MOTOR_PORT = 14;
-  public static final int CLIMBER_ULTRASONIC_PORT = 0;
 
   // Accessories
   public static final int BLINKIN_LED_CONTROLLER_PORT = 0;
