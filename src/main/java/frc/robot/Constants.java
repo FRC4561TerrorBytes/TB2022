@@ -78,7 +78,7 @@ public final class Constants {
   public static final double INTAKE_ARM_LOWER_LIMIT = 0;
   public static final double INTAKE_ARM_UPPER_LIMIT = 3100;
   public static final double INTAKE_ARM_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 12;
+  public static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 14;
   public static final int INTAKE_ARM_MOTION_SMOOTHING = 5;
   public static final int INTAKE_ARM_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int INTAKE_ARM_MAX_RPM = FALCON_500_MAX_RPM;
@@ -147,11 +147,11 @@ public final class Constants {
   public static final double TELESCOPE_LOWER_LIMIT = 0;
   public static final double TELESCOPE_UPPER_LIMIT = 280000;
   public static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM * 8;
+  public static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM * 32;
   public static final int TELESCOPE_MOTION_SMOOTHING = 1;
   public static final int TELESCOPE_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int TELESCOPE_MAX_RPM = FALCON_500_MAX_RPM;
-  public static final boolean TELESCOPE_SOFT_LIMITS = true;
+  public static final boolean TELESCOPE_SOFT_LIMITS = false;
   public static final boolean TELESCOPE_SENSOR_PHASE = false;
   public static final boolean TELESCOPE_INVERT_MOTOR = true;
 
@@ -230,8 +230,8 @@ public final class Constants {
   // Climber hardware ports
   public static final int CLIMBER_MOTOR_PORT = 11;
   public static final int CLIMBER_WINCH_MOTOR_PORT = 12;
-  public static final int CLIMBER_MASTER_TELESCOPE_MOTOR_PORT = 13;
-  public static final int CLIMBER_SLAVE_TELESCOPE_MOTOR_PORT = 14;
+  public static final int CLIMBER_LEFT_TELESCOPE_MOTOR_PORT = 13;
+  public static final int CLIMBER_RIGHT_TELESCOPE_MOTOR_PORT = 14;
 
   // Accessories
   public static final int BLINKIN_LED_CONTROLLER_PORT = 0;
