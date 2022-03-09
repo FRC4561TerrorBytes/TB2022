@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -130,20 +129,21 @@ public class RobotContainer {
 
     // Primary controller bindings
     primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM));
-    primaryTriggerRight.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    primaryTriggerLeft.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
     primaryButtonY.whenPressed(new InstantCommand(() -> SHOOTER_SUBSYSTEM.toggleSelectedGoal(), SHOOTER_SUBSYSTEM));
     primaryTriggerRight.whileActiveOnce(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
     // primaryDPadUp.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.nextClimberState(), CLIMBER_SUBSYSTEM));
     // primaryDPadDown.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.previousClimberState(), CLIMBER_SUBSYSTEM));
 
-    primaryDPadUp.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpRelative(), () -> CLIMBER_SUBSYSTEM.telescopeStopManual(), CLIMBER_SUBSYSTEM));
-    primaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownRelative(), () -> CLIMBER_SUBSYSTEM.telescopeStopManual(), CLIMBER_SUBSYSTEM));
-
-    primaryTelescopeUpManual.whileActiveOnce(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(), () -> CLIMBER_SUBSYSTEM.telescopeStopManual(), CLIMBER_SUBSYSTEM));
-    primaryTelescopeDownManual.whileActiveOnce(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(), () -> CLIMBER_SUBSYSTEM.telescopeStopManual(), CLIMBER_SUBSYSTEM));
-    primaryWinchInManual.whileActiveOnce(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
-    primaryWinchOutManual.whileActiveOnce(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
+    primaryDPadUp.whenHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(), CLIMBER_SUBSYSTEM))
+                 .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStopManual()));
+    primaryDPadDown.whenHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(), CLIMBER_SUBSYSTEM))
+                   .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStopManual()));
+    primaryDPadLeft.whenHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), CLIMBER_SUBSYSTEM))
+                   .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStopManual()));
+    primaryDPadRight.whenHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), CLIMBER_SUBSYSTEM))
+                    .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStopManual()));
   }
 
   /**
