@@ -158,14 +158,14 @@ public class RobotContainer {
 
     primaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     primaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
-    primaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
-    primaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
+    primaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
+    primaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
 
     // Secondary controller bindings
     secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
-    secondaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
-    secondaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
+    secondaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
+    secondaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
   }
 
   /**
