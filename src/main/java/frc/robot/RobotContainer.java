@@ -70,6 +70,7 @@ public class RobotContainer {
                                                                                  Constants.WINCH_CONFIG);
 
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
+  private static final XboxController SECONDARY_CONTROLLER = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
 
   private static SendableChooser<SequentialCommandGroup> m_automodeChooser = new SendableChooser<>();
 
@@ -128,6 +129,24 @@ public class RobotContainer {
     Trigger primaryWinchOutManual = new Trigger(() -> PRIMARY_CONTROLLER.getStartButton() && PRIMARY_CONTROLLER.getPOV() == 90);
     Trigger primaryWinchInManual = new Trigger(() -> PRIMARY_CONTROLLER.getStartButton() && PRIMARY_CONTROLLER.getPOV() == 270);
 
+    // Secondary controller buttons
+    JoystickButton secondaryButtonA = new JoystickButton(SECONDARY_CONTROLLER, Button.kA.value);
+    JoystickButton secondaryButtonB = new JoystickButton(SECONDARY_CONTROLLER, Button.kB.value);
+    JoystickButton secondaryButtonX = new JoystickButton(SECONDARY_CONTROLLER, Button.kX.value);
+    JoystickButton secondaryButtonY = new JoystickButton(SECONDARY_CONTROLLER, Button.kY.value);
+    JoystickButton secondaryButtonLBumper = new JoystickButton(SECONDARY_CONTROLLER, Button.kLeftBumper.value);
+    JoystickButton secondaryButtonRBumper = new JoystickButton(SECONDARY_CONTROLLER, Button.kRightBumper.value);
+    JoystickButton secondaryButtonLStick = new JoystickButton(SECONDARY_CONTROLLER, Button.kLeftStick.value);
+    JoystickButton secondaryButtonRStick = new JoystickButton(SECONDARY_CONTROLLER, Button.kRightStick.value);
+    JoystickButton secondaryButtonStart = new JoystickButton(SECONDARY_CONTROLLER, Button.kStart.value);
+    JoystickButton secondaryButtonBack = new JoystickButton(SECONDARY_CONTROLLER, Button.kBack.value);
+    POVButton secondaryDPadUp = new POVButton(SECONDARY_CONTROLLER, 0);
+    POVButton secondaryDPadRight = new POVButton(SECONDARY_CONTROLLER, 90);
+    POVButton secondaryDPadDown = new POVButton(SECONDARY_CONTROLLER, 180);
+    POVButton secondaryDPadLeft = new POVButton(SECONDARY_CONTROLLER, 270);
+    Trigger secondaryTriggerLeft = new Trigger(() -> SECONDARY_CONTROLLER.getLeftTriggerAxis() > Constants.CONTROLLER_DEADBAND);
+    Trigger secondaryTriggerRight = new Trigger(() -> SECONDARY_CONTROLLER.getRightTriggerAxis() > Constants.CONTROLLER_DEADBAND);
+
     // Primary controller bindings
     primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM));
     primaryTriggerLeft.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
@@ -141,6 +160,12 @@ public class RobotContainer {
     primaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     primaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
     primaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
+
+    // Secondary controller bindings
+    secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    secondaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    secondaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
+    secondaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
   }
 
   /**
