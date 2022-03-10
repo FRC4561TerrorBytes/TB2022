@@ -221,7 +221,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void winchInManual() {
     m_winchMotor.overrideSoftLimitsEnable(false);
-    m_winchMotor.set(ControlMode.PercentOutput, -1.0);
+    m_winchMotor.set(ControlMode.PercentOutput, -0.5);
   }
 
   /**
@@ -231,7 +231,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void winchOutManual() {
     m_winchMotor.overrideSoftLimitsEnable(false);
-    m_winchMotor.set(ControlMode.PercentOutput, +1.0);
+    m_winchMotor.set(ControlMode.PercentOutput, +0.5);
   }
 
   /**
