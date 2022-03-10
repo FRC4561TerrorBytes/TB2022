@@ -85,8 +85,10 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param lookAhead Turn PID lookahead, in number of loops
    * @param metersPerTick Meters traveled per encoder tick (meters)
    * @param maxLinearSpeed Maximum linear speed of the robot (m/s)
-   * @param tractionControlCurve Expression characterising traction of the robot with "X" as the variable
-   * @param throttleInputCurve Expression characterising throttle input with "X" as the variable
+   * @param tractionControlCurve Spline function characterising traction of the robot
+   * @param throttleInputCurve Spline function characterising throttle input
+   * @param turnInputCurve Spline function characterising turn input
+   * @param currentLimitConfiguration Drive current limit
    */
   public DriveSubsystem(Hardware drivetrainHardware, double kP, double kD, double turnScalar, double deadband, double lookAhead, double metersPerTick, double maxLinearSpeed, 
                         PolynomialSplineFunction tractionControlCurve, PolynomialSplineFunction throttleInputCurve, PolynomialSplineFunction turnInputCurve,
