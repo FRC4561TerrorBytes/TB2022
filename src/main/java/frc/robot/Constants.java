@@ -57,14 +57,14 @@ public final class Constants {
   private static final double DRIVE_THROTTLE_INPUT_CURVE_Y[] = { 0.0, 1.883, 3.766 };
   private static final double DRIVE_TRACTION_CONTROL_CURVE_X[] = { 0.0, 1.883, 3.766 };
   private static final double DRIVE_TRACTION_CONTROL_CURVE_Y[] = { 0.0, 0.5,   1.0 };
-  private static final double DRIVE_TURN_INPUT_CURVE_X[] = { 0.0, 0.5, 1.0 };
-  private static final double DRIVE_TURN_INPUT_CURVE_Y[] = { 0.0, 0.5, 1.0 };
+  private static final double DRIVE_TURN_INPUT_CURVE_X[] = { 0.0, 0.3, 0.5, 1.0 };
+  private static final double DRIVE_TURN_INPUT_CURVE_Y[] = { 0.0, 0.1, 0.5, 1.0 };
 
   public static final PolynomialSplineFunction DRIVE_THROTTLE_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_THROTTLE_INPUT_CURVE_X, DRIVE_THROTTLE_INPUT_CURVE_Y);
   public static final PolynomialSplineFunction DRIVE_TRACTION_CONTROL_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TRACTION_CONTROL_CURVE_X, DRIVE_TRACTION_CONTROL_CURVE_Y);
   public static final PolynomialSplineFunction DRIVE_TURN_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TURN_INPUT_CURVE_X, DRIVE_TURN_INPUT_CURVE_Y);
 
-  private static final double CURRENT_LIMIT = 60.0;
+  private static final double CURRENT_LIMIT = 50.0;
   private static final double CURRENT_THRESHOLD = 120.0;
   private static final double CURRENT_THRESHOLD_TIME = 6 * ROBOT_LOOP_PERIOD;
   
@@ -78,8 +78,8 @@ public final class Constants {
   public static final double INTAKE_ARM_LOWER_LIMIT = 0;
   public static final double INTAKE_ARM_UPPER_LIMIT = 3100;
   public static final double INTAKE_ARM_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 14;
-  public static final int INTAKE_ARM_MOTION_SMOOTHING = 5;
+  public static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 16;
+  public static final int INTAKE_ARM_MOTION_SMOOTHING = 4;
   public static final int INTAKE_ARM_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int INTAKE_ARM_MAX_RPM = FALCON_500_MAX_RPM;
   public static final boolean INTAKE_ARM_SOFT_LIMITS = true;
@@ -178,13 +178,13 @@ public final class Constants {
   public static final double WINCH_MECHANICAL_EFFICIENCY = 0.9;
   public static final double WINCH_TOLERANCE = 100;
   public static final double WINCH_LOWER_LIMIT = 0;
-  public static final double WINCH_UPPER_LIMIT = 1500;
+  public static final double WINCH_UPPER_LIMIT = 260000;
   public static final double WINCH_VELOCITY = FALCON_500_MAX_RPM;
   public static final double WINCH_ACCELERATION = FALCON_500_MAX_RPM * 4;
   public static final int WINCH_MOTION_SMOOTHING = 1;
   public static final int WINCH_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int WINCH_MAX_RPM = FALCON_500_MAX_RPM;
-  public static final boolean WINCH_SOFT_LIMITS = true;
+  public static final boolean WINCH_SOFT_LIMITS = false;
   public static final boolean WINCH_SENSOR_PHASE = false;
   public static final boolean WINCH_INVERT_MOTOR = false;
 

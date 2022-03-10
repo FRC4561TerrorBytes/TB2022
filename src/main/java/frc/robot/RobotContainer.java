@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -136,14 +137,10 @@ public class RobotContainer {
     // primaryDPadUp.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.nextClimberState(), CLIMBER_SUBSYSTEM));
     // primaryDPadDown.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.previousClimberState(), CLIMBER_SUBSYSTEM));
 
-    primaryDPadUp.whenHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(), CLIMBER_SUBSYSTEM))
-                 .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStopManual()));
-    primaryDPadDown.whenHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(), CLIMBER_SUBSYSTEM))
-                   .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStopManual()));
-    primaryDPadLeft.whenHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), CLIMBER_SUBSYSTEM))
-                   .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStopManual()));
-    primaryDPadRight.whenHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), CLIMBER_SUBSYSTEM))
-                    .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStopManual()));
+    primaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    primaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    primaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
+    primaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
   }
 
   /**
