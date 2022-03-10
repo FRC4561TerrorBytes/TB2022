@@ -57,8 +57,8 @@ public final class Constants {
   private static final double DRIVE_THROTTLE_INPUT_CURVE_Y[] = { 0.0, 1.883, 3.766 };
   private static final double DRIVE_TRACTION_CONTROL_CURVE_X[] = { 0.0, 1.883, 3.766 };
   private static final double DRIVE_TRACTION_CONTROL_CURVE_Y[] = { 0.0, 0.5,   1.0 };
-  private static final double DRIVE_TURN_INPUT_CURVE_X[] = { 0.0, 0.3, 0.5, 1.0 };
-  private static final double DRIVE_TURN_INPUT_CURVE_Y[] = { 0.0, 0.1, 0.5, 1.0 };
+  private static final double DRIVE_TURN_INPUT_CURVE_X[] = { 0.0, 0.25,  0.5, 1.0 };
+  private static final double DRIVE_TURN_INPUT_CURVE_Y[] = { 0.0, 0.125, 0.5, 1.0 };
 
   public static final PolynomialSplineFunction DRIVE_THROTTLE_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_THROTTLE_INPUT_CURVE_X, DRIVE_THROTTLE_INPUT_CURVE_Y);
   public static final PolynomialSplineFunction DRIVE_TRACTION_CONTROL_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TRACTION_CONTROL_CURVE_X, DRIVE_TRACTION_CONTROL_CURVE_Y);
