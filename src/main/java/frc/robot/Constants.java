@@ -71,7 +71,7 @@ public final class Constants {
   public static final StatorCurrentLimitConfiguration DRIVE_CURRENT_LIMIT_CONFIGURATION = new StatorCurrentLimitConfiguration(true, CURRENT_LIMIT, CURRENT_THRESHOLD, CURRENT_THRESHOLD_TIME);
 
   // Intake Arm PID config
-  public static final double INTAKE_ARM_kP = 0.8;
+  public static final double INTAKE_ARM_kP = 0.85;
   public static final double INTAKE_ARM_kD = 0.0;
   public static final double INTAKE_ARM_MECHANICAL_EFFICIENCY = 0.8;
   public static final double INTAKE_ARM_TOLERANCE = 10;
@@ -144,14 +144,14 @@ public final class Constants {
   public static final double TELESCOPE_kD = 0.0;
   public static final double TELESCOPE_MECHANICAL_EFFICIENCY = 0.9;
   public static final double TELESCOPE_TOLERANCE = 100;
-  public static final double TELESCOPE_LOWER_LIMIT = 0;
+  public static final double TELESCOPE_LOWER_LIMIT = 250;
   public static final double TELESCOPE_UPPER_LIMIT = 280000;
   public static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM;
   public static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM * 32;
   public static final int TELESCOPE_MOTION_SMOOTHING = 1;
   public static final int TELESCOPE_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int TELESCOPE_MAX_RPM = FALCON_500_MAX_RPM;
-  public static final boolean TELESCOPE_SOFT_LIMITS = false;
+  public static final boolean TELESCOPE_SOFT_LIMITS = true;
   public static final boolean TELESCOPE_SENSOR_PHASE = false;
   public static final boolean TELESCOPE_INVERT_MOTOR = true;
 

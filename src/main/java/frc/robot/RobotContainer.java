@@ -123,12 +123,6 @@ public class RobotContainer {
     Trigger primaryTriggerLeft = new Trigger(() -> PRIMARY_CONTROLLER.getLeftTriggerAxis() > Constants.CONTROLLER_DEADBAND);
     Trigger primaryTriggerRight = new Trigger(() -> PRIMARY_CONTROLLER.getRightTriggerAxis() > Constants.CONTROLLER_DEADBAND);
 
-    // Primary controller button combos
-    Trigger primaryTelescopeUpManual = new Trigger(() -> PRIMARY_CONTROLLER.getStartButton() && PRIMARY_CONTROLLER.getPOV() == 0);
-    Trigger primaryTelescopeDownManual = new Trigger(() -> PRIMARY_CONTROLLER.getStartButton() && PRIMARY_CONTROLLER.getPOV() == 180);
-    Trigger primaryWinchOutManual = new Trigger(() -> PRIMARY_CONTROLLER.getStartButton() && PRIMARY_CONTROLLER.getPOV() == 90);
-    Trigger primaryWinchInManual = new Trigger(() -> PRIMARY_CONTROLLER.getStartButton() && PRIMARY_CONTROLLER.getPOV() == 270);
-
     // Secondary controller buttons
     JoystickButton secondaryButtonA = new JoystickButton(SECONDARY_CONTROLLER, Button.kA.value);
     JoystickButton secondaryButtonB = new JoystickButton(SECONDARY_CONTROLLER, Button.kB.value);
@@ -146,6 +140,11 @@ public class RobotContainer {
     POVButton secondaryDPadLeft = new POVButton(SECONDARY_CONTROLLER, 270);
     Trigger secondaryTriggerLeft = new Trigger(() -> SECONDARY_CONTROLLER.getLeftTriggerAxis() > Constants.CONTROLLER_DEADBAND);
     Trigger secondaryTriggerRight = new Trigger(() -> SECONDARY_CONTROLLER.getRightTriggerAxis() > Constants.CONTROLLER_DEADBAND);
+    Trigger secondaryLeftStick = new Trigger(() -> Math.abs(SECONDARY_CONTROLLER.getLeftY()) > Constants.CONTROLLER_DEADBAND);
+
+    // Secondary controller button combos
+    Trigger secondaryTelescopeUpOverride = new Trigger(() -> SECONDARY_CONTROLLER.getBButton() && SECONDARY_CONTROLLER.getPOV() == 0);
+    Trigger secondaryTelescopeDownOverride = new Trigger(() -> SECONDARY_CONTROLLER.getBButton() && SECONDARY_CONTROLLER.getPOV() == 180);
 
     // Primary controller bindings
     primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM));
@@ -156,16 +155,19 @@ public class RobotContainer {
     // primaryDPadUp.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.nextClimberState(), CLIMBER_SUBSYSTEM));
     // primaryDPadDown.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.previousClimberState(), CLIMBER_SUBSYSTEM));
 
-    primaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
-    primaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    primaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(1.0), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    primaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(1.0), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     primaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
     primaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
 
     // Secondary controller bindings
-    secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
-    secondaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(1.0), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    secondaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(1.0), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
     secondaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
+
+    secondaryLeftStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-SECONDARY_CONTROLLER.getLeftY()), CLIMBER_SUBSYSTEM))
+                      .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
   }
 
   /**

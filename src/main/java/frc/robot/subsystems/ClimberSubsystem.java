@@ -170,26 +170,37 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
 
   /**
    * Move telescopes up manually with percent output mode
+   * @param speed motor speed in percent [0.0, +1.0]
    */
-  public void telescopeUpManual() {
-    //m_telescopeLeftMotor.set(ControlMode.PercentOutput, +0.5);
-    m_telescopeRightMotor.set(ControlMode.PercentOutput, +1.0);
+  public void telescopeUpManual(double speed) {
+    m_telescopeRightMotor.set(ControlMode.PercentOutput, +Math.abs(speed));
   }
 
   /**
    * Move telescopes down manually with percent output mode
+   * @param speed motor speed in percent [0.0, +1.0]
    */
-  public void telescopeDownManual() {
-    //m_telescopeLeftMotor.set(ControlMode.PercentOutput, -0.5);
-    m_telescopeRightMotor.set(ControlMode.PercentOutput, -1.0);
+  public void telescopeDownManual(double speed) {
+    m_telescopeRightMotor.set(ControlMode.PercentOutput, -Math.abs(speed));
+  }
+
+   /**
+   * Move telescopes up manually with percent output mode
+   * <p>
+   * Disables soft limits
+   * @param speed motor speed in percent [0.0, +1.0]
+   */
+  public void telescopeManualOverride(double speed) {
+    m_telescopeRightMotor.overrideSoftLimitsEnable(false);
+    m_telescopeRightMotor.set(ControlMode.PercentOutput, MathUtil.clamp(speed, -1.0, +1.0));
   }
 
   /**
    * Stop climber after moving manually, and re-enable soft limits
    */
   public void telescopeStop() {
-    //m_telescopeLeftMotor.stopMotor();
     m_telescopeRightMotor.stopMotor();
+    m_telescopeRightMotor.overrideSoftLimitsEnable(true);
   }
 
   /**
