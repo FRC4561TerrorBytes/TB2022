@@ -5,7 +5,9 @@
 package frc.robot;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.common.hardware.VisionLEDMode;
 
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -95,6 +97,11 @@ public class RobotContainer {
     INTAKE_SUBSYSTEM.shuffleboard();
     SHOOTER_SUBSYSTEM.shuffleboard();
     CLIMBER_SUBSYSTEM.shuffleboard();
+
+    // Add port forwarding for PhotonVision
+    PortForwarder.add(5800, "photonvision.local", 5800);
+    PortForwarder.add(1181, "photonvision.local", 1181);
+    PortForwarder.add(1182, "photonvision.local", 1182);
   }
 
   /**
@@ -141,10 +148,7 @@ public class RobotContainer {
     Trigger secondaryTriggerLeft = new Trigger(() -> SECONDARY_CONTROLLER.getLeftTriggerAxis() > Constants.CONTROLLER_DEADBAND);
     Trigger secondaryTriggerRight = new Trigger(() -> SECONDARY_CONTROLLER.getRightTriggerAxis() > Constants.CONTROLLER_DEADBAND);
     Trigger secondaryLeftStick = new Trigger(() -> Math.abs(SECONDARY_CONTROLLER.getLeftY()) > Constants.CONTROLLER_DEADBAND);
-
-    // Secondary controller button combos
-    Trigger secondaryTelescopeUpOverride = new Trigger(() -> SECONDARY_CONTROLLER.getBButton() && SECONDARY_CONTROLLER.getPOV() == 0);
-    Trigger secondaryTelescopeDownOverride = new Trigger(() -> SECONDARY_CONTROLLER.getBButton() && SECONDARY_CONTROLLER.getPOV() == 180);
+    Trigger secondaryRightStick = new Trigger(() -> Math.abs(SECONDARY_CONTROLLER.getRightX()) > Constants.CONTROLLER_DEADBAND);
 
     // Primary controller bindings
     primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM));
@@ -155,19 +159,21 @@ public class RobotContainer {
     // primaryDPadUp.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.nextClimberState(), CLIMBER_SUBSYSTEM));
     // primaryDPadDown.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.previousClimberState(), CLIMBER_SUBSYSTEM));
 
-    primaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(1.0), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
-    primaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(1.0), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
-    primaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
-    primaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
+    primaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(+1.0), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    primaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(-1.0), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    primaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManual(-0.5), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
+    primaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManual(+0.5), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
     // Secondary controller bindings
-    secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeUpManual(1.0), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
-    secondaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeDownManual(1.0), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
-    secondaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchInManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
-    secondaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchOutManual(), () -> CLIMBER_SUBSYSTEM.winchStopManual(), CLIMBER_SUBSYSTEM));
+    secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(+0.15), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    secondaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-0.15), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    secondaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManualOverride(-0.5), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
+    secondaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManualOverride(+0.5), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
     secondaryLeftStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-SECONDARY_CONTROLLER.getLeftY()), CLIMBER_SUBSYSTEM))
                       .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    secondaryRightStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchManual(SECONDARY_CONTROLLER.getRightX()), CLIMBER_SUBSYSTEM))
+                       .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
   }
 
   /**
@@ -183,6 +189,14 @@ public class RobotContainer {
    */
   public void teleopInit() {
     DRIVE_SUBSYSTEM.teleopInit();
+    m_pi.setLED(VisionLEDMode.kOn);
+  }
+
+  /**
+   * Do this when disabled
+   */
+  public void disabledInit() {
+    m_pi.setLED(VisionLEDMode.kOff);
   }
 
   /**

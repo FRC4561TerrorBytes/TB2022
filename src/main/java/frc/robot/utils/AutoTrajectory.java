@@ -61,11 +61,8 @@ public class AutoTrajectory {
 
     m_pathplannerTrajectory = PathPlanner.loadPath(pathName, maxVelocity, maxAcceleration);
 
-    Transform2d transform = subsystem.getPose().minus(m_pathplannerTrajectory.getInitialPose());
-    Trajectory transformedTrajectory =  m_pathplannerTrajectory.transformBy(transform);
-
     m_ramseteCommand = new RamseteCommand(
-        transformedTrajectory, 
+        m_pathplannerTrajectory, 
         m_subsystem::getPose,
         m_disabledRamsete,
         new SimpleMotorFeedforward(VOLTS_kS,
@@ -143,14 +140,19 @@ public class AutoTrajectory {
    * @return Ramsete command that will stop when complete
    */
   public Command getCommandAndStop() {
-    return m_ramseteCommand.andThen(() -> m_subsystem.stop());
+    return m_ramseteCommand.andThen(() -> {
+      m_subsystem.resetOdometry();
+      m_subsystem.stop();
+    });
   }
   
   /**
    * Get Ramsete command to run
-   * @return Ramsete command
+   * @return Ramsete command that does NOT stop when complete
    */
   public Command getCommand() {
-    return m_ramseteCommand;
+    return m_ramseteCommand.andThen(() -> {
+      m_subsystem.resetOdometry();
+    });
   }
 }

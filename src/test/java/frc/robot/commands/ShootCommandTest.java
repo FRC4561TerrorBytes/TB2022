@@ -104,7 +104,7 @@ public class ShootCommandTest {
   @DisplayName("Test if robot stops feeder when flywheel not at speed")
   public void executeMotorNotAtSpeed(){
     m_shootCommand.initialize();
-    when(m_flywheelMasterMotor.getClosedLoopError()).thenReturn(150.0);
+    when(m_flywheelMasterMotor.getClosedLoopError()).thenReturn(250.0);
     when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(682.666);
     m_shootCommand.execute();
     verify(m_upperFeederMotor, times(1)).stopMotor();

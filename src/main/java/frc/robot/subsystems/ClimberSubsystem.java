@@ -61,11 +61,11 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_winchMotor = climberHardware.winchMotor;
     this.m_telescopeConfig = telescopeConfig;
     this.m_winchConfig = winchConfig;
-    this.m_climberStateIterator = new ClimberStateIterator(Constants.TELESCOPE_UPPER_LIMIT, Constants.WINCH_UPPER_LIMIT);
+    this.m_climberStateIterator = new ClimberStateIterator(m_telescopeConfig.getLowerLimit(), m_telescopeConfig.getUpperLimit(), m_winchConfig.getLowerLimit(), m_winchConfig.getUpperLimit());
     this.m_currentState = m_climberStateIterator.getCurrentState();
 
-    //m_telescopeConfig.initializeTalonPID(m_telescopeLeftMotor, FeedbackDevice.IntegratedSensor);
-    //m_telescopeLeftMotor.setSelectedSensorPosition(0.0);
+    m_telescopeConfig.initializeTalonPID(m_telescopeLeftMotor, FeedbackDevice.IntegratedSensor);
+    m_telescopeLeftMotor.setSelectedSensorPosition(0.0);
 
     m_telescopeConfig.initializeTalonPID(m_telescopeRightMotor, FeedbackDevice.IntegratedSensor);
     m_telescopeRightMotor.setInverted(false);
@@ -74,7 +74,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_winchConfig.initializeTalonPID(m_winchMotor, FeedbackDevice.IntegratedSensor);
     m_winchMotor.setSelectedSensorPosition(0.0);
 
-    //m_telescopeLeftMotor.setNeutralMode(NeutralMode.Brake);
+    m_telescopeLeftMotor.setNeutralMode(NeutralMode.Brake);
     m_telescopeRightMotor.setNeutralMode(NeutralMode.Brake);
     m_winchMotor.setNeutralMode(NeutralMode.Brake);
   }
@@ -94,7 +94,11 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   /**
    * Hold telescope down and winch in on init
    */
-  public void initialize() {}
+  public void initialize() {
+    telescopeSetPosition(m_telescopeLeftMotor, 0.0);
+    telescopeSetPosition(m_telescopeRightMotor, 0.0);
+    winchSetPosition(0.0);
+  }
 
    /**
    * Create Shuffleboard tab for this subsystem and display values
@@ -112,7 +116,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * Create SmartDashboard indicators
    */
   public void smartDashboard() {
-    SmartDashboard.putBoolean("Climber Ready?", isClimbMotionFinished());
+    SmartDashboard.putBoolean("Winch in?", m_winchMotor.getSelectedSensorPosition() < m_winchConfig.getTolerance());
   }
 
   @Override
@@ -144,7 +148,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_rightTelescopePosition += 1000;
     m_leftTelescopePosition = MathUtil.clamp(m_leftTelescopePosition, m_telescopeConfig.getLowerLimit(), m_telescopeConfig.getUpperLimit());
     m_rightTelescopePosition = MathUtil.clamp(m_rightTelescopePosition, m_telescopeConfig.getLowerLimit(), m_telescopeConfig.getUpperLimit());
-    //telescopeSetPosition(m_telescopeLeftMotor, m_leftTelescopePosition);
+    telescopeSetPosition(m_telescopeLeftMotor, m_leftTelescopePosition);
     telescopeSetPosition(m_telescopeRightMotor, m_rightTelescopePosition);
   }
 
@@ -156,7 +160,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_rightTelescopePosition -= 1000;
     m_leftTelescopePosition = MathUtil.clamp(m_leftTelescopePosition, m_telescopeConfig.getLowerLimit(), m_telescopeConfig.getUpperLimit());
     m_rightTelescopePosition = MathUtil.clamp(m_rightTelescopePosition, m_telescopeConfig.getLowerLimit(), m_telescopeConfig.getUpperLimit());
-    //telescopeSetPosition(m_telescopeLeftMotor, m_leftTelescopePosition);
+    telescopeSetPosition(m_telescopeLeftMotor, m_leftTelescopePosition);
     telescopeSetPosition(m_telescopeRightMotor, m_rightTelescopePosition);
   }
 
@@ -164,7 +168,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * Stop telescopes after relative movement
    */
   public void telescopeStopRelative() {
-    //telescopeSetPosition(m_telescopeLeftMotor, m_leftTelescopePosition);
+    telescopeSetPosition(m_telescopeLeftMotor, m_leftTelescopePosition);
     telescopeSetPosition(m_telescopeRightMotor, m_rightTelescopePosition);
   }
 
@@ -172,34 +176,31 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * Move telescopes up manually with percent output mode
    * @param speed motor speed in percent [0.0, +1.0]
    */
-  public void telescopeUpManual(double speed) {
-    m_telescopeRightMotor.set(ControlMode.PercentOutput, +Math.abs(speed));
-  }
-
-  /**
-   * Move telescopes down manually with percent output mode
-   * @param speed motor speed in percent [0.0, +1.0]
-   */
-  public void telescopeDownManual(double speed) {
-    m_telescopeRightMotor.set(ControlMode.PercentOutput, -Math.abs(speed));
+  public void telescopeManual(double speed) {
+    m_telescopeLeftMotor.set(ControlMode.PercentOutput, speed);
+    m_telescopeRightMotor.set(ControlMode.PercentOutput, speed);
   }
 
    /**
    * Move telescopes up manually with percent output mode
    * <p>
    * Disables soft limits
-   * @param speed motor speed in percent [0.0, +1.0]
+   * @param speed motor speed in percent [-1.0, +1.0]
    */
   public void telescopeManualOverride(double speed) {
+    m_telescopeLeftMotor.overrideSoftLimitsEnable(false);
     m_telescopeRightMotor.overrideSoftLimitsEnable(false);
-    m_telescopeRightMotor.set(ControlMode.PercentOutput, MathUtil.clamp(speed, -1.0, +1.0));
+    m_telescopeLeftMotor.set(ControlMode.PercentOutput, speed);
+    m_telescopeRightMotor.set(ControlMode.PercentOutput, speed);
   }
 
   /**
    * Stop climber after moving manually, and re-enable soft limits
    */
   public void telescopeStop() {
+    m_telescopeLeftMotor.stopMotor();
     m_telescopeRightMotor.stopMotor();
+    m_telescopeLeftMotor.overrideSoftLimitsEnable(true);
     m_telescopeRightMotor.overrideSoftLimitsEnable(true);
   }
 
@@ -227,30 +228,29 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
 
   /**
    * Move winch in manually
-   * <p>
-   * Note: soft limits are disabled, call {@link ClimberSubsystem#winchStopManual()} to re-enable soft limits
+   * @param speed Winch motor speed [0.0, +1.0]
    */
-  public void winchInManual() {
-    m_winchMotor.overrideSoftLimitsEnable(false);
-    m_winchMotor.set(ControlMode.PercentOutput, -0.5);
+  public void winchManual(double speed) {
+    m_winchMotor.set(ControlMode.PercentOutput, MathUtil.clamp(speed, -1.0, 1.0));
   }
 
   /**
-   * Move winch out manually
+   * Move winch manually
    * <p>
-   * Note: soft limits are disabled, call {@link ClimberSubsystem#winchStopManual()} to re-enable soft limits
+   * Note: soft limits are disabled, call {@link ClimberSubsystem#winchStop()} to re-enable soft limits
+   * @param speed motor speed in percent [-1.0, +1.0]
    */
-  public void winchOutManual() {
+  public void winchManualOverride(double speed) {
     m_winchMotor.overrideSoftLimitsEnable(false);
-    m_winchMotor.set(ControlMode.PercentOutput, +0.5);
+    m_winchMotor.set(ControlMode.PercentOutput, MathUtil.clamp(speed, -1.0, +1.0));
   }
 
   /**
    * Stop winch after moving manually and re-enable soft limits.
    */
-  public void winchStopManual() {
-    m_winchMotor.overrideSoftLimitsEnable(true);
+  public void winchStop() {
     m_winchMotor.stopMotor();
+    m_winchMotor.overrideSoftLimitsEnable(true);
   }
 
   /**
@@ -267,7 +267,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if telescope motion is complete
    */
   public boolean telescopeMotionIsFinished() {
-    return m_telescopeLeftMotor.getActiveTrajectoryPosition() - m_telescopeLeftMotor.getClosedLoopTarget() < m_telescopeConfig.getTolerance();
+    return m_telescopeRightMotor.getActiveTrajectoryPosition() - m_telescopeRightMotor.getClosedLoopTarget() < m_telescopeConfig.getTolerance();
   }
 
   /**
@@ -293,7 +293,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_climberStateIterator.nextState();
     m_currentState = m_climberStateIterator.getCurrentState();
 
-    telescopeSetPosition(m_telescopeLeftMotor, m_currentState.getTelescopePosition());
+    //telescopeSetPosition(m_telescopeLeftMotor, m_currentState.getTelescopePosition());
     telescopeSetPosition(m_telescopeRightMotor, m_currentState.getTelescopePosition());
     winchSetPosition(m_currentState.getWinchPosition());
   }
@@ -305,7 +305,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_climberStateIterator.previousState();
     m_currentState = m_climberStateIterator.getCurrentState();
 
-    telescopeSetPosition(m_telescopeLeftMotor, m_currentState.getTelescopePosition());
+    //telescopeSetPosition(m_telescopeLeftMotor, m_currentState.getTelescopePosition());
     telescopeSetPosition(m_telescopeRightMotor, m_currentState.getTelescopePosition());
     winchSetPosition(m_currentState.getWinchPosition());
   }

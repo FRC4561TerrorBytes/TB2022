@@ -76,8 +76,8 @@ public class ClimberSubsystemTest {
 	@Order(3)
 	@DisplayName("Test if robot can move climber up manually")
 	public void climberUpManual() {
-		m_climberSubsystem.telescopeUpManual(1.0);
-		verify(m_telescopeRightMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(+1.0, DELTA));
+		m_climberSubsystem.telescopeManual(-1.0);
+		verify(m_telescopeRightMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-1.0, DELTA));
 
 		m_climberSubsystem.telescopeStop();
 		verify(m_telescopeRightMotor, times(1)).stopMotor();
@@ -87,8 +87,8 @@ public class ClimberSubsystemTest {
 	@Order(4)
 	@DisplayName("Test if robot can move climber down manually")
 	public void climberDownManual() {
-		m_climberSubsystem.telescopeDownManual(1.0);
-		verify(m_telescopeRightMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-1.0, DELTA));
+		m_climberSubsystem.telescopeManual(+1.0);
+		verify(m_telescopeRightMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(+1.0, DELTA));
 
 		m_climberSubsystem.telescopeStop();
 		verify(m_telescopeRightMotor, times(1)).stopMotor();

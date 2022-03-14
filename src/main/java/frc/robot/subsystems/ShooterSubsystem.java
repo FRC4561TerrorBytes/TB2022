@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.utils.TalonPIDConfig;
 
@@ -246,7 +247,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @return True if flywheel is at speed else false
    */
   public boolean isFlywheelAtSpeed() {
-    return (Math.abs(Flywheel.masterMotor.getClosedLoopError()) < Flywheel.masterConfig.getTolerance())
+    double flywheelError = Flywheel.masterMotor.getClosedLoopError();
+    return (Math.abs(flywheelError) < Flywheel.masterConfig.getTolerance() && flywheelError < 0)
             && Flywheel.masterMotor.getClosedLoopTarget() != 0;
   }
 
@@ -263,8 +265,13 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void feederIntake() {
     m_upperFeederSensor.enableLimitSwitch(true);
     m_upperFeederMotor.set(+m_feederIntakeSpeed);
-    if (m_lowerFeederSensor.isPressed() && m_upperFeederSensor.isPressed()) m_lowerFeederMotor.stopMotor();
-    else m_lowerFeederMotor.set(+m_feederIntakeSpeed);
+    if (m_lowerFeederSensor.isPressed() && m_upperFeederSensor.isPressed()) {
+      m_lowerFeederMotor.setOpenLoopRampRate(1.0);
+      m_lowerFeederMotor.stopMotor();
+    } else {
+      m_lowerFeederMotor.setOpenLoopRampRate(0.0);
+      m_lowerFeederMotor.set(+m_feederIntakeSpeed);
+    }
   }
 
   /**
@@ -272,6 +279,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void feederOuttake() {
     m_upperFeederSensor.enableLimitSwitch(false);
+    m_lowerFeederMotor.setOpenLoopRampRate(0.0);
     m_upperFeederMotor.set(-m_feederIntakeSpeed);
     m_lowerFeederMotor.set(-m_feederIntakeSpeed);
   }
@@ -281,6 +289,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void feederShoot() {
     m_upperFeederSensor.enableLimitSwitch(false);
+    m_lowerFeederMotor.setOpenLoopRampRate(0.0);
     m_upperFeederMotor.set(+m_feederShootSpeed);
     m_lowerFeederMotor.set(+m_feederShootSpeed);
   }
@@ -289,6 +298,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * Stops feeder motors
    */
   public void feederStop() {
+    m_lowerFeederMotor.setOpenLoopRampRate(1.0);
     m_upperFeederMotor.stopMotor();
     m_lowerFeederMotor.stopMotor();
   }

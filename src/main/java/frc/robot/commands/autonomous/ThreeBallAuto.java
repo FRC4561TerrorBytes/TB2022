@@ -19,20 +19,23 @@ public class ThreeBallAuto extends SequentialCommandGroup {
   /** Creates a new ThreeBallAuto. */
   public ThreeBallAuto(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
     addCommands(
-      // leaves tarmac, gets new ball and returns to tarmac  
-      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_1", 3.0, 1.5).getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
-      
-      // shoots 1 collected + 1 preloaded balls
-      new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
-     
-      // leaves tarmac, gets new ball and returns to tarmac  
-      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_2", 3.0, 1.5).getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
-      
-      // shoots last ball
+      // Shoot preloaded ball
       new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
 
+      // leaves tarmac, gets new ball and returns to tarmac  
+      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_1", 2.0, 1.0).getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      
+      // shoots 1 collected ball
+      new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
+     
+      // // leaves tarmac, gets new ball and returns to tarmac  
+      // new AutoTrajectory(driveSubsystem, "ThreeBallAuto_2", 3.0, 1.5).getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      
+      // // shoots last ball
+      // new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
+
       // leaves tarmac
-      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_3", 3.0, 1.5).getCommandAndStop()
+      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_3", 2.0, 1.0).getCommandAndStop()
     );
   }
 }

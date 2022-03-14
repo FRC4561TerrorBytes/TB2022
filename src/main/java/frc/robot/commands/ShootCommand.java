@@ -9,6 +9,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShootCommand extends CommandBase {
   private ShooterSubsystem m_shooterSubsystem;
+  private int loops = 0;
 
   /** Creates a new ShootCommand. */
   public ShootCommand(ShooterSubsystem shooterSubsystem) {
@@ -32,8 +33,13 @@ public class ShootCommand extends CommandBase {
     m_shooterSubsystem.setFlywheelAuto();
 
     // Only run feeder if flywheel is at speed, else stop
-    if (m_shooterSubsystem.isFlywheelAtSpeed()) m_shooterSubsystem.feederShoot();
-    else m_shooterSubsystem.feederStop();
+    if (m_shooterSubsystem.isFlywheelAtSpeed()) {
+      loops++;
+      if (loops > 6) m_shooterSubsystem.feederShoot();
+    } else {
+      loops = 0;
+      m_shooterSubsystem.feederStop();
+    }
   }
 
   // Called once the command ends or is interrupted.

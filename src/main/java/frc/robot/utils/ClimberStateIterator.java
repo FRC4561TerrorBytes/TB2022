@@ -39,20 +39,20 @@ public class ClimberStateIterator {
   private static ClimberState WinchIn;
   private static ClimberState FinishClimb;
 
-  public ClimberStateIterator(double telescopeUpperLimit, double winchUpperLimit) {
+  public ClimberStateIterator(double telescopeLowerLimit, double telescopeUpperLimit, double winchLowerLimit, double winchUpperLimit) {
     m_currentState = 0;
 
-    ClimberStart = new ClimberState(0, 0);
-    TelescopeUp = new ClimberState(telescopeUpperLimit, 0);
-    TelescopeDown = new ClimberState(0, 0);
-    TelescopeUnhook = new ClimberState(telescopeUpperLimit * 0.1, 0);
+    ClimberStart = new ClimberState(telescopeLowerLimit, winchLowerLimit);
+    TelescopeUp = new ClimberState(telescopeUpperLimit, winchLowerLimit);
+    TelescopeDown = new ClimberState(telescopeLowerLimit, winchLowerLimit);
+    TelescopeUnhook = new ClimberState(telescopeUpperLimit * 0.1, winchLowerLimit);
     WinchOut = new ClimberState(telescopeUpperLimit * 0.1, winchUpperLimit * 0.5);
     TelescopeReach = new ClimberState(telescopeUpperLimit, winchUpperLimit * 0.5);
     WinchHook = new ClimberState(telescopeUpperLimit, winchUpperLimit * 0.25);
     TelescopeGrab = new ClimberState(telescopeUpperLimit * 0.75, winchUpperLimit * 0.25);
     RobotSwing = new ClimberState(telescopeUpperLimit * 0.5, winchUpperLimit);
-    WinchIn = new ClimberState(telescopeUpperLimit * 0.5, 0);
-    FinishClimb = new ClimberState(0, 0);
+    WinchIn = new ClimberState(telescopeUpperLimit * 0.5, winchLowerLimit);
+    FinishClimb = new ClimberState(telescopeLowerLimit, winchLowerLimit);
 
     m_states = new ArrayList<ClimberState>(List.of(ClimberStart,
                                                    TelescopeUp,
