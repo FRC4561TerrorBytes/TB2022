@@ -184,13 +184,6 @@ public class RobotContainer {
   }
 
   /**
-   * Initialize robot for autonomous
-   */
-  public void autonomousInit() {
-    DRIVE_SUBSYSTEM.autonomousInit();
-  }
-
-  /**
    * Initialize robot for teleop
    */
   public void teleopInit() {

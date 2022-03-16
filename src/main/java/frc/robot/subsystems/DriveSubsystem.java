@@ -113,6 +113,12 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     m_rMasterMotor.configFactoryDefault();
     m_rSlaveMotor.configFactoryDefault();
 
+    // Invert only right side
+    m_lMasterMotor.setInverted(false);
+    m_lSlaveMotor.setInverted(false);
+    m_rMasterMotor.setInverted(true);
+    m_rSlaveMotor.setInverted(true);
+
     // Set all drive motors to brake
     m_lMasterMotor.setNeutralMode(NeutralMode.Brake);
     m_lSlaveMotor.setNeutralMode(NeutralMode.Brake);
@@ -177,27 +183,10 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Initialize drive subsystem for autonomous
-   */
-  public void autonomousInit() {
-    // Do NOT invert motors
-    m_lMasterMotor.setInverted(false);
-    m_lSlaveMotor.setInverted(false);
-    m_rMasterMotor.setInverted(false);
-    m_rSlaveMotor.setInverted(false);
-  }
-
-  /**
    * Initialize drive subsystem for teleop
    */
   public void teleopInit() {
     resetDrivePID();
-
-    // Invert only right side
-    m_lMasterMotor.setInverted(false);
-    m_lSlaveMotor.setInverted(false);
-    m_rMasterMotor.setInverted(true);
-    m_rSlaveMotor.setInverted(true);
   }
 
   /**
@@ -286,7 +275,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void autoTankDriveVolts(double leftVolts, double rightVolts) {
     m_lMasterMotor.setVoltage(-leftVolts);
-    m_rMasterMotor.setVoltage(rightVolts);
+    m_rMasterMotor.setVoltage(-rightVolts);
   }
 
   /**
