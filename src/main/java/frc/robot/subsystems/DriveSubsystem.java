@@ -311,8 +311,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void updateOdometry() {
     m_odometry.update(m_navx.getRotation2d(), 
-                      m_lMasterMotor.getSelectedSensorPosition() * m_metersPerTick,
-                      m_rMasterMotor.getSelectedSensorPosition() * m_metersPerTick);
+                      -m_lMasterMotor.getSelectedSensorPosition() * m_metersPerTick,
+                      -m_rMasterMotor.getSelectedSensorPosition() * m_metersPerTick);
   }
 
   /**
