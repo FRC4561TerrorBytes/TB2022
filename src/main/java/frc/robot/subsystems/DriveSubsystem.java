@@ -65,7 +65,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   private AHRS m_navx;
 
   private final double TOLERANCE = 0.125;
-  private final double MOTOR_DEADBAND = 0.002;
+  private final double MOTOR_DEADBAND = 0.005;
   private final double MAX_VOLTAGE = 12.0;
 
   private double m_turnScalar = 1.0; 
@@ -113,17 +113,17 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     m_rMasterMotor.configFactoryDefault();
     m_rSlaveMotor.configFactoryDefault();
 
-    // Set all drive motors to brake
-    m_lMasterMotor.setNeutralMode(NeutralMode.Brake);
-    m_lSlaveMotor.setNeutralMode(NeutralMode.Brake);
-    m_rMasterMotor.setNeutralMode(NeutralMode.Brake);
-    m_rSlaveMotor.setNeutralMode(NeutralMode.Brake);
-
     // Invert only right side
     m_lMasterMotor.setInverted(false);
     m_lSlaveMotor.setInverted(false);
     m_rMasterMotor.setInverted(true);
     m_rSlaveMotor.setInverted(true);
+
+    // Set all drive motors to brake
+    m_lMasterMotor.setNeutralMode(NeutralMode.Brake);
+    m_lSlaveMotor.setNeutralMode(NeutralMode.Brake);
+    m_rMasterMotor.setNeutralMode(NeutralMode.Brake);
+    m_rSlaveMotor.setNeutralMode(NeutralMode.Brake);
 
     // Make rear left motor controllers follow left master
     m_lSlaveMotor.set(ControlMode.Follower, m_lMasterMotor.getDeviceID());
@@ -166,7 +166,6 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
     // Initialise odometry
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
-    resetOdometry();
   }
 
   /**
@@ -184,7 +183,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Initialize turn PID on teleop init
+   * Initialize drive subsystem for teleop
    */
   public void teleopInit() {
     resetDrivePID();
@@ -301,10 +300,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   /**
    * Resets the odometry
    */
-  public void resetOdometry() {
-    resetAngle();
-    resetEncoders();
-    m_odometry.resetPosition(new Pose2d(), Rotation2d.fromDegrees(0.0));
+  public void resetOdometry(Pose2d pose) {
+    m_odometry.resetPosition(pose, m_navx.getRotation2d());
   }
 
   /**
@@ -313,10 +310,9 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * Repeatedly call this method at a steady rate to keep track of robot position
    */
   public void updateOdometry() {
-    // Negate gyro angle because gyro is positive going clockwise which doesn't match WPILib convention
-    m_odometry.update(Rotation2d.fromDegrees(-getAngle()), 
-                      -m_lMasterMotor.getSelectedSensorPosition() * m_metersPerTick,
-                      +m_rMasterMotor.getSelectedSensorPosition() * m_metersPerTick);
+    m_odometry.update(m_navx.getRotation2d(), 
+                      m_lMasterMotor.getSelectedSensorPosition() * m_metersPerTick,
+                      m_rMasterMotor.getSelectedSensorPosition() * m_metersPerTick);
   }
 
   /**

@@ -246,8 +246,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @return True if flywheel is at speed else false
    */
   public boolean isFlywheelAtSpeed() {
-    double flywheelError = Flywheel.masterMotor.getClosedLoopError();
-    return (Math.abs(flywheelError) < Flywheel.masterConfig.getTolerance())
+    double flywheelError = Math.abs(Flywheel.masterMotor.getClosedLoopError());
+    return (flywheelError < Flywheel.masterConfig.getTolerance())
             && Flywheel.masterMotor.getClosedLoopTarget() != 0;
   }
 

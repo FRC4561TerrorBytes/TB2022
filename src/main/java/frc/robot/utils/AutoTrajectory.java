@@ -61,6 +61,8 @@ public class AutoTrajectory {
 
     m_pathplannerTrajectory = PathPlanner.loadPath(pathName, maxVelocity, maxAcceleration);
 
+    m_subsystem.resetOdometry(m_pathplannerTrajectory.getInitialPose());
+
     m_ramseteCommand = new RamseteCommand(
         m_pathplannerTrajectory, 
         m_subsystem::getPose,
@@ -141,7 +143,6 @@ public class AutoTrajectory {
    */
   public Command getCommandAndStop() {
     return m_ramseteCommand.andThen(() -> {
-      m_subsystem.resetOdometry();
       m_subsystem.stop();
     });
   }
@@ -151,8 +152,6 @@ public class AutoTrajectory {
    * @return Ramsete command that does NOT stop when complete
    */
   public Command getCommand() {
-    return m_ramseteCommand.andThen(() -> {
-      m_subsystem.resetOdometry();
-    });
+    return m_ramseteCommand;
   }
 }
