@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.utils.TalonPIDConfig;
 
@@ -247,8 +246,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @return True if flywheel is at speed else false
    */
   public boolean isFlywheelAtSpeed() {
-    double flywheelError = Flywheel.masterMotor.getClosedLoopError();
-    return (Math.abs(flywheelError) < Flywheel.masterConfig.getTolerance() && flywheelError < 0)
+    double flywheelError = Math.abs(Flywheel.masterMotor.getClosedLoopError());
+    return (flywheelError < Flywheel.masterConfig.getTolerance())
             && Flywheel.masterMotor.getClosedLoopTarget() != 0;
   }
 

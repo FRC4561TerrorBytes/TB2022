@@ -24,7 +24,7 @@ public final class Constants {
   public static final double ROBOT_LOOP_PERIOD = 1.0 / 60.0;
 
   // Automode Constants
-  public static final double TRACK_WIDTH = 0.60787;
+  public static final double TRACK_WIDTH = 0.71217;
 
   // Controller deadband
   public static final double CONTROLLER_DEADBAND = 0.12;
@@ -50,7 +50,7 @@ public final class Constants {
   // Drive PID values
   public static final double DRIVE_kP = 0.008;
   public static final double DRIVE_kD = 0.00012;
-  public static final double DRIVE_TURN_SCALAR = 70.0;
+  public static final double DRIVE_TURN_SCALAR = 75.0;
   public static final double DRIVE_LOOKAHEAD = 6;
 
   private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };
@@ -108,16 +108,16 @@ public final class Constants {
   // Shooter PID Values
   private static final double FLYWHEEL_kP = 0.002;
   private static final double FLYWHEEL_kI = 0.0;
-  private static final double FLYWHEEL_kD = 0.0;
-  private static final double FLYWHEEL_MECHANICAL_EFFICIENCY = 0.9995;
-private static final double FLYWHEEL_TOLERANCE = 100;
+  private static final double FLYWHEEL_kD = 0.0002;
+  private static final double FLYWHEEL_MECHANICAL_EFFICIENCY = 1.0;
+  private static final double FLYWHEEL_TOLERANCE = 100;
   private static final double FLYWHEEL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
   private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = true;
   public static final double FLYWHEEL_SHOOTING_RPM = 1700;
   public static final double FEEDER_INTAKE_SPEED = 0.2;
-  public static final double FEEDER_SHOOT_SPEED = 0.4;
+  public static final double FEEDER_SHOOT_SPEED = 0.3;
 
   private static final double SHOOTER_LOW_CURVE_X[] = { 0.0, 0.5, 1.0 };
   private static final double SHOOTER_LOW_CURVE_Y[] = { 1700.0, 1700.0, 1700.0 };
@@ -144,10 +144,10 @@ private static final double FLYWHEEL_TOLERANCE = 100;
   public static final double TELESCOPE_kD = 0.0;
   public static final double TELESCOPE_MECHANICAL_EFFICIENCY = 0.9;
   public static final double TELESCOPE_TOLERANCE = 100;
-  public static final double TELESCOPE_LOWER_LIMIT = 100;
+  public static final double TELESCOPE_LOWER_LIMIT = 1000;
   public static final double TELESCOPE_UPPER_LIMIT = 290000;
   public static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM * 32;
+  public static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM * 4;
   public static final int TELESCOPE_MOTION_SMOOTHING = 1;
   public static final int TELESCOPE_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int TELESCOPE_MAX_RPM = FALCON_500_MAX_RPM;
@@ -173,15 +173,15 @@ private static final double FLYWHEEL_TOLERANCE = 100;
                                                                            TELESCOPE_MOTION_SMOOTHING);
 
   // Winch PID variables
-  public static final double WINCH_kP = 0.0;
+  public static final double WINCH_kP = 0.8;
   public static final double WINCH_kD = 0.0;
-  public static final double WINCH_MECHANICAL_EFFICIENCY = 0.9;
-  public static final double WINCH_TOLERANCE = 100;
+  public static final double WINCH_MECHANICAL_EFFICIENCY = 0.8;
+  public static final double WINCH_TOLERANCE = 1000;
   public static final double WINCH_LOWER_LIMIT = 0;
-  public static final double WINCH_UPPER_LIMIT = 260000;
-  public static final double WINCH_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double WINCH_ACCELERATION = FALCON_500_MAX_RPM * 4;
-  public static final int WINCH_MOTION_SMOOTHING = 1;
+  public static final double WINCH_UPPER_LIMIT = 265000;
+  public static final double WINCH_VELOCITY = FALCON_500_MAX_RPM / 10;
+  public static final double WINCH_ACCELERATION = FALCON_500_MAX_RPM;
+  public static final int WINCH_MOTION_SMOOTHING = 0;
   public static final int WINCH_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int WINCH_MAX_RPM = FALCON_500_MAX_RPM;
   public static final boolean WINCH_SOFT_LIMITS = true;

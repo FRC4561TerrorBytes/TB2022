@@ -5,7 +5,6 @@
 package frc.robot;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.common.hardware.VisionLEDMode;
 
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -156,13 +155,13 @@ public class RobotContainer {
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
     primaryButtonY.whenPressed(new InstantCommand(() -> SHOOTER_SUBSYSTEM.toggleSelectedGoal(), SHOOTER_SUBSYSTEM));
     primaryTriggerRight.whileActiveOnce(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
-    // primaryDPadUp.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.nextClimberState(), CLIMBER_SUBSYSTEM));
-    // primaryDPadDown.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.previousClimberState(), CLIMBER_SUBSYSTEM));
+    primaryDPadUp.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.nextClimberState(), CLIMBER_SUBSYSTEM));
+    primaryDPadDown.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.previousClimberState(), CLIMBER_SUBSYSTEM));
+    primaryDPadLeft.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchIn()));
+    primaryDPadRight.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchOut()));
 
-    primaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(+1.0), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
-    primaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(-1.0), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
-    primaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManual(-0.5), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
-    primaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManual(+0.5), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
+    //primaryDPadUp.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeUp(), CLIMBER_SUBSYSTEM));
+    //primaryDPadDown.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeDown(), CLIMBER_SUBSYSTEM));
 
     // Secondary controller bindings
     secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(+0.15), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
@@ -185,19 +184,23 @@ public class RobotContainer {
   }
 
   /**
+   * Initialize robot for autonomous
+   */
+  public void autonomousInit() {
+    DRIVE_SUBSYSTEM.autonomousInit();
+  }
+
+  /**
    * Initialize robot for teleop
    */
   public void teleopInit() {
     DRIVE_SUBSYSTEM.teleopInit();
-    m_pi.setLED(VisionLEDMode.kOn);
   }
 
   /**
    * Do this when disabled
    */
-  public void disabledInit() {
-    m_pi.setLED(VisionLEDMode.kOff);
-  }
+  public void disabledInit() {}
 
   /**
    * Add auto modes to chooser
