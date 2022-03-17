@@ -301,6 +301,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * Resets the odometry
    */
   public void resetOdometry(Pose2d pose) {
+    resetEncoders();
     m_odometry.resetPosition(pose, m_navx.getRotation2d());
   }
 
