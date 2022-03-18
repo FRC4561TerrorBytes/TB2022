@@ -64,10 +64,14 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_climberStateIterator = new ClimberStateIterator(m_telescopeConfig.getLowerLimit(), m_telescopeConfig.getUpperLimit(), m_winchConfig.getLowerLimit(), m_winchConfig.getUpperLimit());
     this.m_currentState = m_climberStateIterator.getCurrentState();
 
-    m_telescopeConfig.initializeTalonPID(m_telescopeLeftMotor, FeedbackDevice.IntegratedSensor);
+    m_telescopeConfig.initializeTalonPID(m_telescopeLeftMotor, FeedbackDevice.IntegratedSensor, false, true);
+    m_telescopeLeftMotor.configReverseSoftLimitEnable(false);
+    m_telescopeLeftMotor.configClearPositionOnLimitR(true, 0);
     m_telescopeLeftMotor.setSelectedSensorPosition(0.0);
 
-    m_telescopeConfig.initializeTalonPID(m_telescopeRightMotor, FeedbackDevice.IntegratedSensor);
+    m_telescopeConfig.initializeTalonPID(m_telescopeRightMotor, FeedbackDevice.IntegratedSensor, false, true);
+    m_telescopeRightMotor.configReverseSoftLimitEnable(false);
+    m_telescopeRightMotor.configClearPositionOnLimitR(true, 0);
     m_telescopeRightMotor.setInverted(false);
     m_telescopeRightMotor.setSelectedSensorPosition(0.0);
 
@@ -141,38 +145,6 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Move climber up relative to previous position
-   */
-  public void telescopeUpRelative() {
-    m_leftTelescopePosition += 1000;
-    m_rightTelescopePosition += 1000;
-    m_leftTelescopePosition = MathUtil.clamp(m_leftTelescopePosition, m_telescopeConfig.getLowerLimit(), m_telescopeConfig.getUpperLimit());
-    m_rightTelescopePosition = MathUtil.clamp(m_rightTelescopePosition, m_telescopeConfig.getLowerLimit(), m_telescopeConfig.getUpperLimit());
-    telescopeSetPosition(m_telescopeLeftMotor, m_leftTelescopePosition);
-    telescopeSetPosition(m_telescopeRightMotor, m_rightTelescopePosition);
-  }
-
-  /**
-   * Move climber down relative to previous position
-   */
-  public void telescopeDownRelative() {
-    m_leftTelescopePosition -= 1000;
-    m_rightTelescopePosition -= 1000;
-    m_leftTelescopePosition = MathUtil.clamp(m_leftTelescopePosition, m_telescopeConfig.getLowerLimit(), m_telescopeConfig.getUpperLimit());
-    m_rightTelescopePosition = MathUtil.clamp(m_rightTelescopePosition, m_telescopeConfig.getLowerLimit(), m_telescopeConfig.getUpperLimit());
-    telescopeSetPosition(m_telescopeLeftMotor, m_leftTelescopePosition);
-    telescopeSetPosition(m_telescopeRightMotor, m_rightTelescopePosition);
-  }
-
-  /**
-   * Stop telescopes after relative movement
-   */
-  public void telescopeStopRelative() {
-    telescopeSetPosition(m_telescopeLeftMotor, m_leftTelescopePosition);
-    telescopeSetPosition(m_telescopeRightMotor, m_rightTelescopePosition);
-  }
-
-  /**
    * Move telescopes up manually with percent output mode
    * @param speed motor speed in percent [0.0, +1.0]
    */
@@ -209,6 +181,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * @param position position in falcon ticks.
    */
   public void telescopeSetPosition(WPI_TalonFX talon, double position) {
+    position = MathUtil.clamp(position, m_telescopeConfig.getLowerLimit(), m_telescopeConfig.getUpperLimit());
     talon.set(ControlMode.MotionMagic, position);
   }
 
