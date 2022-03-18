@@ -144,11 +144,11 @@ public final class Constants {
   public static final double TELESCOPE_kD = 0.0;
   public static final double TELESCOPE_MECHANICAL_EFFICIENCY = 0.9;
   public static final double TELESCOPE_TOLERANCE = 100;
-  public static final double TELESCOPE_LOWER_LIMIT = 1000;
+  public static final double TELESCOPE_LOWER_LIMIT = 0;
   public static final double TELESCOPE_UPPER_LIMIT = 290000;
   public static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM * 4;
-  public static final int TELESCOPE_MOTION_SMOOTHING = 1;
+  public static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM;
+  public static final int TELESCOPE_MOTION_SMOOTHING = 4;
   public static final int TELESCOPE_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int TELESCOPE_MAX_RPM = FALCON_500_MAX_RPM;
   public static final boolean TELESCOPE_SOFT_LIMITS = true;
@@ -173,15 +173,15 @@ public final class Constants {
                                                                            TELESCOPE_MOTION_SMOOTHING);
 
   // Winch PID variables
-  public static final double WINCH_kP = 0.8;
+  public static final double WINCH_kP = 0.1;
   public static final double WINCH_kD = 0.0;
   public static final double WINCH_MECHANICAL_EFFICIENCY = 0.8;
   public static final double WINCH_TOLERANCE = 1000;
   public static final double WINCH_LOWER_LIMIT = 0;
   public static final double WINCH_UPPER_LIMIT = 265000;
-  public static final double WINCH_VELOCITY = FALCON_500_MAX_RPM / 10;
-  public static final double WINCH_ACCELERATION = FALCON_500_MAX_RPM;
-  public static final int WINCH_MOTION_SMOOTHING = 0;
+  public static final double WINCH_VELOCITY = FALCON_500_MAX_RPM * 0.5;
+  public static final double WINCH_ACCELERATION = FALCON_500_MAX_RPM * 0.5;
+  public static final int WINCH_MOTION_SMOOTHING = 4;
   public static final int WINCH_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int WINCH_MAX_RPM = FALCON_500_MAX_RPM;
   public static final boolean WINCH_SOFT_LIMITS = true;
