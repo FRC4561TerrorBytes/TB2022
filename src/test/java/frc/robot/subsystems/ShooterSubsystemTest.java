@@ -63,11 +63,12 @@ public class ShooterSubsystemTest {
     m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware,
                                               Constants.FLYWHEEL_MASTER_CONFIG,
                                               Constants.FLYWHEEL_SMALL_CONFIG,
-                                              Constants.FLYWHEEL_SMALL_ADDITION,
                                               Constants.FEEDER_INTAKE_SPEED,
                                               Constants.FEEDER_SHOOT_SPEED,
                                               Constants.SHOOTER_LOW_CURVE,
-                                              Constants.SHOOTER_HIGH_CURVE);
+                                              Constants.SHOOTER_HIGH_CURVE,
+                                              Constants.FLYWHEEL_SMALL_RPM_LOW,
+                                              Constants.FLYWHEEL_SMALL_RPM_HIGH);
   }
 
   @AfterEach
@@ -80,8 +81,9 @@ public class ShooterSubsystemTest {
   @Order(1)
   @DisplayName("Test if robot can set flywheel speed")
   public void setFlywheelSpeed() {
-    m_shooterSubsystem.setFlywheelSpeed(200);
+    m_shooterSubsystem.setFlywheelSpeed(200, 200);
     verify(m_flywheelMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(682.666, DELTA));
+    verify(m_flywheelSmallMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(682.666, DELTA));
   }
 
   @Test

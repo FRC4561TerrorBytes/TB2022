@@ -62,11 +62,12 @@ public class RobotContainer {
   private static final ShooterSubsystem SHOOTER_SUBSYSTEM = new ShooterSubsystem(ShooterSubsystem.initializeHardware(), 
                                                                                  Constants.FLYWHEEL_MASTER_CONFIG,
                                                                                  Constants.FLYWHEEL_SMALL_CONFIG,
-                                                                                 Constants.FLYWHEEL_SMALL_ADDITION,
                                                                                  Constants.FEEDER_INTAKE_SPEED,
                                                                                  Constants.FEEDER_SHOOT_SPEED,
                                                                                  Constants.SHOOTER_LOW_CURVE,
-                                                                                 Constants.SHOOTER_HIGH_CURVE);
+                                                                                 Constants.SHOOTER_HIGH_CURVE,
+                                                                                 Constants.FLYWHEEL_SMALL_RPM_LOW,
+                                                                                 Constants.FLYWHEEL_SMALL_RPM_HIGH);
 
   private static final ClimberSubsystem CLIMBER_SUBSYSTEM = new ClimberSubsystem(ClimberSubsystem.initializeHardware(),
                                                                                  Constants.TELESCOPE_CONFIG,

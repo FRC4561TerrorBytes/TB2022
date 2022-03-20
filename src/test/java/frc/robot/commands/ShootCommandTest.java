@@ -66,13 +66,14 @@ public class ShootCommandTest {
     m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware,
                                               Constants.FLYWHEEL_MASTER_CONFIG,
                                               Constants.FLYWHEEL_SMALL_CONFIG,
-                                              Constants.FLYWHEEL_SMALL_ADDITION,
                                               Constants.FEEDER_INTAKE_SPEED,
                                               Constants.FEEDER_SHOOT_SPEED,
                                               Constants.SHOOTER_LOW_CURVE,
-                                              Constants.SHOOTER_HIGH_CURVE);
+                                              Constants.SHOOTER_HIGH_CURVE,
+                                              Constants.FLYWHEEL_SMALL_RPM_LOW,
+                                              Constants.FLYWHEEL_SMALL_RPM_HIGH);
                                               
-    m_shootCommand = new ShootManualCommand(m_shooterSubsystem, 200.0);
+    m_shootCommand = new ShootManualCommand(m_shooterSubsystem, 200.0, 200.0);
   }
 
   @AfterEach
@@ -85,8 +86,9 @@ public class ShootCommandTest {
   @Order(1)
   @DisplayName("Test if robot can start flywheel")
   public void initialize() {
-      m_shootCommand.initialize();
+    m_shootCommand.initialize();
     verify(m_flywheelMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(682.666, DELTA));
+    verify(m_flywheelSmallMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(682.666, DELTA));
   }
 
   @Test

@@ -148,7 +148,8 @@ public final class Constants {
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
   private static final boolean FLYWHEEL_SMALL_MOTOR_INVERTED = true;
-  public static final double FLYWHEEL_SMALL_ADDITION = 0.8;
+  public static final double FLYWHEEL_SMALL_RPM_HIGH = 2560;
+  public static final double FLYWHEEL_SMALL_RPM_LOW = 162;
 
   // Set PID for Flywheel small
   public static final TalonPIDConfig FLYWHEEL_SMALL_CONFIG = new TalonPIDConfig(FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE,

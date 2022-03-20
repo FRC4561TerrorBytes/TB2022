@@ -93,8 +93,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   private PolynomialSplineFunction[] m_shooterOutputCurves = new PolynomialSplineFunction[2];
   private double[] m_maxDistance = new double[2];
   private SelectedGoal m_selectedGoal;
+  private double[] m_smallFlywheelSpeeds = new double[2];
 
-  private double m_smallFlywheelAddition;
   private double m_distance;
   private double m_feederIntakeSpeed;
   private double m_feederShootSpeed;
@@ -107,15 +107,17 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @param shooterHardware Hardware devices for shooter
    * @param flywheelMasterConfig PID config for flywheel
    * @param flywheelSmallConfig PID config for small flywheel
-   * @param smallFlywheelAddition Delta between main flywheel and small flywheel speeds
    * @param feederIntakeSpeed Feeder intake speed in % [0.0, +1.0]
    * @param feederShootSpeed Feeder shoot speed in % [0.0, +1.0]
    * @param lowerShooterCurve Curve relating distance to flywheel speed for low goal
    * @param upperShooterCurve Curve relating distance to flywheel speed for high goal
+   * @param smallFlywheelLow Small flywheel low speed
+   * @param smallFlywheelHigh Small flywheel high speed
    */
   public ShooterSubsystem(Hardware shooterHardware, TalonPIDConfig flywheelMasterConfig,
-                          TalonPIDConfig flywheelSmallConfig, double smallFlywheelAddition, double feederIntakeSpeed, double feederShootSpeed, 
-                          PolynomialSplineFunction lowerShooterCurve, PolynomialSplineFunction upperShooterCurve) {
+                          TalonPIDConfig flywheelSmallConfig, double feederIntakeSpeed, double feederShootSpeed, 
+                          PolynomialSplineFunction lowerShooterCurve, PolynomialSplineFunction upperShooterCurve,
+                          double smallFlywheelLow, double smallFlywheelHigh) {
     BigFlywheel.masterMotor = shooterHardware.flywheelMasterMotor;
     BigFlywheel.slaveMotor = shooterHardware.flywheelSlaveMotor;
     SmallFlywheel.motor = shooterHardware.flywheelSmallMotor;
@@ -124,7 +126,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_upperFeederSensor = shooterHardware.upperFeederSensor;
     this.m_lowerFeederSensor = shooterHardware.lowerFeederSensor;
     this.m_lidar = shooterHardware.lidar;
-    this.m_smallFlywheelAddition = smallFlywheelAddition;
+    this.m_smallFlywheelSpeeds[0] = smallFlywheelLow;
+    this.m_smallFlywheelSpeeds[1] = smallFlywheelHigh;
     this.m_shooterOutputCurves[0] = lowerShooterCurve;
     this.m_shooterOutputCurves[1] = upperShooterCurve;
     this.m_maxDistance[0] = lowerShooterCurve.getKnots()[lowerShooterCurve.getKnots().length - 1];
@@ -240,16 +243,16 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void setFlywheelAuto() {
     //double distance = MathUtil.clamp(getDistance(), 0.0, m_maxDistance[m_selectedGoal.value]);
-    setFlywheelSpeed(m_shooterOutputCurves[m_selectedGoal.value].value(0.0));
+    setFlywheelSpeed(m_shooterOutputCurves[m_selectedGoal.value].value(0.0), m_smallFlywheelSpeeds[m_selectedGoal.value]);
   }
 
   /**
    * Moves flywheel to a speed
    * @param speed input speed to keep the motor at (RPM)
    */
-  public void setFlywheelSpeed(double speed) {
-    double mainFlywheelSpeed = MathUtil.clamp(speed, 0, BigFlywheel.MAX_SPEED_RPM);
-    double smallFlywheelSpeed = MathUtil.clamp(mainFlywheelSpeed * m_smallFlywheelAddition, 0, SmallFlywheel.MAX_SPEED_RPM);
+  public void setFlywheelSpeed(double bigSpeed, double smallSpeed) {
+    double mainFlywheelSpeed = MathUtil.clamp(bigSpeed, 0, BigFlywheel.MAX_SPEED_RPM);
+    double smallFlywheelSpeed = MathUtil.clamp(smallSpeed, 0, SmallFlywheel.MAX_SPEED_RPM);
 
     BigFlywheel.masterMotor.set(ControlMode.Velocity, BigFlywheel.masterConfig.rpmToTicksPer100ms(mainFlywheelSpeed));
     SmallFlywheel.motor.set(ControlMode.Velocity, SmallFlywheel.config.rpmToTicksPer100ms(smallFlywheelSpeed));
