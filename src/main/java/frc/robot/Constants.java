@@ -110,7 +110,7 @@ public final class Constants {
   private static final double FLYWHEEL_kI = 0.0;
   private static final double FLYWHEEL_kD = 0.00025;
   private static final double FLYWHEEL_MECHANICAL_EFFICIENCY = 1.0;
-  private static final double FLYWHEEL_TOLERANCE = 100;
+  private static final double FLYWHEEL_TOLERANCE = 60;
   private static final double FLYWHEEL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
@@ -120,9 +120,9 @@ public final class Constants {
   public static final double FEEDER_SHOOT_SPEED = 0.3;
 
   private static final double SHOOTER_LOW_CURVE_X[] = { 0.0, 0.5, 1.0 };
-  private static final double SHOOTER_LOW_CURVE_Y[] = { 1600.0, 1600.0, 1600.0 };
+  private static final double SHOOTER_LOW_CURVE_Y[] = { 1620.0, 1620.0, 1620.0 };
   private static final double SHOOTER_HIGH_CURVE_X[] = { 0.0, 0.5, 1.0 };
-  private static final double SHOOTER_HIGH_CURVE_Y[] = { 3700.0, 3700.0, 3700.0 };
+  private static final double SHOOTER_HIGH_CURVE_Y[] = { 3200.0, 3200.0, 3200.0 };
 
   public static final PolynomialSplineFunction SHOOTER_LOW_CURVE = SPLINE_INTERPOLATOR.interpolate(SHOOTER_LOW_CURVE_X, SHOOTER_LOW_CURVE_Y);
   public static final PolynomialSplineFunction SHOOTER_HIGH_CURVE = SPLINE_INTERPOLATOR.interpolate(SHOOTER_HIGH_CURVE_X, SHOOTER_HIGH_CURVE_Y);
@@ -139,16 +139,16 @@ public final class Constants {
                                                                                  FLYWHEEL_MECHANICAL_EFFICIENCY,
                                                                                  FLYWHEEL_TOLERANCE);
 
-  private static final double FLYWHEEL_SMALL_kP = 0.004;
-  private static final double FLYWHEEL_SMALL_kI = 0.001;
+  private static final double FLYWHEEL_SMALL_kP = 0.012;
+  private static final double FLYWHEEL_SMALL_kI = 0.0;
   private static final double FLYWHEEL_SMALL_kD = 0.0;
   private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.0;
-  private static final double FLYWHEEL_SMALL_TOLERANCE = 100;
+  private static final double FLYWHEEL_SMALL_TOLERANCE = 250;
   private static final double FLYWHEEL_SMALL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
   private static final boolean FLYWHEEL_SMALL_MOTOR_INVERTED = true;
-  public static final double FLYWHEEL_SMALL_ADDITION = -200;
+  public static final double FLYWHEEL_SMALL_ADDITION = 0.8;
 
   // Set PID for Flywheel small
   public static final TalonPIDConfig FLYWHEEL_SMALL_CONFIG = new TalonPIDConfig(FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE,

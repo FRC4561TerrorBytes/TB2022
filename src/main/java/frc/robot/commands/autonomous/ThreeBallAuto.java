@@ -7,10 +7,11 @@ package frc.robot.commands.autonomous;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.ShootManualCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.SelectedGoal;
 import frc.robot.utils.AutoTrajectory;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -28,13 +29,13 @@ public class ThreeBallAuto extends SequentialCommandGroup {
       ThreeBallAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots collected ball + preloaded ball
-      new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
+      new ShootCommand(shooterSubsystem, SelectedGoal.Low).withTimeout(1.0),
      
       // leaves tarmac, gets new ball and returns to tarmac  
       ThreeBallAuto_2.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots last ball
-      new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
+      new ShootCommand(shooterSubsystem, SelectedGoal.Low).withTimeout(1.0),
 
       // leaves tarmac
       ThreeBallAuto_3.getCommandAndStop(),

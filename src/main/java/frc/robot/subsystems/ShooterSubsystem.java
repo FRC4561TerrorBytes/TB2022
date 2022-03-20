@@ -220,6 +220,13 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * Select which goal to shoot for
+   */
+  public void selectGoal(SelectedGoal goal) {
+    m_selectedGoal = goal;
+  }
+
+  /**
    * Toggles selected goal 
    */
   public void toggleSelectedGoal() {
@@ -242,7 +249,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void setFlywheelSpeed(double speed) {
     double mainFlywheelSpeed = MathUtil.clamp(speed, 0, BigFlywheel.MAX_SPEED_RPM);
-    double smallFlywheelSpeed = MathUtil.clamp(mainFlywheelSpeed + m_smallFlywheelAddition, 0, SmallFlywheel.MAX_SPEED_RPM);
+    double smallFlywheelSpeed = MathUtil.clamp(mainFlywheelSpeed * m_smallFlywheelAddition, 0, SmallFlywheel.MAX_SPEED_RPM);
 
     BigFlywheel.masterMotor.set(ControlMode.Velocity, BigFlywheel.masterConfig.rpmToTicksPer100ms(mainFlywheelSpeed));
     SmallFlywheel.motor.set(ControlMode.Velocity, SmallFlywheel.config.rpmToTicksPer100ms(smallFlywheelSpeed));
@@ -278,6 +285,9 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
                                     && BigFlywheel.masterMotor.getClosedLoopTarget() != 0;
     boolean isSmallFlywheelAtSpeed = (smallFlywheelError < SmallFlywheel.config.getTolerance())
                                      && SmallFlywheel.motor.getClosedLoopTarget() != 0;
+    
+    // Ignore small flywheel speed for low
+    isSmallFlywheelAtSpeed |= m_selectedGoal == SelectedGoal.Low;
 
     return isBigFlywheelAtSpeed && isSmallFlywheelAtSpeed;
   }

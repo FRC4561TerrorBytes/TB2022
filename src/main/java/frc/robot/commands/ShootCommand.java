@@ -19,6 +19,11 @@ public class ShootCommand extends CommandBase {
     addRequirements(m_shooterSubsystem);
   }
 
+  public ShootCommand(ShooterSubsystem shooterSubsystem, ShooterSubsystem.SelectedGoal goal) {
+    this(shooterSubsystem);
+    shooterSubsystem.selectGoal(goal);
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {

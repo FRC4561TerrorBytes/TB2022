@@ -31,7 +31,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class AutoTrajectory {
   // Ramsete Command values
   private final DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(Constants.TRACK_WIDTH);
-  private final double VOLTS_kS = 0.6; 
+  private final double VOLTS_kS = 0.4; 
   private final double VOLT_SECONDS_PER_METER_kV = 2.4;
   private final double VOLT_SECONDS_SQUARED_PER_METER_kA = 0.2;
   private final double kP = 1;
