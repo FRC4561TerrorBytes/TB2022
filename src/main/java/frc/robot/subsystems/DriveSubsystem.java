@@ -7,8 +7,6 @@
 
 package frc.robot.subsystems;
 
-import java.io.StringWriter;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -201,8 +199,6 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     m_lSlaveMotor.setInverted(false);
     m_rMasterMotor.setInverted(true);
     m_rSlaveMotor.setInverted(true);
-
-    System.out.println("teleopInit@!!!!!!!!!!!!!!!!!!!!!!!!!!");
   }
 
   /**
@@ -406,11 +402,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * Stop drivetrain
    */
   public void stop() {
-    m_lMasterMotor.disable();
-    m_rMasterMotor.disable();
-    System.out.println("stopping!!!");
-    
-    Thread.dumpStack();
+    m_lMasterMotor.stopMotor();
+    m_rMasterMotor.stopMotor();
   }
 
   /**

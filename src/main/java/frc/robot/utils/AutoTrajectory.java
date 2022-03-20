@@ -34,7 +34,7 @@ public class AutoTrajectory {
   private final double VOLTS_kS = 0.6; 
   private final double VOLT_SECONDS_PER_METER_kV = 2.4;
   private final double VOLT_SECONDS_SQUARED_PER_METER_kA = 0.2;
-  private final double kP = 0;
+  private final double kP = 1;
   private final double kD = 0; 
   private final double MAX_VOLTAGE = 11.0;
 
