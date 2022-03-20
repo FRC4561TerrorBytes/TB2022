@@ -71,7 +71,7 @@ public final class Constants {
   public static final StatorCurrentLimitConfiguration DRIVE_CURRENT_LIMIT_CONFIGURATION = new StatorCurrentLimitConfiguration(true, CURRENT_LIMIT, CURRENT_THRESHOLD, CURRENT_THRESHOLD_TIME);
 
   // Intake Arm PID config
-  public static final double INTAKE_ARM_kP = 0.9;
+  public static final double INTAKE_ARM_kP = 0.8;
   public static final double INTAKE_ARM_kD = 0.0;
   public static final double INTAKE_ARM_MECHANICAL_EFFICIENCY = 0.8;
   public static final double INTAKE_ARM_TOLERANCE = 10;
@@ -79,7 +79,7 @@ public final class Constants {
   public static final double INTAKE_ARM_UPPER_LIMIT = 3100;
   public static final double INTAKE_ARM_VELOCITY = FALCON_500_MAX_RPM;
   public static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 12;
-  public static final int INTAKE_ARM_MOTION_SMOOTHING = 6;
+  public static final int INTAKE_ARM_MOTION_SMOOTHING = 7;
   public static final int INTAKE_ARM_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int INTAKE_ARM_MAX_RPM = FALCON_500_MAX_RPM;
   public static final boolean INTAKE_ARM_SOFT_LIMITS = true;
