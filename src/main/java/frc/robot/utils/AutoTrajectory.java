@@ -17,7 +17,6 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -31,28 +30,21 @@ import frc.robot.subsystems.DriveSubsystem;
 public class AutoTrajectory {
   // Ramsete Command values
   private final DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(Constants.TRACK_WIDTH);
-  private final double VOLTS_kS = 0.65003; 
-  private final double VOLT_SECONDS_PER_METER_kV = 2.6723;
-  private final double VOLT_SECONDS_SQUARED_PER_METER_kA = 0.1872;
-  private final double kP = 0;
+  private final double VOLTS_kS = 0.6; 
+  private final double VOLT_SECONDS_PER_METER_kV = 2.4;
+  private final double VOLT_SECONDS_SQUARED_PER_METER_kA = 0.2;
+  private final double kP = 1;
   private final double kD = 0; 
   private final double MAX_VOLTAGE = 11.0;
 
   DriveSubsystem m_subsystem;
   RamseteCommand m_ramseteCommand;
-  RamseteController m_disabledRamsete = new RamseteController() {
-    @Override
-    public ChassisSpeeds calculate(Pose2d currentPose, Pose2d poseRef, double linearVelocityMeters,
-      double angularVelocityRefRadiansPerSecond) {
-        return new ChassisSpeeds(linearVelocityMeters, 0.0, angularVelocityRefRadiansPerSecond);
-      }
-  };
   Trajectory m_pathplannerTrajectory;
   
   /**
    * Create new path trajectory using PathPlanner file containing path
    * @param subsystem DriveSubsystem to drive the robot
-   * @param pathName PathPlanner file containing path
+   * @param pathName PathPlanner path name
    * @param maxVelocity Maximum velocity of robot during path (m/s)
    * @param maxAcceleration Maximum acceleration of robot during path (m/s^2)
    */
@@ -61,12 +53,13 @@ public class AutoTrajectory {
 
     m_pathplannerTrajectory = PathPlanner.loadPath(pathName, maxVelocity, maxAcceleration);
 
-    m_subsystem.resetOdometry(m_pathplannerTrajectory.getInitialPose());
+    RamseteController ramseteController = new RamseteController();
+    ramseteController.setEnabled(true);
 
     m_ramseteCommand = new RamseteCommand(
         m_pathplannerTrajectory, 
         m_subsystem::getPose,
-        m_disabledRamsete,
+        ramseteController,
         new SimpleMotorFeedforward(VOLTS_kS,
                                    VOLT_SECONDS_PER_METER_kV,
                                    VOLT_SECONDS_SQUARED_PER_METER_kA),
@@ -118,12 +111,15 @@ public class AutoTrajectory {
     Transform2d transform = subsystem.getPose().minus(trajectory.getInitialPose());
     Trajectory transformedTrajectory = trajectory.transformBy(transform);
 
+    RamseteController ramseteController = new RamseteController();
+    ramseteController.setEnabled(false);
+
     // This is a method used to get the desired trajectory, put it into the command, have the command calculate the 
     // actual route relative to one plotted in Pathweaver, and then follow it the best it can, based on characterization given to it.
     m_ramseteCommand = new RamseteCommand(
         transformedTrajectory,
         subsystem::getPose,
-        m_disabledRamsete,
+        ramseteController,
         new SimpleMotorFeedforward(VOLTS_kS,
                                    VOLT_SECONDS_PER_METER_kV,
                                    VOLT_SECONDS_SQUARED_PER_METER_kA),
@@ -135,6 +131,13 @@ public class AutoTrajectory {
         m_subsystem::autoTankDriveVolts,
         m_subsystem 
     );
+  }
+
+  /**
+   * Reset drive odometry to beginning of this path
+   */
+  public void resetOdometry() {
+    m_subsystem.resetOdometry(m_pathplannerTrajectory.getInitialPose());
   }
 
   /**

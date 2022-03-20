@@ -113,12 +113,6 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     m_rMasterMotor.configFactoryDefault();
     m_rSlaveMotor.configFactoryDefault();
 
-    // Invert only right side
-    m_lMasterMotor.setInverted(false);
-    m_lSlaveMotor.setInverted(false);
-    m_rMasterMotor.setInverted(true);
-    m_rSlaveMotor.setInverted(true);
-
     // Set all drive motors to brake
     m_lMasterMotor.setNeutralMode(NeutralMode.Brake);
     m_lSlaveMotor.setNeutralMode(NeutralMode.Brake);
@@ -158,6 +152,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     m_rSlaveMotor.configStatorCurrentLimit(currentLimitConfiguration);
 
     // Initialise PID subsystem setpoint and input
+    m_navx.calibrate();
     resetAngle();
     m_turnPIDController.setSetpoint(0.0);
 
@@ -183,10 +178,27 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * Initialize drive subsystem for autonomous
+   */
+  public void autonomousInit() {
+     // Invert only left side
+     m_lMasterMotor.setInverted(true);
+     m_lSlaveMotor.setInverted(true);
+     m_rMasterMotor.setInverted(false);
+     m_rSlaveMotor.setInverted(false);
+  }
+
+  /**
    * Initialize drive subsystem for teleop
    */
   public void teleopInit() {
     resetDrivePID();
+
+    // Invert only right side
+    m_lMasterMotor.setInverted(false);
+    m_lSlaveMotor.setInverted(false);
+    m_rMasterMotor.setInverted(true);
+    m_rSlaveMotor.setInverted(true);
   }
 
   /**
@@ -274,8 +286,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param rightVolts Right voltage [-12, +12]
    */
   public void autoTankDriveVolts(double leftVolts, double rightVolts) {
-    m_lMasterMotor.setVoltage(-leftVolts);
-    m_rMasterMotor.setVoltage(-rightVolts);
+    m_lMasterMotor.setVoltage(leftVolts);
+    m_rMasterMotor.setVoltage(rightVolts);
   }
 
   /**
@@ -301,6 +313,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * Resets the odometry
    */
   public void resetOdometry(Pose2d pose) {
+    resetAngle();
     resetEncoders();
     m_odometry.resetPosition(pose, m_navx.getRotation2d());
   }
@@ -312,8 +325,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void updateOdometry() {
     m_odometry.update(m_navx.getRotation2d(), 
-                      -m_lMasterMotor.getSelectedSensorPosition() * m_metersPerTick,
-                      -m_rMasterMotor.getSelectedSensorPosition() * m_metersPerTick);
+                      m_lMasterMotor.getSelectedSensorPosition() * m_metersPerTick,
+                      m_rMasterMotor.getSelectedSensorPosition() * m_metersPerTick);
   }
 
   /**
@@ -346,8 +359,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * Reset left and right drive
    */
   public void resetEncoders() {
-    m_lMasterMotor.setSelectedSensorPosition(0.0);
-    m_rMasterMotor.setSelectedSensorPosition(0.0);
+    m_lMasterMotor.setSelectedSensorPosition(0.0, 0, 2000);
+    m_rMasterMotor.setSelectedSensorPosition(0.0, 0, 2000);
   }
 
   /**
@@ -401,7 +414,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Reset DriveSubsystem navX MXP yaw angle
+   * Reset Drivesubsystem navX MXP yaw angle to specific angle
+   * @param angle angle to reset navX to
    */
   public void resetAngle() {
     m_navx.reset();

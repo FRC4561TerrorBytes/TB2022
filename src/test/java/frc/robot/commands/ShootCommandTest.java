@@ -35,7 +35,7 @@ public class ShootCommandTest {
   private ShootManualCommand m_shootCommand;
   private ShooterSubsystem.Hardware m_shooterHardware;
 
-  private WPI_TalonFX m_flywheelMasterMotor, m_flywheelSlaveMotor;
+  private WPI_TalonFX m_flywheelMasterMotor, m_flywheelSlaveMotor, m_flywheelSmallMotor;
   private CANSparkMax m_upperFeederMotor;
   private CANSparkMax m_lowerFeederMotor;
   private SparkMaxLimitSwitch m_upperFeederSensor;
@@ -47,6 +47,7 @@ public class ShootCommandTest {
     // Create mock hardware devices
     m_flywheelMasterMotor = mock(WPI_TalonFX.class);
     m_flywheelSlaveMotor = mock(WPI_TalonFX.class);
+    m_flywheelSmallMotor = mock(WPI_TalonFX.class);
     m_upperFeederMotor = mock(CANSparkMax.class);
     m_lowerFeederMotor = mock(CANSparkMax.class);
     m_upperFeederSensor = mock(SparkMaxLimitSwitch.class);
@@ -55,6 +56,7 @@ public class ShootCommandTest {
 
     m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, 
                                                       m_flywheelSlaveMotor, 
+                                                      m_flywheelSmallMotor,
                                                       m_upperFeederMotor, 
                                                       m_lowerFeederMotor, 
                                                       m_upperFeederSensor, 
@@ -63,6 +65,8 @@ public class ShootCommandTest {
 
     m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware,
                                               Constants.FLYWHEEL_MASTER_CONFIG,
+                                              Constants.FLYWHEEL_SMALL_CONFIG,
+                                              Constants.FLYWHEEL_SMALL_ADDITION,
                                               Constants.FEEDER_INTAKE_SPEED,
                                               Constants.FEEDER_SHOOT_SPEED,
                                               Constants.SHOOTER_LOW_CURVE,
@@ -92,7 +96,9 @@ public class ShootCommandTest {
     m_shootCommand.initialize();
     when(m_flywheelMasterMotor.getClosedLoopError()).thenReturn(0.0);
     when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(682.666);
-    m_shootCommand.execute();
+    when(m_flywheelSmallMotor.getClosedLoopError()).thenReturn(0.0);
+    when(m_flywheelSmallMotor.getClosedLoopTarget()).thenReturn(682.666);
+    for (int i = 0; i < 7; i++) m_shootCommand.execute();
     verify(m_upperFeederSensor, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
     verify(m_lowerFeederSensor, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
     verify(m_lowerFeederMotor, times(1)).set(AdditionalMatchers.eq(Constants.FEEDER_SHOOT_SPEED, DELTA));
@@ -106,6 +112,8 @@ public class ShootCommandTest {
     m_shootCommand.initialize();
     when(m_flywheelMasterMotor.getClosedLoopError()).thenReturn(250.0);
     when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(682.666);
+    when(m_flywheelSmallMotor.getClosedLoopError()).thenReturn(250.0);
+    when(m_flywheelSmallMotor.getClosedLoopTarget()).thenReturn(682.666);
     m_shootCommand.execute();
     verify(m_upperFeederMotor, times(1)).stopMotor();
     verify(m_lowerFeederMotor, times(1)).stopMotor();
@@ -117,6 +125,7 @@ public class ShootCommandTest {
   public void end(){
     m_shootCommand.end(true);
     verify(m_flywheelMasterMotor, times(1)).stopMotor();
+    verify(m_flywheelSmallMotor, times(1)).stopMotor();
     verify(m_upperFeederMotor, times(1)).stopMotor();
     verify(m_lowerFeederMotor, times(1)).stopMotor();
   }

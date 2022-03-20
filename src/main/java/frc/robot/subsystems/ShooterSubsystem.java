@@ -30,13 +30,14 @@ import frc.robot.utils.TalonPIDConfig;
 public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
 
   public static class Hardware {
-    private WPI_TalonFX flywheelMasterMotor, flywheelSlaveMotor;
+    private WPI_TalonFX flywheelMasterMotor, flywheelSlaveMotor, flywheelSmallMotor;
     private CANSparkMax upperFeederMotor, lowerFeederMotor;
     private SparkMaxLimitSwitch upperFeederSensor, lowerFeederSensor;
     private Counter lidar;
 
     public Hardware(WPI_TalonFX flywheelMasterMotor, 
-                    WPI_TalonFX flywheelSlaveMotor, 
+                    WPI_TalonFX flywheelSlaveMotor,
+                    WPI_TalonFX flywheelSmallMotor, 
                     CANSparkMax upperFeederMotor,
                     CANSparkMax lowerFeederMotor,
                     SparkMaxLimitSwitch upperFeederSensor,
@@ -44,6 +45,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
                     Counter lidar) {
       this.flywheelMasterMotor = flywheelMasterMotor;
       this.flywheelSlaveMotor = flywheelSlaveMotor;
+      this.flywheelSmallMotor = flywheelSmallMotor;
       this.upperFeederMotor = upperFeederMotor;
       this.lowerFeederMotor = lowerFeederMotor;
       this.upperFeederSensor = upperFeederSensor;
@@ -71,6 +73,14 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     private static TalonPIDConfig masterConfig;
   }
 
+  @SuppressWarnings("unused")
+  private static class SmallFlywheel {
+    private static final double MAX_SPEED_RPM = Constants.FALCON_500_MAX_RPM;
+    private static final int TICKS_PER_ROTATION = Constants.CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
+    private static WPI_TalonFX motor;
+    private static TalonPIDConfig config;
+  }
+
   private final double LIDAR_OFFSET = 9.0;
 
   private CANSparkMax m_upperFeederMotor;
@@ -84,6 +94,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   private double[] m_maxDistance = new double[2];
   private SelectedGoal m_selectedGoal;
 
+  private double m_smallFlywheelAddition;
   private double m_distance;
   private double m_feederIntakeSpeed;
   private double m_feederShootSpeed;
@@ -95,21 +106,25 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * <p>
    * @param shooterHardware Hardware devices for shooter
    * @param flywheelMasterConfig PID config for flywheel
+   * @param flywheelSmallConfig PID config for small flywheel
+   * @param smallFlywheelAddition Delta between main flywheel and small flywheel speeds
    * @param feederIntakeSpeed Feeder intake speed in % [0.0, +1.0]
    * @param feederShootSpeed Feeder shoot speed in % [0.0, +1.0]
    * @param lowerShooterCurve Curve relating distance to flywheel speed for low goal
    * @param upperShooterCurve Curve relating distance to flywheel speed for high goal
    */
   public ShooterSubsystem(Hardware shooterHardware, TalonPIDConfig flywheelMasterConfig,
-                          double feederIntakeSpeed, double feederShootSpeed, 
+                          TalonPIDConfig flywheelSmallConfig, double smallFlywheelAddition, double feederIntakeSpeed, double feederShootSpeed, 
                           PolynomialSplineFunction lowerShooterCurve, PolynomialSplineFunction upperShooterCurve) {
     Flywheel.masterMotor = shooterHardware.flywheelMasterMotor;
     Flywheel.slaveMotor = shooterHardware.flywheelSlaveMotor;
+    SmallFlywheel.motor = shooterHardware.flywheelSmallMotor;
     this.m_upperFeederMotor = shooterHardware.upperFeederMotor;
     this.m_lowerFeederMotor = shooterHardware.lowerFeederMotor;
     this.m_upperFeederSensor = shooterHardware.upperFeederSensor;
     this.m_lowerFeederSensor = shooterHardware.lowerFeederSensor;
     this.m_lidar = shooterHardware.lidar;
+    this.m_smallFlywheelAddition = smallFlywheelAddition;
     this.m_shooterOutputCurves[0] = lowerShooterCurve;
     this.m_shooterOutputCurves[1] = upperShooterCurve;
     this.m_maxDistance[0] = lowerShooterCurve.getKnots()[lowerShooterCurve.getKnots().length - 1];
@@ -119,6 +134,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_feederShootSpeed = feederShootSpeed;
 
     Flywheel.masterConfig = flywheelMasterConfig;
+    SmallFlywheel.config = flywheelSmallConfig;
 
     // Reset feeder motors to default
     m_upperFeederMotor.restoreFactoryDefaults();
@@ -144,6 +160,10 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     Flywheel.masterMotor.setNeutralMode(NeutralMode.Coast);
     Flywheel.slaveMotor.setNeutralMode(NeutralMode.Coast);
 
+    // Initialize config for small flywheel PID
+    SmallFlywheel.config.initializeTalonPID(SmallFlywheel.motor, FeedbackDevice.IntegratedSensor);
+    SmallFlywheel.motor.setNeutralMode(NeutralMode.Coast);
+
     // Configure LIDAR settings
     m_LIDARFilter = LinearFilter.singlePoleIIR(0.4, Constants.ROBOT_LOOP_PERIOD);
     m_lidar.setMaxPeriod(1.0); // Set the max period that can be measured
@@ -160,6 +180,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     CANSparkMax lowerFeederMotor = new CANSparkMax(Constants.LOWER_FEEDER_MOTOR_PORT, MotorType.kBrushless);
     Hardware shooterHardware = new Hardware(new WPI_TalonFX(Constants.FLYWHEEL_MASTER_MOTOR_PORT),
                                             new WPI_TalonFX(Constants.FLYWHEEL_SLAVE_MOTOR_PORT),
+                                            new WPI_TalonFX(Constants.FLYWHEEL_SMALL_MOTOR_PORT),
                                             upperFeederMotor,
                                             lowerFeederMotor,
                                             upperFeederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed),
@@ -174,11 +195,12 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void shuffleboard() {
     ShuffleboardTab tab = Shuffleboard.getTab("Shooter Subsystem");
-    tab.addNumber("Flywheel Motor Output (%)", () -> Flywheel.masterMotor.getMotorOutputPercent());
-    tab.addNumber("Flywheel Current (A)", () -> Flywheel.masterMotor.getSupplyCurrent());
     tab.addNumber("Flywheel Motor Velocity (RPM)", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getSelectedSensorVelocity()));
     tab.addNumber("Flywheel Motor Setpoint (RPM)", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getClosedLoopTarget()));
     tab.addNumber("Flywheel Error (RPM)", () -> Flywheel.masterConfig.ticksPer100msToRPM(Flywheel.masterMotor.getClosedLoopError()));
+    tab.addNumber("Flywheel Small Motor Velocity (RPM)", () -> SmallFlywheel.config.ticksPer100msToRPM(SmallFlywheel.motor.getSelectedSensorVelocity()));
+    tab.addNumber("Flywheel Small Motor Setpoint (RPM)", () -> SmallFlywheel.config.ticksPer100msToRPM(SmallFlywheel.motor.getClosedLoopTarget()));
+    tab.addNumber("Flywheel Small Error (RPM)", () -> SmallFlywheel.config.ticksPer100msToRPM(SmallFlywheel.motor.getClosedLoopError()));
     tab.addNumber("Shooter Distance (m)", () -> getDistance());
   }
 
@@ -219,10 +241,11 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @param speed input speed to keep the motor at (RPM)
    */
   public void setFlywheelSpeed(double speed) {
-    speed = MathUtil.clamp(speed, 0, Flywheel.MAX_SPEED_RPM);
-    double speedInTicks = Flywheel.masterConfig.rpmToTicksPer100ms(speed);
+    double mainFlywheelSpeed = MathUtil.clamp(speed, 0, Flywheel.MAX_SPEED_RPM);
+    double smallFlywheelSpeed = MathUtil.clamp(mainFlywheelSpeed + m_smallFlywheelAddition, 0, SmallFlywheel.MAX_SPEED_RPM);
 
-    Flywheel.masterMotor.set(ControlMode.Velocity, speedInTicks);
+    Flywheel.masterMotor.set(ControlMode.Velocity, Flywheel.masterConfig.rpmToTicksPer100ms(mainFlywheelSpeed));
+    SmallFlywheel.motor.set(ControlMode.Velocity, SmallFlywheel.config.rpmToTicksPer100ms(smallFlywheelSpeed));
   }
 
   /**
@@ -239,6 +262,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void flywheelStop() {
     Flywheel.masterMotor.stopMotor();
     Flywheel.masterMotor.setIntegralAccumulator(0);
+    SmallFlywheel.motor.stopMotor();
+    SmallFlywheel.motor.setIntegralAccumulator(0);
   }
 
   /**
@@ -247,8 +272,14 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public boolean isFlywheelAtSpeed() {
     double flywheelError = Math.abs(Flywheel.masterMotor.getClosedLoopError());
-    return (flywheelError < Flywheel.masterConfig.getTolerance())
-            && Flywheel.masterMotor.getClosedLoopTarget() != 0;
+    double smallFlywheelError = Math.abs(SmallFlywheel.motor.getClosedLoopError());
+
+    boolean isMainFlywheelAtSpeed = (flywheelError < Flywheel.masterConfig.getTolerance())
+                                    && Flywheel.masterMotor.getClosedLoopTarget() != 0;
+    boolean isSmallFlywheelAtSpeed = (smallFlywheelError < SmallFlywheel.config.getTolerance())
+                                     && SmallFlywheel.motor.getClosedLoopTarget() != 0;
+
+    return isMainFlywheelAtSpeed && isSmallFlywheelAtSpeed;
   }
 
   /**
@@ -328,6 +359,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void close() {
     Flywheel.masterMotor = null;
     Flywheel.slaveMotor = null;
+    SmallFlywheel.motor = null;
     m_upperFeederMotor = null;
     m_lowerFeederMotor = null;
     m_upperFeederSensor = null;

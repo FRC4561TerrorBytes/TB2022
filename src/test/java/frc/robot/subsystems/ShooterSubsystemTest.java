@@ -32,7 +32,7 @@ public class ShooterSubsystemTest {
   private ShooterSubsystem m_shooterSubsystem;
   private ShooterSubsystem.Hardware m_shooterHardware;
 
-  private WPI_TalonFX m_flywheelMasterMotor, m_flywheelSlaveMotor;
+  private WPI_TalonFX m_flywheelMasterMotor, m_flywheelSlaveMotor, m_flywheelSmallMotor;
   private CANSparkMax m_upperFeederMotor;
   private CANSparkMax m_lowerFeederMotor;
   private SparkMaxLimitSwitch m_upperFeederSensor;
@@ -44,6 +44,7 @@ public class ShooterSubsystemTest {
     // Create mock hardware devices
     m_flywheelMasterMotor = mock(WPI_TalonFX.class);
     m_flywheelSlaveMotor = mock(WPI_TalonFX.class);
+    m_flywheelSmallMotor = mock(WPI_TalonFX.class);
     m_upperFeederMotor = mock(CANSparkMax.class);
     m_lowerFeederMotor = mock(CANSparkMax.class);
     m_upperFeederSensor = mock(SparkMaxLimitSwitch.class);
@@ -52,6 +53,7 @@ public class ShooterSubsystemTest {
 
     m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, 
                                                       m_flywheelSlaveMotor, 
+                                                      m_flywheelSmallMotor,
                                                       m_upperFeederMotor, 
                                                       m_lowerFeederMotor, 
                                                       m_upperFeederSensor, 
@@ -60,6 +62,8 @@ public class ShooterSubsystemTest {
 
     m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware,
                                               Constants.FLYWHEEL_MASTER_CONFIG,
+                                              Constants.FLYWHEEL_SMALL_CONFIG,
+                                              Constants.FLYWHEEL_SMALL_ADDITION,
                                               Constants.FEEDER_INTAKE_SPEED,
                                               Constants.FEEDER_SHOOT_SPEED,
                                               Constants.SHOOTER_LOW_CURVE,

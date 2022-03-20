@@ -4,6 +4,7 @@
 
 package frc.robot.commands.autonomous;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.utils.AutoTrajectory;
@@ -14,8 +15,14 @@ import frc.robot.utils.AutoTrajectory;
 public class LeaveTarmac extends SequentialCommandGroup {
   /** Creates a new LeaveTarmac. */
   public LeaveTarmac(DriveSubsystem driveSubsystem) {
+    AutoTrajectory LeaveTarmac = new AutoTrajectory(driveSubsystem, "LeaveTarmac", 1.85, 1.2);
+
     addCommands(
-      new AutoTrajectory(driveSubsystem, "LeaveTarmac", 1.85, 1.2).getCommandAndStop()
+      // Reset odometry
+      new InstantCommand(() -> LeaveTarmac.resetOdometry(), driveSubsystem),
+
+      // Leave tarmac
+      LeaveTarmac.getCommandAndStop()
     );
   }
 }

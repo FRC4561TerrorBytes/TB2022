@@ -167,6 +167,30 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * Syncs up both telescopes
+   */
+  public void telescopeSync() {
+    Thread leftTelescope = new Thread(() -> {
+      while (m_telescopeLeftMotor.isRevLimitSwitchClosed() == 0) {
+        m_telescopeLeftMotor.set(ControlMode.PercentOutput, -0.2);
+      }
+      m_telescopeLeftMotor.stopMotor();
+      telescopeSetPosition(m_telescopeLeftMotor, 0.0);
+    });
+
+    Thread rightTelescope = new Thread(() -> {
+      while (m_telescopeRightMotor.isRevLimitSwitchClosed() == 0) {
+        m_telescopeRightMotor.set(ControlMode.PercentOutput, -0.2);
+      }
+      m_telescopeRightMotor.stopMotor();
+      telescopeSetPosition(m_telescopeRightMotor, 0.0);
+    });
+
+    leftTelescope.start();
+    rightTelescope.start();
+  }
+
+  /**
    * Stop climber after moving manually, and re-enable soft limits
    */
   public void telescopeStop() {

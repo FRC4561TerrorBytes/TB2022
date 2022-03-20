@@ -61,6 +61,8 @@ public class RobotContainer {
 
   private static final ShooterSubsystem SHOOTER_SUBSYSTEM = new ShooterSubsystem(ShooterSubsystem.initializeHardware(), 
                                                                                  Constants.FLYWHEEL_MASTER_CONFIG,
+                                                                                 Constants.FLYWHEEL_SMALL_CONFIG,
+                                                                                 Constants.FLYWHEEL_SMALL_ADDITION,
                                                                                  Constants.FEEDER_INTAKE_SPEED,
                                                                                  Constants.FEEDER_SHOOT_SPEED,
                                                                                  Constants.SHOOTER_LOW_CURVE,
@@ -169,6 +171,8 @@ public class RobotContainer {
     secondaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManualOverride(-0.5), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
     secondaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManualOverride(+0.5), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
+    secondaryButtonY.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeSync(), CLIMBER_SUBSYSTEM));
+
     secondaryLeftStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-SECONDARY_CONTROLLER.getLeftY()), CLIMBER_SUBSYSTEM))
                       .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryRightStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchManual(SECONDARY_CONTROLLER.getRightX()), CLIMBER_SUBSYSTEM))
@@ -181,6 +185,13 @@ public class RobotContainer {
   public void initialize() {
     INTAKE_SUBSYSTEM.initialize();
     CLIMBER_SUBSYSTEM.initialize();
+  }
+
+  /**
+   * Intialize robot for autonomous
+   */
+  public void autonomousInit() {
+    DRIVE_SUBSYSTEM.autonomousInit();
   }
 
   /**

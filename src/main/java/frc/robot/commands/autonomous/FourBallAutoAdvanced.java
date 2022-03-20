@@ -4,6 +4,7 @@
 
 package frc.robot.commands.autonomous;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootManualCommand;
@@ -18,21 +19,34 @@ import frc.robot.utils.AutoTrajectory;
 public class FourBallAutoAdvanced extends SequentialCommandGroup {
   /** Creates a new FourBallAutoAdvanced. */
   public FourBallAutoAdvanced(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
+    AutoTrajectory FourBallAuto_1 = new AutoTrajectory(driveSubsystem, "FourBallAuto_1", 3.0, 3.0);
+    AutoTrajectory FourBallAuto_2 = new AutoTrajectory(driveSubsystem, "FourBallAuto_2", 3.5, 3.0);
+    AutoTrajectory FourBallAuto_3 = new AutoTrajectory(driveSubsystem, "FourBallAuto_3", 3.0, 2.0);
+
     addCommands(
+      // Reset odometry for path
+      new InstantCommand(() -> FourBallAuto_1.resetOdometry(), driveSubsystem),
+
       // Leaves tarmac, gets new ball and returns to tarmac  
-      new AutoTrajectory(driveSubsystem, "FourBallAuto_1", 3.0, 3.0).getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      FourBallAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // Shoots collected + preloaded ball
       new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
+
+      // Reset odometry for path
+      new InstantCommand(() -> FourBallAuto_2.resetOdometry(), driveSubsystem),
       
       // Leaves tarmac, gets 2 new balls and returns to tarmac
-      new AutoTrajectory(driveSubsystem, "FourBallAuto_2", 3.5, 3.0).getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      FourBallAuto_2.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // Shoots balls
       new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
+
+      // Reset odometry for path
+      new InstantCommand(() -> FourBallAuto_3.resetOdometry(), driveSubsystem),
       
       // Leaves tarmac
-      new AutoTrajectory(driveSubsystem, "FourBallAuto_3", 3.0, 2.0).getCommandAndStop()
+      FourBallAuto_3.getCommandAndStop()
     );
   }
 }

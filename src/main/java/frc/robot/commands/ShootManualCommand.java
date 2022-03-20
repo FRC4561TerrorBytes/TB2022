@@ -10,6 +10,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class ShootManualCommand extends CommandBase {
   private ShooterSubsystem m_shooterSubsystem;
   private double m_rpm;
+  private int loops = 0;
 
   /** Creates a new ShootCommand. */
   public ShootManualCommand(ShooterSubsystem shooterSubsystem, double rpm) {
@@ -28,8 +29,13 @@ public class ShootManualCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_shooterSubsystem.isFlywheelAtSpeed()) m_shooterSubsystem.feederShoot();
-    else m_shooterSubsystem.feederStop();
+    if (m_shooterSubsystem.isFlywheelAtSpeed()) {
+      loops++;
+      if (loops > 6) m_shooterSubsystem.feederShoot();
+    } else {
+      loops = 0;
+      m_shooterSubsystem.feederStop();
+    }
   }
 
   // Called once the command ends or is interrupted.

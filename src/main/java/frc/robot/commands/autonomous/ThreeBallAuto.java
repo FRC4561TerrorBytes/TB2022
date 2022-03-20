@@ -4,6 +4,7 @@
 
 package frc.robot.commands.autonomous;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootManualCommand;
@@ -18,21 +19,36 @@ import frc.robot.utils.AutoTrajectory;
 public class ThreeBallAuto extends SequentialCommandGroup {
   /** Creates a new ThreeBallAuto. */
   public ThreeBallAuto(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
+    AutoTrajectory ThreeBallAuto_1 = new AutoTrajectory(driveSubsystem, "ThreeBallAuto_1", 3.0, 1.5);
+    AutoTrajectory ThreeBallAuto_2 = new AutoTrajectory(driveSubsystem, "ThreeBallAuto_2", 3.0, 1.5);
+    AutoTrajectory ThreeBallAuto_3 = new AutoTrajectory(driveSubsystem, "ThreeBallAuto_3", 2.0, 1.0);
+
     addCommands(
+      // Reset odometry for path
+      new InstantCommand(() -> ThreeBallAuto_1.resetOdometry(), driveSubsystem),
+      
       // leaves tarmac, gets new ball and returns to tarmac  
-      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_1", 3.0, 3.0).getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      ThreeBallAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots collected ball + preloaded ball
       new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
+
+      // Reset odometry for path
+      new InstantCommand(() -> ThreeBallAuto_2.resetOdometry(), driveSubsystem),
      
       // leaves tarmac, gets new ball and returns to tarmac  
-      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_2", 3.0, 3.0).getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      ThreeBallAuto_2.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots last ball
       new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
 
+      new InstantCommand(() -> driveSubsystem.stop(), driveSubsystem),
+
+      // Reset odometry for path
+      new InstantCommand(() -> ThreeBallAuto_3.resetOdometry(), driveSubsystem),
+
       // leaves tarmac
-      new AutoTrajectory(driveSubsystem, "ThreeBallAuto_3", 3.0, 2.5).getCommandAndStop()
+      ThreeBallAuto_3.getCommandAndStop()
     );
   }
 }

@@ -24,7 +24,7 @@ public final class Constants {
   public static final double ROBOT_LOOP_PERIOD = 1.0 / 60.0;
 
   // Automode Constants
-  public static final double TRACK_WIDTH = 0.71217;
+  public static final double TRACK_WIDTH = 0.71452;
 
   // Controller deadband
   public static final double CONTROLLER_DEADBAND = 0.12;
@@ -64,22 +64,22 @@ public final class Constants {
   public static final PolynomialSplineFunction DRIVE_TRACTION_CONTROL_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TRACTION_CONTROL_CURVE_X, DRIVE_TRACTION_CONTROL_CURVE_Y);
   public static final PolynomialSplineFunction DRIVE_TURN_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TURN_INPUT_CURVE_X, DRIVE_TURN_INPUT_CURVE_Y);
 
-  private static final double CURRENT_LIMIT = 50.0;
+  private static final double CURRENT_LIMIT = 60.0;
   private static final double CURRENT_THRESHOLD = 120.0;
   private static final double CURRENT_THRESHOLD_TIME = 6 * ROBOT_LOOP_PERIOD;
   
   public static final StatorCurrentLimitConfiguration DRIVE_CURRENT_LIMIT_CONFIGURATION = new StatorCurrentLimitConfiguration(true, CURRENT_LIMIT, CURRENT_THRESHOLD, CURRENT_THRESHOLD_TIME);
 
   // Intake Arm PID config
-  public static final double INTAKE_ARM_kP = 0.8;
+  public static final double INTAKE_ARM_kP = 0.9;
   public static final double INTAKE_ARM_kD = 0.0;
   public static final double INTAKE_ARM_MECHANICAL_EFFICIENCY = 0.8;
   public static final double INTAKE_ARM_TOLERANCE = 10;
   public static final double INTAKE_ARM_LOWER_LIMIT = 0;
   public static final double INTAKE_ARM_UPPER_LIMIT = 3100;
   public static final double INTAKE_ARM_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 18;
-  public static final int INTAKE_ARM_MOTION_SMOOTHING = 4;
+  public static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 12;
+  public static final int INTAKE_ARM_MOTION_SMOOTHING = 6;
   public static final int INTAKE_ARM_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   public static final int INTAKE_ARM_MAX_RPM = FALCON_500_MAX_RPM;
   public static final boolean INTAKE_ARM_SOFT_LIMITS = true;
@@ -108,7 +108,7 @@ public final class Constants {
   // Shooter PID Values
   private static final double FLYWHEEL_kP = 0.002;
   private static final double FLYWHEEL_kI = 0.0;
-  private static final double FLYWHEEL_kD = 0.0002;
+  private static final double FLYWHEEL_kD = 0.00025;
   private static final double FLYWHEEL_MECHANICAL_EFFICIENCY = 1.0;
   private static final double FLYWHEEL_TOLERANCE = 100;
   private static final double FLYWHEEL_MAX_RPM = FALCON_500_MAX_RPM;
@@ -120,7 +120,7 @@ public final class Constants {
   public static final double FEEDER_SHOOT_SPEED = 0.3;
 
   private static final double SHOOTER_LOW_CURVE_X[] = { 0.0, 0.5, 1.0 };
-  private static final double SHOOTER_LOW_CURVE_Y[] = { 1700.0, 1700.0, 1700.0 };
+  private static final double SHOOTER_LOW_CURVE_Y[] = { 1600.0, 1600.0, 1600.0 };
   private static final double SHOOTER_HIGH_CURVE_X[] = { 0.0, 0.5, 1.0 };
   private static final double SHOOTER_HIGH_CURVE_Y[] = { 3700.0, 3700.0, 3700.0 };
 
@@ -138,6 +138,28 @@ public final class Constants {
                                                                                  FLYWHEEL_kD,
                                                                                  FLYWHEEL_MECHANICAL_EFFICIENCY,
                                                                                  FLYWHEEL_TOLERANCE);
+
+  private static final double FLYWHEEL_SMALL_kP = 0.004;
+  private static final double FLYWHEEL_SMALL_kI = 0.001;
+  private static final double FLYWHEEL_SMALL_kD = 0.0;
+  private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.0;
+  private static final double FLYWHEEL_SMALL_TOLERANCE = 100;
+  private static final double FLYWHEEL_SMALL_MAX_RPM = FALCON_500_MAX_RPM;
+  private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
+  private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
+  private static final boolean FLYWHEEL_SMALL_MOTOR_INVERTED = true;
+  public static final double FLYWHEEL_SMALL_ADDITION = -200;
+
+  // Set PID for Flywheel small
+  public static final TalonPIDConfig FLYWHEEL_SMALL_CONFIG = new TalonPIDConfig(FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE,
+                                                                                FLYWHEEL_SMALL_MOTOR_INVERTED,
+                                                                                FLYWHEEL_SMALL_MAX_RPM,
+                                                                                FLYWHEEL_SMALL_TICKS_PER_ROTATION,
+                                                                                FLYWHEEL_SMALL_kP,
+                                                                                FLYWHEEL_SMALL_kI,
+                                                                                FLYWHEEL_SMALL_kD,
+                                                                                FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY,
+                                                                                FLYWHEEL_SMALL_TOLERANCE);
 
   // Telescope PID variables
   public static final double TELESCOPE_kP = 0.1;
@@ -225,6 +247,7 @@ public final class Constants {
   public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 8;
   public static final int UPPER_FEEDER_MOTOR_PORT = 9;
   public static final int LOWER_FEEDER_MOTOR_PORT = 10;
+  public static final int FLYWHEEL_SMALL_MOTOR_PORT = 15;
   public static final int LIDAR_PORT = 0;
 
   // Climber hardware ports
