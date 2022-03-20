@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands.autonomous;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootManualCommand;
@@ -22,17 +21,11 @@ public class AlternateAuto extends SequentialCommandGroup {
     AutoTrajectory AlternateAuto_2 = new AutoTrajectory(driveSubsystem, "AlternateAuto_2", 3.0, 1.5);
     
     addCommands(
-      // Reset odometry for path
-      new InstantCommand(() -> AlternateAuto_1.resetOdometry(), driveSubsystem),
-
       // Leaves tarmac and intakes new ball and returns to hub
       AlternateAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // Shoots balls
       new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
-
-      // Reset odometry for path
-      new InstantCommand(() -> AlternateAuto_2.resetOdometry(), driveSubsystem),
       
       // Leaves tarmac
       AlternateAuto_2.getCommandAndStop()

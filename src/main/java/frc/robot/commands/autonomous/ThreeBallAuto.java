@@ -4,7 +4,6 @@
 
 package frc.robot.commands.autonomous;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootManualCommand;
@@ -24,28 +23,17 @@ public class ThreeBallAuto extends SequentialCommandGroup {
     AutoTrajectory ThreeBallAuto_3 = new AutoTrajectory(driveSubsystem, "ThreeBallAuto_3", 2.0, 1.0);
 
     addCommands(
-      // Reset odometry for path
-      new InstantCommand(() -> ThreeBallAuto_1.resetOdometry(), driveSubsystem),
-      
       // leaves tarmac, gets new ball and returns to tarmac  
       ThreeBallAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots collected ball + preloaded ball
       new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
-
-      // Reset odometry for path
-      new InstantCommand(() -> ThreeBallAuto_2.resetOdometry(), driveSubsystem),
      
       // leaves tarmac, gets new ball and returns to tarmac  
       ThreeBallAuto_2.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots last ball
       new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
-
-      new InstantCommand(() -> driveSubsystem.stop(), driveSubsystem),
-
-      // Reset odometry for path
-      new InstantCommand(() -> ThreeBallAuto_3.resetOdometry(), driveSubsystem),
 
       // leaves tarmac
       ThreeBallAuto_3.getCommandAndStop()

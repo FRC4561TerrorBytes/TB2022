@@ -359,8 +359,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * Reset left and right drive
    */
   public void resetEncoders() {
-    m_lMasterMotor.setSelectedSensorPosition(0.0, 0, 2000);
-    m_rMasterMotor.setSelectedSensorPosition(0.0, 0, 2000);
+    m_lMasterMotor.setSelectedSensorPosition(0.0);
+    m_rMasterMotor.setSelectedSensorPosition(0.0);
   }
 
   /**

@@ -4,7 +4,6 @@
 
 package frc.robot.commands.autonomous;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootManualCommand;
@@ -24,26 +23,17 @@ public class FourBallAutoAdvanced extends SequentialCommandGroup {
     AutoTrajectory FourBallAuto_3 = new AutoTrajectory(driveSubsystem, "FourBallAuto_3", 3.0, 2.0);
 
     addCommands(
-      // Reset odometry for path
-      new InstantCommand(() -> FourBallAuto_1.resetOdometry(), driveSubsystem),
-
       // Leaves tarmac, gets new ball and returns to tarmac  
       FourBallAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // Shoots collected + preloaded ball
       new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
-
-      // Reset odometry for path
-      new InstantCommand(() -> FourBallAuto_2.resetOdometry(), driveSubsystem),
       
       // Leaves tarmac, gets 2 new balls and returns to tarmac
       FourBallAuto_2.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // Shoots balls
       new ShootManualCommand(shooterSubsystem, 1700.0).withTimeout(1.0),
-
-      // Reset odometry for path
-      new InstantCommand(() -> FourBallAuto_3.resetOdometry(), driveSubsystem),
       
       // Leaves tarmac
       FourBallAuto_3.getCommandAndStop()
