@@ -4,6 +4,10 @@
 
 package frc.robot.utils;
 
+import java.util.HashMap;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.Constants;
 
@@ -138,9 +142,26 @@ public class BlinkinLEDController {
 
   private static BlinkinLEDController m_controller = null;
   private static Spark m_blinkin;
+  private static BlinkinPattern m_currentPattern;
+  private static HashMap<Alliance, BlinkinPattern[]> m_allianceColors = new HashMap<Alliance, BlinkinPattern[]>();
+  private static final BlinkinPattern[] RED_ALLIANCE_PATTERNS = {
+    BlinkinPattern.RED,
+    BlinkinPattern.BREATH_RED,
+    BlinkinPattern.LIGHT_CHASE_RED,
+    BlinkinPattern.SHOT_RED
+  };
+  private static final BlinkinPattern[] BLUE_ALLIANCE_PATTERNS = {
+    BlinkinPattern.BLUE,
+    BlinkinPattern.BREATH_BLUE,
+    BlinkinPattern.LIGHT_CHASE_BLUE,
+    BlinkinPattern.SHOT_BLUE
+  };
 
   private BlinkinLEDController() {
     m_blinkin = new Spark(Constants.BLINKIN_LED_CONTROLLER_PORT);
+
+    m_allianceColors.put(Alliance.Red, RED_ALLIANCE_PATTERNS);
+    m_allianceColors.put(Alliance.Blue, BLUE_ALLIANCE_PATTERNS);
   }
 
   /**
@@ -157,7 +178,44 @@ public class BlinkinLEDController {
    * @param pattern Desired LED light pattern
    */
   public void setPattern(BlinkinPattern pattern) {
-    m_blinkin.set(pattern.value);
+    m_currentPattern = pattern;
+    m_blinkin.set(m_currentPattern.value);
+  }
+
+  /**
+   * Set LEDs alliance color solid pattern
+   */
+  public void setAllianceColorSolid() {
+    setPattern(m_allianceColors.get(DriverStation.getAlliance())[0]);
+  }
+
+  /**
+   * Set LEDs to alliance color breath pattern
+   */
+  public void setAllianceColorBreath() {
+    setPattern(m_allianceColors.get(DriverStation.getAlliance())[1]);
+  }
+
+  /**
+   * Set LEDs to alliance color chase pattern
+   */
+  public void setAllianceColorChase() {
+    setPattern(m_allianceColors.get(DriverStation.getAlliance())[2]);
+  }
+
+  /**
+   * Set LEDs to alliance color shot pattern
+   */
+  public void setAllianceColorShot() {
+    setPattern(m_allianceColors.get(DriverStation.getAlliance())[3]);
+  }
+
+  /**
+   * Get current LED pattern
+   * @return current LED pattern
+   */
+  public BlinkinPattern getCurrentPattern() {
+    return m_currentPattern;
   }
 
   /**

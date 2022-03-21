@@ -8,6 +8,8 @@ import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -33,6 +35,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utils.BlinkinLEDController;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -72,6 +75,8 @@ public class RobotContainer {
   private static final ClimberSubsystem CLIMBER_SUBSYSTEM = new ClimberSubsystem(ClimberSubsystem.initializeHardware(),
                                                                                  Constants.TELESCOPE_CONFIG,
                                                                                  Constants.WINCH_CONFIG);
+  
+  private static final PowerDistribution PDH = new PowerDistribution(Constants.PDH_PORT, ModuleType.kRev);
 
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
   private static final XboxController SECONDARY_CONTROLLER = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
@@ -104,6 +109,9 @@ public class RobotContainer {
     PortForwarder.add(5800, "photonvision.local", 5800);
     PortForwarder.add(1181, "photonvision.local", 1181);
     PortForwarder.add(1182, "photonvision.local", 1182);
+
+    // Enable PDH switchable port
+    PDH.setSwitchableChannel(true);
   }
 
   /**
@@ -184,8 +192,10 @@ public class RobotContainer {
    * Initialize robot state
    */
   public void initialize() {
+    // Initialize subsystems
     INTAKE_SUBSYSTEM.initialize();
     CLIMBER_SUBSYSTEM.initialize();
+    BlinkinLEDController.getInstance().setAllianceColorBreath();
   }
 
   /**
@@ -193,6 +203,7 @@ public class RobotContainer {
    */
   public void autonomousInit() {
     DRIVE_SUBSYSTEM.autonomousInit();
+    BlinkinLEDController.getInstance().setAllianceColorSolid();
   }
 
   /**
@@ -200,6 +211,7 @@ public class RobotContainer {
    */
   public void teleopInit() {
     DRIVE_SUBSYSTEM.teleopInit();
+    BlinkinLEDController.getInstance().setAllianceColorSolid();
   }
 
   /**
