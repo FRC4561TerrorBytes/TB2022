@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utils.BlinkinLEDController;
 import frc.robot.utils.TalonPIDConfig;
 
 
@@ -204,7 +205,6 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     tab.addNumber("Flywheel Small Motor Velocity (RPM)", () -> SmallFlywheel.config.ticksPer100msToRPM(SmallFlywheel.motor.getSelectedSensorVelocity()));
     tab.addNumber("Flywheel Small Motor Setpoint (RPM)", () -> SmallFlywheel.config.ticksPer100msToRPM(SmallFlywheel.motor.getClosedLoopTarget()));
     tab.addNumber("Flywheel Small Error (RPM)", () -> SmallFlywheel.config.ticksPer100msToRPM(SmallFlywheel.motor.getClosedLoopError()));
-    tab.addNumber("Shooter Distance (m)", () -> getDistance());
   }
 
   /**
@@ -219,7 +219,6 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   @Override
   public void periodic() {
     smartDashboard();
-    updateDistance();
   }
 
   /**
@@ -308,8 +307,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void feederIntake() {
     m_upperFeederSensor.enableLimitSwitch(true);
     m_upperFeederMotor.set(+m_feederIntakeSpeed);
-    if (m_lowerFeederSensor.isPressed() && m_upperFeederSensor.isPressed()) {
-      m_lowerFeederMotor.setOpenLoopRampRate(1.0);
+    if (isFeederFull()) {
+      m_lowerFeederMotor.setOpenLoopRampRate(7.5);
       m_lowerFeederMotor.stopMotor();
     } else {
       m_lowerFeederMotor.setOpenLoopRampRate(0.0);
@@ -335,15 +334,17 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     m_lowerFeederMotor.setOpenLoopRampRate(0.0);
     m_upperFeederMotor.set(+m_feederShootSpeed);
     m_lowerFeederMotor.set(+m_feederShootSpeed);
+    BlinkinLEDController.getInstance().setAllianceColorChase();
   }
 
   /**
    * Stops feeder motors
    */
   public void feederStop() {
-    m_lowerFeederMotor.setOpenLoopRampRate(1.0);
+    m_lowerFeederMotor.setOpenLoopRampRate(7.5);
     m_upperFeederMotor.stopMotor();
     m_lowerFeederMotor.stopMotor();
+    BlinkinLEDController.getInstance().setAllianceColorSolid();
   }
 
   /**

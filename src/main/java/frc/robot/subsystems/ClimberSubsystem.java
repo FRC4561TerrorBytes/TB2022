@@ -120,7 +120,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * Create SmartDashboard indicators
    */
   public void smartDashboard() {
-    SmartDashboard.putBoolean("Winch in?", m_winchMotor.getSelectedSensorPosition() < m_winchConfig.getTolerance());
+    SmartDashboard.putBoolean("Winch in?", isWinchAtHome());
   }
 
   @Override
@@ -263,7 +263,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * Check if telesope motion is finished
    * @return true if telescope motion is complete
    */
-  public boolean telescopeMotionIsFinished() {
+  public boolean isTelescopeMotionFinished() {
     return m_telescopeRightMotor.getActiveTrajectoryPosition() - m_telescopeRightMotor.getClosedLoopTarget() < m_telescopeConfig.getTolerance();
   }
 
@@ -271,8 +271,16 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * Check if winch motion is finished
    * @return true if winch motion is complete
    */
-  public boolean winchMotionIsFinished() {
+  public boolean isWinchMotionFinished() {
     return m_winchMotor.getActiveTrajectoryPosition() - m_winchMotor.getClosedLoopTarget() < m_winchConfig.getTolerance();
+  }
+
+  /**
+   * Check if winch is at home position
+   * @return true if winch is at home
+   */
+  public boolean isWinchAtHome() {
+    return m_winchMotor.getSelectedSensorPosition() < m_winchConfig.getTolerance();
   }
 
   /**
@@ -280,7 +288,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if climber motion is complete
    */
   public boolean isClimbMotionFinished() {
-    return telescopeMotionIsFinished() && winchMotionIsFinished();
+    return isTelescopeMotionFinished() && isWinchMotionFinished();
   }
 
   /**
