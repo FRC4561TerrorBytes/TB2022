@@ -32,7 +32,7 @@ public class AlternateAuto extends SequentialCommandGroup {
       // Leaves tarmac
       AlternateAuto_2.getCommandAndStop(),
 
-      // Reverse motors again
+      // Reset drive PID and reverse motors again
       new InstantCommand(() -> driveSubsystem.teleopInit(), driveSubsystem)
     );
   }

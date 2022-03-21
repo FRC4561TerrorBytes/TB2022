@@ -21,7 +21,7 @@ public class LeaveTarmac extends SequentialCommandGroup {
       // Leave tarmac
       LeaveTarmac.getCommandAndStop(),
 
-      // Reverse motors again
+      // Reset drive PID and reverse motors again
       new InstantCommand(() -> driveSubsystem.teleopInit(), driveSubsystem)
     );
   }

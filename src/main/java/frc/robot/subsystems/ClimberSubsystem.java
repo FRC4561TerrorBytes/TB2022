@@ -298,7 +298,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_climberStateIterator.nextState();
     m_currentState = m_climberStateIterator.getCurrentState();
 
-    //telescopeSetPosition(m_telescopeLeftMotor, m_currentState.getTelescopePosition());
+    telescopeSetPosition(m_telescopeLeftMotor, m_currentState.getTelescopePosition());
     telescopeSetPosition(m_telescopeRightMotor, m_currentState.getTelescopePosition());
     winchSetPosition(m_currentState.getWinchPosition());
   }
@@ -310,7 +310,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_climberStateIterator.previousState();
     m_currentState = m_climberStateIterator.getCurrentState();
 
-    //telescopeSetPosition(m_telescopeLeftMotor, m_currentState.getTelescopePosition());
+    telescopeSetPosition(m_telescopeLeftMotor, m_currentState.getTelescopePosition());
     telescopeSetPosition(m_telescopeRightMotor, m_currentState.getTelescopePosition());
     winchSetPosition(m_currentState.getWinchPosition());
   }

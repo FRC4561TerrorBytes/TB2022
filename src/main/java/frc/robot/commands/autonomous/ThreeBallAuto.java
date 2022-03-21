@@ -40,7 +40,7 @@ public class ThreeBallAuto extends SequentialCommandGroup {
       // leaves tarmac
       ThreeBallAuto_3.getCommandAndStop(),
 
-      // Reverse motors again
+      // Reset drive PID and reverse motors again
       new InstantCommand(() -> driveSubsystem.teleopInit(), driveSubsystem)
     );
   }

@@ -31,7 +31,7 @@ public class ShootDriveForwardAuto extends SequentialCommandGroup {
       // Drives forward + exits tarmac
       LeaveTarmac.getCommandAndStop(),
       
-      // Reverse motors again
+      // Reset drive PID and reverse motors again
       new InstantCommand(() -> driveSubsystem.teleopInit(), driveSubsystem)
     );
   }
