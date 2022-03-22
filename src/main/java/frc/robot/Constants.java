@@ -232,9 +232,6 @@ public final class Constants {
   public static final int PRIMARY_CONTROLLER_PORT = 0;
   public static final int SECONDARY_CONTROLLER_PORT = 1;
 
-  // PDH port
-  public static final int PDH_PORT = 50;
-
   // Drive hardware Ports 
   public static final int FRONT_LEFT_MOTOR_PORT = 1;
   public static final int REAR_LEFT_MOTOR_PORT = 2;

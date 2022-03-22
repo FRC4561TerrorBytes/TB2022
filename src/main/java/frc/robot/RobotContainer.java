@@ -76,8 +76,6 @@ public class RobotContainer {
                                                                                  Constants.TELESCOPE_CONFIG,
                                                                                  Constants.WINCH_CONFIG);
   
-  private static final PowerDistribution PDH = new PowerDistribution(Constants.PDH_PORT, ModuleType.kRev);
-
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
   private static final XboxController SECONDARY_CONTROLLER = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
 
@@ -109,9 +107,6 @@ public class RobotContainer {
     PortForwarder.add(5800, "photonvision.local", 5800);
     PortForwarder.add(1181, "photonvision.local", 1181);
     PortForwarder.add(1182, "photonvision.local", 1182);
-
-    // Enable PDH switchable port
-    PDH.setSwitchableChannel(true);
   }
 
   /**
