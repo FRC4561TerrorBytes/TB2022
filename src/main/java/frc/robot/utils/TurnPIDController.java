@@ -9,6 +9,9 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants;
 
 public class TurnPIDController extends PIDController {
+  private final double MIN_DEADBAND = 0.001;
+  private final double MAX_DEADBAND = 0.15;
+
   private HashMap<Double, Double> m_turnInputMap = new HashMap<Double, Double>();
   private double m_turnScalar = 0.0;
   private double m_lookAhead = 0.0;
@@ -21,12 +24,13 @@ public class TurnPIDController extends PIDController {
    * @param kD The derivative coefficient
    * @param turnScalar Value to turn input by (degrees)
    * @param deadband Controller deadband
+   * @param lookaAhead Number of loops to look ahead by
    * @param turnInputCurve Turn input curve
    */
   public TurnPIDController(double kP, double kD, double turnScalar, double deadband, double lookAhead, PolynomialSplineFunction turnInputCurve) {
     super(kP, 0.0, kD, Constants.ROBOT_LOOP_PERIOD);
     this.m_turnScalar = turnScalar;
-    this.m_deadband = deadband;
+    m_deadband = MathUtil.clamp(deadband, MIN_DEADBAND, MAX_DEADBAND);
     this.m_lookAhead = lookAhead;
 
     // Fill turn input hashmap

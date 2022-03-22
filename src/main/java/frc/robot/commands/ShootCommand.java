@@ -5,22 +5,26 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShootCommand extends CommandBase {
   private ShooterSubsystem m_shooterSubsystem;
-  private int loops = 0;
+  private int m_loops = 0;
+  private int m_loopNum;
 
   /** Creates a new ShootCommand. */
-  public ShootCommand(ShooterSubsystem shooterSubsystem) {
+  public ShootCommand(ShooterSubsystem shooterSubsystem, double delay) {
     this.m_shooterSubsystem = shooterSubsystem;
+
+    m_loopNum = (int)(delay / Constants.ROBOT_LOOP_PERIOD);
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooterSubsystem);
   }
 
-  public ShootCommand(ShooterSubsystem shooterSubsystem, ShooterSubsystem.SelectedGoal goal) {
-    this(shooterSubsystem);
+  public ShootCommand(ShooterSubsystem shooterSubsystem, double delay, ShooterSubsystem.SelectedGoal goal) {
+    this(shooterSubsystem, delay);
     shooterSubsystem.selectGoal(goal);
   }
 
@@ -39,11 +43,11 @@ public class ShootCommand extends CommandBase {
 
     // Only run feeder if flywheel is at speed, else stop
     if (m_shooterSubsystem.isFlywheelAtSpeed()) {
-      loops++;
-      if (loops > 6) m_shooterSubsystem.feederShoot();
+      m_loops++;
+      if (m_loops > m_loopNum) m_shooterSubsystem.feederShoot();
     } else {
-      loops = 0;
-      m_shooterSubsystem.feederStop();
+      m_loops = 0;
+      m_shooterSubsystem.feederStop(false);
     }
   }
 
@@ -52,7 +56,7 @@ public class ShootCommand extends CommandBase {
   public void end(boolean interrupted) {
     // Stop flywheel and feeder
     m_shooterSubsystem.flywheelStop();
-    m_shooterSubsystem.feederStop();
+    m_shooterSubsystem.feederStop(false);
   }
 
   // Returns true when the command should end.

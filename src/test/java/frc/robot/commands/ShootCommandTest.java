@@ -24,7 +24,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.AdditionalMatchers;
 import org.mockito.ArgumentMatchers;
 
-import edu.wpi.first.wpilibj.Counter;
 import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -40,7 +39,6 @@ public class ShootCommandTest {
   private CANSparkMax m_lowerFeederMotor;
   private SparkMaxLimitSwitch m_upperFeederSensor;
   private SparkMaxLimitSwitch m_lowerFeederSensor;
-  private Counter m_lidar;
 
   @BeforeEach
   public void setup() {
@@ -52,7 +50,6 @@ public class ShootCommandTest {
     m_lowerFeederMotor = mock(CANSparkMax.class);
     m_upperFeederSensor = mock(SparkMaxLimitSwitch.class);
     m_lowerFeederSensor = mock(SparkMaxLimitSwitch.class);
-    m_lidar = mock(Counter.class);
 
     m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, 
                                                       m_flywheelSlaveMotor, 
@@ -60,20 +57,17 @@ public class ShootCommandTest {
                                                       m_upperFeederMotor, 
                                                       m_lowerFeederMotor, 
                                                       m_upperFeederSensor, 
-                                                      m_lowerFeederSensor, 
-                                                      m_lidar);
+                                                      m_lowerFeederSensor);
 
     m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware,
                                               Constants.FLYWHEEL_MASTER_CONFIG,
                                               Constants.FLYWHEEL_SMALL_CONFIG,
+                                              Constants.LOW_FLYWHEEL_SPEED,
+                                              Constants.HIGH_FLYWHEEL_SPEED,
                                               Constants.FEEDER_INTAKE_SPEED,
-                                              Constants.FEEDER_SHOOT_SPEED,
-                                              Constants.SHOOTER_LOW_CURVE,
-                                              Constants.SHOOTER_HIGH_CURVE,
-                                              Constants.FLYWHEEL_SMALL_RPM_LOW,
-                                              Constants.FLYWHEEL_SMALL_RPM_HIGH);
+                                              Constants.FEEDER_SHOOT_SPEED);
                                               
-    m_shootCommand = new ShootManualCommand(m_shooterSubsystem, 200.0, 200.0);
+    m_shootCommand = new ShootManualCommand(m_shooterSubsystem, 0.1, 200.0, 200.0);
   }
 
   @AfterEach

@@ -61,7 +61,7 @@ public class IntakeCommand extends CommandBase {
       m_controller.setRumble(RumbleType.kRightRumble, 0.0);
     }
     m_intakeSubsystem.stop();
-    m_shooterSubsystem.feederStop();
+    m_shooterSubsystem.feederStop(true);
   }
 
   // Returns true when the command should end.

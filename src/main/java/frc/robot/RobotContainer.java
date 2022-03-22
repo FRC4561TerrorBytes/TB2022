@@ -8,8 +8,6 @@ import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -65,12 +63,10 @@ public class RobotContainer {
   private static final ShooterSubsystem SHOOTER_SUBSYSTEM = new ShooterSubsystem(ShooterSubsystem.initializeHardware(), 
                                                                                  Constants.FLYWHEEL_MASTER_CONFIG,
                                                                                  Constants.FLYWHEEL_SMALL_CONFIG,
+                                                                                 Constants.LOW_FLYWHEEL_SPEED,
+                                                                                 Constants.HIGH_FLYWHEEL_SPEED,
                                                                                  Constants.FEEDER_INTAKE_SPEED,
-                                                                                 Constants.FEEDER_SHOOT_SPEED,
-                                                                                 Constants.SHOOTER_LOW_CURVE,
-                                                                                 Constants.SHOOTER_HIGH_CURVE,
-                                                                                 Constants.FLYWHEEL_SMALL_RPM_LOW,
-                                                                                 Constants.FLYWHEEL_SMALL_RPM_HIGH);
+                                                                                 Constants.FEEDER_SHOOT_SPEED);
 
   private static final ClimberSubsystem CLIMBER_SUBSYSTEM = new ClimberSubsystem(ClimberSubsystem.initializeHardware(),
                                                                                  Constants.TELESCOPE_CONFIG,
@@ -104,9 +100,9 @@ public class RobotContainer {
     CLIMBER_SUBSYSTEM.shuffleboard();
 
     // Add port forwarding for PhotonVision
-    PortForwarder.add(5800, "photonvision.local", 5800);
-    PortForwarder.add(1181, "photonvision.local", 1181);
-    PortForwarder.add(1182, "photonvision.local", 1182);
+    PortForwarder.add(5800, "10.45.61.3", 5800);
+    PortForwarder.add(1181, "10.45.61.3", 1181);
+    PortForwarder.add(1182, "10.45.61.3", 1182);
   }
 
   /**
@@ -156,7 +152,7 @@ public class RobotContainer {
     Trigger secondaryRightStick = new Trigger(() -> Math.abs(SECONDARY_CONTROLLER.getRightX()) > Constants.CONTROLLER_DEADBAND);
 
     // Primary controller bindings
-    primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM));
+    primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY));
     primaryTriggerLeft.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
     primaryButtonY.whenPressed(new InstantCommand(() -> SHOOTER_SUBSYSTEM.toggleSelectedGoal(), SHOOTER_SUBSYSTEM));
@@ -177,7 +173,7 @@ public class RobotContainer {
 
     secondaryButtonY.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeSync(), CLIMBER_SUBSYSTEM));
 
-    secondaryLeftStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-SECONDARY_CONTROLLER.getLeftY()), CLIMBER_SUBSYSTEM))
+    secondaryLeftStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(-SECONDARY_CONTROLLER.getLeftY()), CLIMBER_SUBSYSTEM))
                       .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryRightStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchManual(SECONDARY_CONTROLLER.getRightX()), CLIMBER_SUBSYSTEM))
                        .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));

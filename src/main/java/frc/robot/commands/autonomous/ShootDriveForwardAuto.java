@@ -6,6 +6,7 @@ package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -23,7 +24,7 @@ public class ShootDriveForwardAuto extends SequentialCommandGroup {
 
     addCommands(
       // Shoots single preloaded ball
-      new ShootCommand(shooterSubsystem, SelectedGoal.Low).withTimeout(1.0),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.Low).withTimeout(1.0),
 
       // Reset odometry
       new InstantCommand(() -> LeaveTarmac.resetOdometry(), driveSubsystem),

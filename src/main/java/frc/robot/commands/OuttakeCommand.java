@@ -36,7 +36,7 @@ public class OuttakeCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_intakeSubsytem.stop();
-    m_shooterSubsystem.feederStop();
+    m_shooterSubsystem.feederStop(false);
   }
 
   // Returns true when the command should end.

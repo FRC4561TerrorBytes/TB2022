@@ -23,7 +23,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.AdditionalMatchers;
 import org.mockito.ArgumentMatchers;
 
-import edu.wpi.first.wpilibj.Counter;
 import frc.robot.Constants;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -37,7 +36,6 @@ public class ShooterSubsystemTest {
   private CANSparkMax m_lowerFeederMotor;
   private SparkMaxLimitSwitch m_upperFeederSensor;
   private SparkMaxLimitSwitch m_lowerFeederSensor;
-  private Counter m_lidar;
 
   @BeforeEach
   public void setup() {
@@ -49,7 +47,6 @@ public class ShooterSubsystemTest {
     m_lowerFeederMotor = mock(CANSparkMax.class);
     m_upperFeederSensor = mock(SparkMaxLimitSwitch.class);
     m_lowerFeederSensor = mock(SparkMaxLimitSwitch.class);
-    m_lidar = mock(Counter.class);
 
     m_shooterHardware = new ShooterSubsystem.Hardware(m_flywheelMasterMotor, 
                                                       m_flywheelSlaveMotor, 
@@ -57,18 +54,15 @@ public class ShooterSubsystemTest {
                                                       m_upperFeederMotor, 
                                                       m_lowerFeederMotor, 
                                                       m_upperFeederSensor, 
-                                                      m_lowerFeederSensor, 
-                                                      m_lidar);
+                                                      m_lowerFeederSensor);
 
     m_shooterSubsystem = new ShooterSubsystem(m_shooterHardware,
                                               Constants.FLYWHEEL_MASTER_CONFIG,
                                               Constants.FLYWHEEL_SMALL_CONFIG,
+                                              Constants.LOW_FLYWHEEL_SPEED,
+                                              Constants.HIGH_FLYWHEEL_SPEED,
                                               Constants.FEEDER_INTAKE_SPEED,
-                                              Constants.FEEDER_SHOOT_SPEED,
-                                              Constants.SHOOTER_LOW_CURVE,
-                                              Constants.SHOOTER_HIGH_CURVE,
-                                              Constants.FLYWHEEL_SMALL_RPM_LOW,
-                                              Constants.FLYWHEEL_SMALL_RPM_HIGH);
+                                              Constants.FEEDER_SHOOT_SPEED);
   }
 
   @AfterEach
@@ -129,7 +123,7 @@ public class ShooterSubsystemTest {
   @Order(6)
   @DisplayName("Test if robot can stop feeder motor")
   public void feederStop(){
-    m_shooterSubsystem.feederStop();
+    m_shooterSubsystem.feederStop(false);
     verify(m_upperFeederMotor, times(1)).stopMotor();
     verify(m_lowerFeederMotor, times(1)).stopMotor();
   }

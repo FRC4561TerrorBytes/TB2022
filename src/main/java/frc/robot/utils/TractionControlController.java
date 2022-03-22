@@ -8,7 +8,7 @@ import edu.wpi.first.math.MathUtil;
 
 public class TractionControlController {
   private final double MIN_DEADBAND = 0.001;
-  private final double MAX_DEADBAND = 0.1;
+  private final double MAX_DEADBAND = 0.15;
 
   private double m_deadband = 0.0;
   private double m_maxLinearSpeed = 0.0;

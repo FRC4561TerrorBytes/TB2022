@@ -14,11 +14,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxLimitSwitch;
 
-import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,7 +30,6 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     private WPI_TalonFX flywheelMasterMotor, flywheelSlaveMotor, flywheelSmallMotor;
     private CANSparkMax upperFeederMotor, lowerFeederMotor;
     private SparkMaxLimitSwitch upperFeederSensor, lowerFeederSensor;
-    private Counter lidar;
 
     public Hardware(WPI_TalonFX flywheelMasterMotor, 
                     WPI_TalonFX flywheelSlaveMotor,
@@ -42,8 +37,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
                     CANSparkMax upperFeederMotor,
                     CANSparkMax lowerFeederMotor,
                     SparkMaxLimitSwitch upperFeederSensor,
-                    SparkMaxLimitSwitch lowerFeederSensor,
-                    Counter lidar) {
+                    SparkMaxLimitSwitch lowerFeederSensor) {
       this.flywheelMasterMotor = flywheelMasterMotor;
       this.flywheelSlaveMotor = flywheelSlaveMotor;
       this.flywheelSmallMotor = flywheelSmallMotor;
@@ -51,7 +45,6 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
       this.lowerFeederMotor = lowerFeederMotor;
       this.upperFeederSensor = upperFeederSensor;
       this.lowerFeederSensor = lowerFeederSensor;
-      this.lidar = lidar;
     }
   }
 
@@ -62,6 +55,24 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     int value;
     private SelectedGoal(int value) {
       this.value = value;
+    }
+  }
+
+  public static class FlywheelSpeed {
+    private double m_bigFlywheelSpeed = 0.0;
+    private double m_smallFlywheelSpeed = 0.0;
+
+    public FlywheelSpeed(double bigFlywheelSpeed, double smallFlywheelSpeed) {
+      this.m_bigFlywheelSpeed = bigFlywheelSpeed;
+      this.m_smallFlywheelSpeed = smallFlywheelSpeed;
+    }
+
+    public double getBigFlywheelSpeed() {
+      return m_bigFlywheelSpeed;
+    }
+
+    public double getSmallFlywheelSpeed() {
+      return m_smallFlywheelSpeed;
     }
   }
 
@@ -82,21 +93,14 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     private static TalonPIDConfig config;
   }
 
-  private final double LIDAR_OFFSET = 9.0;
-
   private CANSparkMax m_upperFeederMotor;
   private CANSparkMax m_lowerFeederMotor;
   private SparkMaxLimitSwitch m_upperFeederSensor;
   private SparkMaxLimitSwitch m_lowerFeederSensor;
-  private Counter m_lidar;
-
-  private LinearFilter m_LIDARFilter;
-  private PolynomialSplineFunction[] m_shooterOutputCurves = new PolynomialSplineFunction[2];
-  private double[] m_maxDistance = new double[2];
+ 
   private SelectedGoal m_selectedGoal;
-  private double[] m_smallFlywheelSpeeds = new double[2];
+  private FlywheelSpeed[] m_flywheelSpeeds = new FlywheelSpeed[2];
 
-  private double m_distance;
   private double m_feederIntakeSpeed;
   private double m_feederShootSpeed;
 
@@ -108,17 +112,14 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @param shooterHardware Hardware devices for shooter
    * @param flywheelMasterConfig PID config for flywheel
    * @param flywheelSmallConfig PID config for small flywheel
+   * @param lowFlywheelSpeed Low speed for big and small flywheel
+   * @param highFlywheelSpeed High speed for big and small flywheel
    * @param feederIntakeSpeed Feeder intake speed in % [0.0, +1.0]
    * @param feederShootSpeed Feeder shoot speed in % [0.0, +1.0]
-   * @param lowerShooterCurve Curve relating distance to flywheel speed for low goal
-   * @param upperShooterCurve Curve relating distance to flywheel speed for high goal
-   * @param smallFlywheelLow Small flywheel low speed
-   * @param smallFlywheelHigh Small flywheel high speed
    */
   public ShooterSubsystem(Hardware shooterHardware, TalonPIDConfig flywheelMasterConfig,
-                          TalonPIDConfig flywheelSmallConfig, double feederIntakeSpeed, double feederShootSpeed, 
-                          PolynomialSplineFunction lowerShooterCurve, PolynomialSplineFunction upperShooterCurve,
-                          double smallFlywheelLow, double smallFlywheelHigh) {
+                          TalonPIDConfig flywheelSmallConfig, FlywheelSpeed lowFlywheelSpeed, FlywheelSpeed highFlywheelSpeed,
+                          double feederIntakeSpeed, double feederShootSpeed) {
     BigFlywheel.masterMotor = shooterHardware.flywheelMasterMotor;
     BigFlywheel.slaveMotor = shooterHardware.flywheelSlaveMotor;
     SmallFlywheel.motor = shooterHardware.flywheelSmallMotor;
@@ -126,13 +127,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_lowerFeederMotor = shooterHardware.lowerFeederMotor;
     this.m_upperFeederSensor = shooterHardware.upperFeederSensor;
     this.m_lowerFeederSensor = shooterHardware.lowerFeederSensor;
-    this.m_lidar = shooterHardware.lidar;
-    this.m_smallFlywheelSpeeds[0] = smallFlywheelLow;
-    this.m_smallFlywheelSpeeds[1] = smallFlywheelHigh;
-    this.m_shooterOutputCurves[0] = lowerShooterCurve;
-    this.m_shooterOutputCurves[1] = upperShooterCurve;
-    this.m_maxDistance[0] = lowerShooterCurve.getKnots()[lowerShooterCurve.getKnots().length - 1];
-    this.m_maxDistance[1] = upperShooterCurve.getKnots()[upperShooterCurve.getKnots().length - 1];
+    this.m_flywheelSpeeds[SelectedGoal.Low.value] = lowFlywheelSpeed;
+    this.m_flywheelSpeeds[SelectedGoal.High.value] = highFlywheelSpeed;
     this.m_selectedGoal = SelectedGoal.Low;
     this.m_feederIntakeSpeed = feederIntakeSpeed;
     this.m_feederShootSpeed = feederShootSpeed;
@@ -167,12 +163,6 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     // Initialize config for small flywheel PID
     SmallFlywheel.config.initializeTalonPID(SmallFlywheel.motor, FeedbackDevice.IntegratedSensor);
     SmallFlywheel.motor.setNeutralMode(NeutralMode.Coast);
-
-    // Configure LIDAR settings
-    m_LIDARFilter = LinearFilter.singlePoleIIR(0.4, Constants.ROBOT_LOOP_PERIOD);
-    m_lidar.setMaxPeriod(1.0); // Set the max period that can be measured
-    m_lidar.setSemiPeriodMode(true); // Set the counter to period measurement
-    m_lidar.reset();
   }
   
   /**
@@ -188,8 +178,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
                                             upperFeederMotor,
                                             lowerFeederMotor,
                                             upperFeederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed),
-                                            lowerFeederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed),
-                                            new Counter(Constants.LIDAR_PORT));
+                                            lowerFeederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed));
 
     return shooterHardware;
   }
@@ -241,8 +230,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @param distance Distance in meters
    */
   public void setFlywheelAuto() {
-    //double distance = MathUtil.clamp(getDistance(), 0.0, m_maxDistance[m_selectedGoal.value]);
-    setFlywheelSpeed(m_shooterOutputCurves[m_selectedGoal.value].value(0.0), m_smallFlywheelSpeeds[m_selectedGoal.value]);
+    setFlywheelSpeed(m_flywheelSpeeds[m_selectedGoal.value].getBigFlywheelSpeed(),
+                     m_flywheelSpeeds[m_selectedGoal.value].getSmallFlywheelSpeed());
   }
 
   /**
@@ -280,13 +269,13 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @return True if flywheel is at speed else false
    */
   public boolean isFlywheelAtSpeed() {
-    double flywheelError = Math.abs(BigFlywheel.masterMotor.getClosedLoopError());
+    double bigFlywheelError = Math.abs(BigFlywheel.masterMotor.getClosedLoopError());
     double smallFlywheelError = Math.abs(SmallFlywheel.motor.getClosedLoopError());
 
-    boolean isBigFlywheelAtSpeed = (flywheelError < BigFlywheel.masterConfig.getTolerance())
+    boolean isBigFlywheelAtSpeed = (bigFlywheelError < BigFlywheel.masterConfig.getTolerance())
                                     && BigFlywheel.masterMotor.getClosedLoopTarget() != 0;
     boolean isSmallFlywheelAtSpeed = (smallFlywheelError < SmallFlywheel.config.getTolerance())
-                                     && SmallFlywheel.motor.getClosedLoopTarget() != 0;
+                                      && SmallFlywheel.motor.getClosedLoopTarget() != 0;
     
     // Ignore small flywheel speed for low
     isSmallFlywheelAtSpeed |= m_selectedGoal == SelectedGoal.Low;
@@ -340,33 +329,13 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   /**
    * Stops feeder motors
    */
-  public void feederStop() {
-    m_lowerFeederMotor.setOpenLoopRampRate(7.5);
+  public void feederStop(boolean wasIntaking) {
+    if (wasIntaking) m_lowerFeederMotor.setOpenLoopRampRate(7.5);
+    else m_lowerFeederMotor.setOpenLoopRampRate(0.0);
+    
     m_upperFeederMotor.stopMotor();
     m_lowerFeederMotor.stopMotor();
     BlinkinLEDController.getInstance().setAllianceColorSolid();
-  }
-
-  /**
-   * Update and filter distance readings from LIDAR
-   */
-  public void updateDistance() {
-    double lidarOutput = 0;
-    double lidarPeriod = m_LIDARFilter.calculate(m_lidar.getPeriod());
-    if (m_lidar.get() < 1) {
-      m_distance = lidarOutput;
-    } else {
-      lidarOutput = ((lidarPeriod * 1000000.0 / 10.0) - LIDAR_OFFSET) / 100.0; // convert to distance. sensor is high 10 us for every centimeter.
-      m_distance = Math.copySign(Math.floor(Math.abs(lidarOutput) * 100) / 100, lidarOutput);
-    }
-  }
-
-  /**
-   * Get latest filtered distance reading from LIDAR
-   * @return Distance in meters
-   */
-  public double getDistance() {
-    return m_distance;
   }
 
   @Override

@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
+import frc.robot.subsystems.ShooterSubsystem.FlywheelSpeed;
 import frc.robot.utils.TalonPIDConfig;
 
 /**
@@ -115,18 +116,6 @@ public final class Constants {
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
   private static final boolean FLYWHEEL_MASTER_MOTOR_INVERTED = true;
-  public static final double FLYWHEEL_SHOOTING_RPM = 1700;
-  public static final double FEEDER_INTAKE_SPEED = 0.2;
-  public static final double FEEDER_SHOOT_SPEED = 0.3;
-
-  private static final double SHOOTER_LOW_CURVE_X[] = { 0.0, 0.5, 1.0 };
-  private static final double SHOOTER_LOW_CURVE_Y[] = { 1620.0, 1620.0, 1620.0 };
-  private static final double SHOOTER_HIGH_CURVE_X[] = { 0.0, 0.5, 1.0 };
-  private static final double SHOOTER_HIGH_CURVE_Y[] = { 3200.0, 3200.0, 3200.0 };
-
-  public static final PolynomialSplineFunction SHOOTER_LOW_CURVE = SPLINE_INTERPOLATOR.interpolate(SHOOTER_LOW_CURVE_X, SHOOTER_LOW_CURVE_Y);
-  public static final PolynomialSplineFunction SHOOTER_HIGH_CURVE = SPLINE_INTERPOLATOR.interpolate(SHOOTER_HIGH_CURVE_X, SHOOTER_HIGH_CURVE_Y);
-
 
   // Set PID for Flywheel
   public static final TalonPIDConfig FLYWHEEL_MASTER_CONFIG = new TalonPIDConfig(FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE,
@@ -148,8 +137,6 @@ public final class Constants {
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
   private static final boolean FLYWHEEL_SMALL_MOTOR_INVERTED = true;
-  public static final double FLYWHEEL_SMALL_RPM_HIGH = 2560;
-  public static final double FLYWHEEL_SMALL_RPM_LOW = 162;
 
   // Set PID for Flywheel small
   public static final TalonPIDConfig FLYWHEEL_SMALL_CONFIG = new TalonPIDConfig(FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE,
@@ -162,21 +149,28 @@ public final class Constants {
                                                                                 FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY,
                                                                                 FLYWHEEL_SMALL_TOLERANCE);
 
+  // Shooter settings
+  public static final double FEEDER_INTAKE_SPEED = 0.2;
+  public static final double FEEDER_SHOOT_SPEED = 0.3;
+  public static final double SHOOT_DELAY = 0.1;
+  public static final FlywheelSpeed LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1620.0, 162.0);
+  public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(3200.0, 2560.0);
+
   // Telescope PID variables
-  public static final double TELESCOPE_kP = 0.1;
-  public static final double TELESCOPE_kD = 0.0;
-  public static final double TELESCOPE_MECHANICAL_EFFICIENCY = 0.9;
-  public static final double TELESCOPE_TOLERANCE = 100;
-  public static final double TELESCOPE_LOWER_LIMIT = 0;
-  public static final double TELESCOPE_UPPER_LIMIT = 290000;
-  public static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM;
-  public static final int TELESCOPE_MOTION_SMOOTHING = 4;
-  public static final int TELESCOPE_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
-  public static final int TELESCOPE_MAX_RPM = FALCON_500_MAX_RPM;
-  public static final boolean TELESCOPE_SOFT_LIMITS = true;
-  public static final boolean TELESCOPE_SENSOR_PHASE = false;
-  public static final boolean TELESCOPE_INVERT_MOTOR = true;
+  private static final double TELESCOPE_kP = 0.1;
+  private static final double TELESCOPE_kD = 0.0;
+  private static final double TELESCOPE_MECHANICAL_EFFICIENCY = 0.9;
+  private static final double TELESCOPE_TOLERANCE = 100;
+  private static final double TELESCOPE_LOWER_LIMIT = 0;
+  private static final double TELESCOPE_UPPER_LIMIT = 290000;
+  private static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM;
+  private static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM;
+  private static final int TELESCOPE_MOTION_SMOOTHING = 4;
+  private static final int TELESCOPE_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
+  private static final int TELESCOPE_MAX_RPM = FALCON_500_MAX_RPM;
+  private static final boolean TELESCOPE_SOFT_LIMITS = true;
+  private static final boolean TELESCOPE_SENSOR_PHASE = false;
+  private static final boolean TELESCOPE_INVERT_MOTOR = true;
 
   // Telescope PID config
   public static final TalonPIDConfig TELESCOPE_CONFIG = new TalonPIDConfig(TELESCOPE_SENSOR_PHASE, 
@@ -196,20 +190,20 @@ public final class Constants {
                                                                            TELESCOPE_MOTION_SMOOTHING);
 
   // Winch PID variables
-  public static final double WINCH_kP = 0.1;
-  public static final double WINCH_kD = 0.0;
-  public static final double WINCH_MECHANICAL_EFFICIENCY = 0.8;
-  public static final double WINCH_TOLERANCE = 1000;
-  public static final double WINCH_LOWER_LIMIT = 0;
-  public static final double WINCH_UPPER_LIMIT = 265000;
-  public static final double WINCH_VELOCITY = FALCON_500_MAX_RPM * 0.5;
-  public static final double WINCH_ACCELERATION = FALCON_500_MAX_RPM * 0.5;
-  public static final int WINCH_MOTION_SMOOTHING = 4;
-  public static final int WINCH_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
-  public static final int WINCH_MAX_RPM = FALCON_500_MAX_RPM;
-  public static final boolean WINCH_SOFT_LIMITS = true;
-  public static final boolean WINCH_SENSOR_PHASE = false;
-  public static final boolean WINCH_INVERT_MOTOR = false;
+  private static final double WINCH_kP = 0.1;
+  private static final double WINCH_kD = 0.0;
+  private static final double WINCH_MECHANICAL_EFFICIENCY = 0.8;
+  private static final double WINCH_TOLERANCE = 1000;
+  private static final double WINCH_LOWER_LIMIT = 0;
+  private static final double WINCH_UPPER_LIMIT = 265000;
+  private static final double WINCH_VELOCITY = FALCON_500_MAX_RPM * 0.5;
+  private static final double WINCH_ACCELERATION = FALCON_500_MAX_RPM * 0.5;
+  private static final int WINCH_MOTION_SMOOTHING = 4;
+  private static final int WINCH_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
+  private static final int WINCH_MAX_RPM = FALCON_500_MAX_RPM;
+  private static final boolean WINCH_SOFT_LIMITS = true;
+  private static final boolean WINCH_SENSOR_PHASE = false;
+  private static final boolean WINCH_INVERT_MOTOR = false;
 
   // Winch PID config
   public static final TalonPIDConfig WINCH_CONFIG = new TalonPIDConfig(WINCH_SENSOR_PHASE, 
