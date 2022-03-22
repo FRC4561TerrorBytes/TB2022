@@ -64,7 +64,7 @@ public class TalonPIDConfig {
                         double mechanicalEfficiency, double tolerance) {
     this.m_sensorPhase = sensorPhase;
     this.m_invertMotor = invertMotor;
-    this.m_maxRPM = maxRPM * MathUtil.clamp(mechanicalEfficiency, 0.0, 1.0);
+    this.m_maxRPM = maxRPM * mechanicalEfficiency;
     this.m_ticksPerRotation = ticksPerRotation;
     this.m_kP = kP;
     this.m_kI = kI;
