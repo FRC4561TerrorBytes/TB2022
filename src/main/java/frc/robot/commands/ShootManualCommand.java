@@ -20,7 +20,7 @@ public class ShootManualCommand extends CommandBase {
     this.m_bigRPM = bigRPM;
     this.m_smallRPM = smallRPM;
 
-    m_loopNum = (int)(delay / Constants.ROBOT_LOOP_PERIOD);
+    m_loopNum = (int)Math.round(delay / Constants.ROBOT_LOOP_PERIOD);
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooterSubsystem);

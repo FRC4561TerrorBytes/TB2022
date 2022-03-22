@@ -17,7 +17,7 @@ public class ShootCommand extends CommandBase {
   public ShootCommand(ShooterSubsystem shooterSubsystem, double delay) {
     this.m_shooterSubsystem = shooterSubsystem;
 
-    m_loopNum = (int)(delay / Constants.ROBOT_LOOP_PERIOD);
+    m_loopNum = (int)Math.round(delay / Constants.ROBOT_LOOP_PERIOD);
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooterSubsystem);

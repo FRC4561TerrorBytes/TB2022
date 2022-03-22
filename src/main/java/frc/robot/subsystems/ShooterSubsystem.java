@@ -62,6 +62,11 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     private double m_bigFlywheelSpeed = 0.0;
     private double m_smallFlywheelSpeed = 0.0;
 
+    /**
+     * Flywheel speed object
+     * @param bigFlywheelSpeed big flywheel speed in RPM
+     * @param smallFlywheelSpeed small flywheel speed in RPM
+     */
     public FlywheelSpeed(double bigFlywheelSpeed, double smallFlywheelSpeed) {
       this.m_bigFlywheelSpeed = bigFlywheelSpeed;
       this.m_smallFlywheelSpeed = smallFlywheelSpeed;
@@ -168,7 +173,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   /**
    * Initialize hardware devices for shooter subsystem
    * @return hardware object containing all necessary devices for this subsystem
-   */
+*   */
   public static Hardware initializeHardware() {
     CANSparkMax upperFeederMotor = new CANSparkMax(Constants.UPPER_FEEDER_MOTOR_PORT, MotorType.kBrushless);
     CANSparkMax lowerFeederMotor = new CANSparkMax(Constants.LOWER_FEEDER_MOTOR_PORT, MotorType.kBrushless);
