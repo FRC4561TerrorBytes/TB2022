@@ -288,7 +288,6 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   public void autoTankDriveVolts(double leftVolts, double rightVolts) {
     m_lMasterMotor.setVoltage(leftVolts);
     m_rMasterMotor.setVoltage(rightVolts);
-    System.out.println("driving!!!");
   }
 
   /**
@@ -415,8 +414,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Reset Drivesubsystem navX MXP yaw angle to specific angle
-   * @param angle angle to reset navX to
+   * Reset Drivesubsystem navX MXP yaw angle
    */
   public void resetAngle() {
     m_navx.reset();
