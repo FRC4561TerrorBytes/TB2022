@@ -43,9 +43,6 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   private ClimberStateIterator m_climberStateIterator;
   private ClimberStateIterator.ClimberState m_currentState;
 
-  private double m_leftTelescopePosition = 0.0;
-  private double m_rightTelescopePosition = 0.0;
-
   /**
    * Creates an instance of ClimberSubsystem
    * <p>
@@ -110,9 +107,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   public void shuffleboard() {
     ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
     tab.addNumber("Left telescope position", () -> m_telescopeLeftMotor.getSelectedSensorPosition());
-    tab.addNumber("Left telescope target", () -> m_leftTelescopePosition);
     tab.addNumber("Right telescope position", () -> m_telescopeRightMotor.getSelectedSensorPosition());
-    tab.addNumber("Right telescope target", () -> m_rightTelescopePosition);
     tab.addNumber("Winch position", () -> m_winchMotor.getSelectedSensorPosition());
   }
 
@@ -120,7 +115,10 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * Create SmartDashboard indicators
    */
   public void smartDashboard() {
-    SmartDashboard.putBoolean("Winch in?", isWinchAtHome());
+    SmartDashboard.putBoolean("Winch in?", m_winchMotor.getSelectedSensorPosition() < m_winchConfig.getTolerance());
+    SmartDashboard.putString("Previous State", m_climberStateIterator.previewPreviousState().getName());
+    SmartDashboard.putString("Current State", m_climberStateIterator.getCurrentState().getName());
+    SmartDashboard.putString("Next State", m_climberStateIterator.previewNextState().getName());
   }
 
   @Override
