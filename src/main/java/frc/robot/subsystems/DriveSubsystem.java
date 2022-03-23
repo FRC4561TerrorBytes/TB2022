@@ -22,9 +22,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.TractionControlController;
@@ -211,6 +213,13 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     tab.addNumber("Left master current (amps)", () -> m_lMasterMotor.getSupplyCurrent());
     tab.addNumber("Right slave current (amps)", () -> m_rSlaveMotor.getSupplyCurrent());
     tab.addNumber("Left slave current (amps)", () -> m_lSlaveMotor.getSupplyCurrent());
+  }
+
+  /**
+   * Create SmartDashboard indicators
+   */
+  public void smartDashboard() {
+    SmartDashboard.putString("Match Time Remaining", String.valueOf(DriverStation.getMatchTime()));
   }
 
   @Override
