@@ -148,13 +148,15 @@ public class BlinkinLEDController {
     BlinkinPattern.RED,
     BlinkinPattern.BREATH_RED,
     BlinkinPattern.LIGHT_CHASE_RED,
-    BlinkinPattern.SHOT_RED
+    BlinkinPattern.SHOT_RED,
+    BlinkinPattern.STROBE_RED
   };
   private static final BlinkinPattern[] BLUE_ALLIANCE_PATTERNS = {
     BlinkinPattern.BLUE,
     BlinkinPattern.BREATH_BLUE,
     BlinkinPattern.LIGHT_CHASE_BLUE,
-    BlinkinPattern.SHOT_BLUE
+    BlinkinPattern.SHOT_BLUE,
+    BlinkinPattern.STROBE_BLUE
   };
 
   private BlinkinLEDController() {
@@ -208,6 +210,13 @@ public class BlinkinLEDController {
    */
   public void setAllianceColorShot() {
     setPattern(m_allianceColors.get(DriverStation.getAlliance())[3]);
+  }
+
+  /**
+   * Set LEDs to alliance color strobe pattern
+   */
+  public void setAllianceColorStrobe() {
+    setPattern(m_allianceColors.get(DriverStation.getAlliance())[4]);
   }
 
   /**

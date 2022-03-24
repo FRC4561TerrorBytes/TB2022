@@ -138,10 +138,12 @@ public class TalonPIDConfig {
     }
 
     // Configure forward and reverse limit switches if required
-    if (forwardLimitSwitch) 
+    if (forwardLimitSwitch) {
       talon.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
-    if (reverseLimitSwitch)
+    }
+    if (reverseLimitSwitch) {
       talon.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    }
 
     // Set sensor phase and invert motor if required
     talon.setSensorPhase(m_sensorPhase);

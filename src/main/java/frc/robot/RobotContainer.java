@@ -162,18 +162,13 @@ public class RobotContainer {
     primaryDPadLeft.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchIn()));
     primaryDPadRight.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchOut()));
 
-    //primaryDPadUp.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeUp(), CLIMBER_SUBSYSTEM));
-    //primaryDPadDown.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeDown(), CLIMBER_SUBSYSTEM));
-
     // Secondary controller bindings
-    secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(+0.15), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
-    secondaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-0.15), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-0.15), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    secondaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(+0.15), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManualOverride(-0.5), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
     secondaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManualOverride(+0.5), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
-    secondaryButtonY.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeSync(), CLIMBER_SUBSYSTEM));
-
-    secondaryLeftStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(-SECONDARY_CONTROLLER.getLeftY()), CLIMBER_SUBSYSTEM))
+    secondaryLeftStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(SECONDARY_CONTROLLER.getLeftY()), CLIMBER_SUBSYSTEM))
                       .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryRightStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchManual(SECONDARY_CONTROLLER.getRightX()), CLIMBER_SUBSYSTEM))
                        .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));

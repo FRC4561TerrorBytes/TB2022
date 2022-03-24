@@ -35,8 +35,6 @@ public final class Constants {
 
   // Motor RPMs, encoder values, and gear ratios
   public static final int FALCON_500_MAX_RPM = 6380;
-  public static final int BAG_MAX_RPM = 13180;
-  public static final int CTRE_MAG_ENCODER_TICKS_PER_ROTATION = 4096;
   public static final int CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION = 2048;
 
   // Drive specs
@@ -65,27 +63,27 @@ public final class Constants {
   public static final PolynomialSplineFunction DRIVE_TRACTION_CONTROL_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TRACTION_CONTROL_CURVE_X, DRIVE_TRACTION_CONTROL_CURVE_Y);
   public static final PolynomialSplineFunction DRIVE_TURN_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TURN_INPUT_CURVE_X, DRIVE_TURN_INPUT_CURVE_Y);
 
-  private static final double CURRENT_LIMIT = 60.0;
+  private static final double CURRENT_LIMIT = 50.0;
   private static final double CURRENT_THRESHOLD = 120.0;
   private static final double CURRENT_THRESHOLD_TIME = 6 * ROBOT_LOOP_PERIOD;
   
   public static final StatorCurrentLimitConfiguration DRIVE_CURRENT_LIMIT_CONFIGURATION = new StatorCurrentLimitConfiguration(true, CURRENT_LIMIT, CURRENT_THRESHOLD, CURRENT_THRESHOLD_TIME);
 
   // Intake Arm PID config
-  public static final double INTAKE_ARM_kP = 0.8;
-  public static final double INTAKE_ARM_kD = 0.0;
-  public static final double INTAKE_ARM_MECHANICAL_EFFICIENCY = 0.8;
-  public static final double INTAKE_ARM_TOLERANCE = 10;
-  public static final double INTAKE_ARM_LOWER_LIMIT = 0;
-  public static final double INTAKE_ARM_UPPER_LIMIT = 3100;
-  public static final double INTAKE_ARM_VELOCITY = FALCON_500_MAX_RPM;
-  public static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 12;
-  public static final int INTAKE_ARM_MOTION_SMOOTHING = 6;
-  public static final int INTAKE_ARM_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
-  public static final int INTAKE_ARM_MAX_RPM = FALCON_500_MAX_RPM;
-  public static final boolean INTAKE_ARM_SOFT_LIMITS = true;
-  public static final boolean INTAKE_ARM_SENSOR_PHASE = false;
-  public static final boolean INTAKE_ARM_INVERT_MOTOR = false;
+  private static final double INTAKE_ARM_kP = 0.8;
+  private static final double INTAKE_ARM_kD = 0.0;
+  private static final double INTAKE_ARM_MECHANICAL_EFFICIENCY = 0.8;
+  private static final double INTAKE_ARM_TOLERANCE = 10;
+  private static final double INTAKE_ARM_LOWER_LIMIT = 0;
+  private static final double INTAKE_ARM_UPPER_LIMIT = 3100;
+  private static final double INTAKE_ARM_VELOCITY = FALCON_500_MAX_RPM;
+  private static final double INTAKE_ARM_ACCELERATION = FALCON_500_MAX_RPM * 12;
+  private static final int INTAKE_ARM_MOTION_SMOOTHING = 6;
+  private static final int INTAKE_ARM_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
+  private static final int INTAKE_ARM_MAX_RPM = FALCON_500_MAX_RPM;
+  private static final boolean INTAKE_ARM_SOFT_LIMITS = true;
+  private static final boolean INTAKE_ARM_SENSOR_PHASE = false;
+  private static final boolean INTAKE_ARM_INVERT_MOTOR = false;
 
   public static final double INTAKE_ROLLER_SPEED = 1.0;
 
@@ -131,8 +129,8 @@ public final class Constants {
   private static final double FLYWHEEL_SMALL_kP = 0.004;
   private static final double FLYWHEEL_SMALL_kI = 1e-5;
   private static final double FLYWHEEL_SMALL_kD = 0.0;
-  private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.04;
-  private static final double FLYWHEEL_SMALL_TOLERANCE = 80;
+  private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.0;
+  private static final double FLYWHEEL_SMALL_TOLERANCE = 90;
   private static final double FLYWHEEL_SMALL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
@@ -157,20 +155,21 @@ public final class Constants {
   public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(3200.0, 2560.0);
 
   // Telescope PID variables
-  private static final double TELESCOPE_kP = 0.1;
+  private static final double TELESCOPE_kP = 0.5;
+  private static final double TELESCOPE_kI = 0.0;
   private static final double TELESCOPE_kD = 0.0;
-  private static final double TELESCOPE_MECHANICAL_EFFICIENCY = 0.9;
+  private static final double TELESCOPE_MECHANICAL_EFFICIENCY = 0.8;
   private static final double TELESCOPE_TOLERANCE = 100;
-  private static final double TELESCOPE_LOWER_LIMIT = 0;
-  private static final double TELESCOPE_UPPER_LIMIT = 290000;
+  private static final double TELESCOPE_LOWER_LIMIT = -290000;
+  private static final double TELESCOPE_UPPER_LIMIT = 0;
   private static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM;
-  private static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM;
-  private static final int TELESCOPE_MOTION_SMOOTHING = 4;
+  private static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM * 0.75;
+  private static final int TELESCOPE_MOTION_SMOOTHING = 2;
   private static final int TELESCOPE_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final int TELESCOPE_MAX_RPM = FALCON_500_MAX_RPM;
   private static final boolean TELESCOPE_SOFT_LIMITS = true;
   private static final boolean TELESCOPE_SENSOR_PHASE = false;
-  private static final boolean TELESCOPE_INVERT_MOTOR = true;
+  private static final boolean TELESCOPE_INVERT_MOTOR = false;
 
   // Telescope PID config
   public static final TalonPIDConfig TELESCOPE_CONFIG = new TalonPIDConfig(TELESCOPE_SENSOR_PHASE, 
@@ -178,7 +177,7 @@ public final class Constants {
                                                                            TELESCOPE_TICKS_PER_ROTATION, 
                                                                            TELESCOPE_MAX_RPM, 
                                                                            TELESCOPE_kP, 
-                                                                           0.0, 
+                                                                           TELESCOPE_kI, 
                                                                            TELESCOPE_kD, 
                                                                            TELESCOPE_MECHANICAL_EFFICIENCY,
                                                                            TELESCOPE_TOLERANCE, 

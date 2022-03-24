@@ -59,8 +59,8 @@ public class ClimberSubsystemTest {
 	@DisplayName("Test if robot can move climber up automatically")
 	public void climberUp() {
 		m_climberSubsystem.telescopeUp();
-		verify(m_telescopeLeftMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.TELESCOPE_CONFIG.getUpperLimit(), DELTA));
-		verify(m_telescopeRightMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.TELESCOPE_CONFIG.getUpperLimit(), DELTA));
+		verify(m_telescopeLeftMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.TELESCOPE_CONFIG.getLowerLimit(), DELTA));
+		verify(m_telescopeRightMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.TELESCOPE_CONFIG.getLowerLimit(), DELTA));
 	}
 	
 	@Test
@@ -68,8 +68,8 @@ public class ClimberSubsystemTest {
 	@DisplayName("Test if robot can move climber down automatically")
 	public void climberDown(){
 		m_climberSubsystem.telescopeDown();
-		verify(m_telescopeLeftMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.TELESCOPE_CONFIG.getLowerLimit(), DELTA));
-		verify(m_telescopeRightMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.TELESCOPE_CONFIG.getLowerLimit(), DELTA));
+		verify(m_telescopeLeftMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.TELESCOPE_CONFIG.getUpperLimit(), DELTA));
+		verify(m_telescopeRightMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.TELESCOPE_CONFIG.getUpperLimit(), DELTA));
 	}
 
 	@Test

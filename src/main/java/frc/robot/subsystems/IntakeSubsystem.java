@@ -33,8 +33,8 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   public enum ArmPosition {
-    Top(Constants.INTAKE_ARM_LOWER_LIMIT),
-    Bottom(Constants.INTAKE_ARM_UPPER_LIMIT);
+    Top(Constants.INTAKE_ARM_CONFIG.getLowerLimit()),
+    Bottom(Constants.INTAKE_ARM_CONFIG.getUpperLimit());
 
     public final double value;
     private ArmPosition(double value) {

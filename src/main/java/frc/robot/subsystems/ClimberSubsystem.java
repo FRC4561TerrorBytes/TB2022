@@ -58,18 +58,18 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_winchMotor = climberHardware.winchMotor;
     this.m_telescopeConfig = telescopeConfig;
     this.m_winchConfig = winchConfig;
-    this.m_climberStateIterator = new ClimberStateIterator(m_telescopeConfig.getLowerLimit(), m_telescopeConfig.getUpperLimit(), m_winchConfig.getLowerLimit(), m_winchConfig.getUpperLimit());
+    this.m_climberStateIterator = new ClimberStateIterator(m_telescopeConfig.getUpperLimit(), m_telescopeConfig.getLowerLimit(), m_winchConfig.getLowerLimit(), m_winchConfig.getUpperLimit());
     this.m_currentState = m_climberStateIterator.getCurrentState();
 
-    m_telescopeConfig.initializeTalonPID(m_telescopeLeftMotor, FeedbackDevice.IntegratedSensor, false, true);
-    m_telescopeLeftMotor.configReverseSoftLimitEnable(false);
-    m_telescopeLeftMotor.configClearPositionOnLimitR(true, 0);
+    m_telescopeConfig.initializeTalonPID(m_telescopeLeftMotor, FeedbackDevice.IntegratedSensor, true, false);
+    m_telescopeLeftMotor.configForwardSoftLimitEnable(false);
+    m_telescopeLeftMotor.configClearPositionOnLimitF(true, 0);
     m_telescopeLeftMotor.setSelectedSensorPosition(0.0);
 
-    m_telescopeConfig.initializeTalonPID(m_telescopeRightMotor, FeedbackDevice.IntegratedSensor, false, true);
-    m_telescopeRightMotor.configReverseSoftLimitEnable(false);
-    m_telescopeRightMotor.configClearPositionOnLimitR(true, 0);
-    m_telescopeRightMotor.setInverted(false);
+    m_telescopeConfig.initializeTalonPID(m_telescopeRightMotor, FeedbackDevice.IntegratedSensor, true, false);
+    m_telescopeRightMotor.configForwardSoftLimitEnable(false);
+    m_telescopeRightMotor.configClearPositionOnLimitF(true, 0);
+    m_telescopeRightMotor.setInverted(true);
     m_telescopeRightMotor.setSelectedSensorPosition(0.0);
 
     m_winchConfig.initializeTalonPID(m_winchMotor, FeedbackDevice.IntegratedSensor);
@@ -130,16 +130,16 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * Moves climber to upper limit
    */
   public void telescopeUp() {
-    telescopeSetPosition(m_telescopeLeftMotor, m_telescopeConfig.getUpperLimit());
-    telescopeSetPosition(m_telescopeRightMotor, m_telescopeConfig.getUpperLimit());
+    telescopeSetPosition(m_telescopeLeftMotor, m_telescopeConfig.getLowerLimit());
+    telescopeSetPosition(m_telescopeRightMotor, m_telescopeConfig.getLowerLimit());
   }
 
   /**
    * Moves climber to lower limit
    */
   public void telescopeDown() {
-    telescopeSetPosition(m_telescopeLeftMotor, m_telescopeConfig.getLowerLimit());
-    telescopeSetPosition(m_telescopeRightMotor, m_telescopeConfig.getLowerLimit());
+    telescopeSetPosition(m_telescopeLeftMotor, m_telescopeConfig.getUpperLimit());
+    telescopeSetPosition(m_telescopeRightMotor, m_telescopeConfig.getUpperLimit());
   }
 
   /**
@@ -162,30 +162,6 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_telescopeRightMotor.overrideSoftLimitsEnable(false);
     m_telescopeLeftMotor.set(ControlMode.PercentOutput, speed);
     m_telescopeRightMotor.set(ControlMode.PercentOutput, speed);
-  }
-
-  /**
-   * Syncs up both telescopes
-   */
-  public void telescopeSync() {
-    Thread leftTelescope = new Thread(() -> {
-      while (m_telescopeLeftMotor.isRevLimitSwitchClosed() == 0) {
-        m_telescopeLeftMotor.set(ControlMode.PercentOutput, -0.2);
-      }
-      m_telescopeLeftMotor.stopMotor();
-      telescopeSetPosition(m_telescopeLeftMotor, 0.0);
-    });
-
-    Thread rightTelescope = new Thread(() -> {
-      while (m_telescopeRightMotor.isRevLimitSwitchClosed() == 0) {
-        m_telescopeRightMotor.set(ControlMode.PercentOutput, -0.2);
-      }
-      m_telescopeRightMotor.stopMotor();
-      telescopeSetPosition(m_telescopeRightMotor, 0.0);
-    });
-
-    leftTelescope.start();
-    rightTelescope.start();
   }
 
   /**

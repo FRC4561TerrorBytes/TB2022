@@ -223,7 +223,9 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    smartDashboard();
+  }
 
   /**
    * Call this repeatedly to drive without PID during teleoperation

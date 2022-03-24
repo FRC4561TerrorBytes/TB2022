@@ -302,7 +302,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     m_upperFeederSensor.enableLimitSwitch(true);
     m_upperFeederMotor.set(+m_feederIntakeSpeed);
     if (isFeederFull()) {
-      m_lowerFeederMotor.setOpenLoopRampRate(7.5);
+      m_lowerFeederMotor.setOpenLoopRampRate(10.0);
       m_lowerFeederMotor.stopMotor();
     } else {
       m_lowerFeederMotor.setOpenLoopRampRate(0.0);
@@ -328,14 +328,14 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     m_lowerFeederMotor.setOpenLoopRampRate(0.0);
     m_upperFeederMotor.set(+m_feederShootSpeed);
     m_lowerFeederMotor.set(+m_feederShootSpeed);
-    BlinkinLEDController.getInstance().setAllianceColorChase();
+    BlinkinLEDController.getInstance().setAllianceColorStrobe();
   }
 
   /**
    * Stops feeder motors
    */
   public void feederStop(boolean wasIntaking) {
-    if (wasIntaking) m_lowerFeederMotor.setOpenLoopRampRate(7.5);
+    if (wasIntaking) m_lowerFeederMotor.setOpenLoopRampRate(10.0);
     else m_lowerFeederMotor.setOpenLoopRampRate(0.0);
     
     m_upperFeederMotor.stopMotor();
