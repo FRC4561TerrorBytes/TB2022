@@ -116,10 +116,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * Create SmartDashboard indicators
    */
   public void smartDashboard() {
-    SmartDashboard.putBoolean("Winch in?", m_winchMotor.getSelectedSensorPosition() < m_winchConfig.getTolerance());
-    SmartDashboard.putString("Previous State", m_climberStateIterator.previewPreviousState().getName());
-    SmartDashboard.putString("Current State", m_climberStateIterator.getCurrentState().getName());
-    SmartDashboard.putString("Next State", m_climberStateIterator.previewNextState().getName());
+    SmartDashboard.putBoolean("Winch in?", isWinchAtHome());
   }
 
   @Override

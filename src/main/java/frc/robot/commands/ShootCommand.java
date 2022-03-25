@@ -38,9 +38,6 @@ public class ShootCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // Update flywheel speed based current distance
-    m_shooterSubsystem.setFlywheelAuto();
-
     // Only run feeder if flywheel is at speed, else stop
     if (m_shooterSubsystem.isFlywheelAtSpeed()) {
       m_loops++;
