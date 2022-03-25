@@ -126,8 +126,8 @@ public final class Constants {
                                                                                  FLYWHEEL_MECHANICAL_EFFICIENCY,
                                                                                  FLYWHEEL_TOLERANCE);
 
-  private static final double FLYWHEEL_SMALL_kP = 0.004;
-  private static final double FLYWHEEL_SMALL_kI = 1e-5;
+  private static final double FLYWHEEL_SMALL_kP = 0.01;
+  private static final double FLYWHEEL_SMALL_kI = 5e-4;
   private static final double FLYWHEEL_SMALL_kD = 0.0;
   private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.0;
   private static final double FLYWHEEL_SMALL_TOLERANCE = 90;
@@ -152,18 +152,18 @@ public final class Constants {
   public static final double FEEDER_SHOOT_SPEED = 0.3;
   public static final double SHOOT_DELAY = 0.1;
   public static final FlywheelSpeed LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1620.0, 162.0);
-  public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(3200.0, 2560.0);
+  public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(2300.0, 2100.0);
 
   // Telescope PID variables
-  private static final double TELESCOPE_kP = 0.5;
+  private static final double TELESCOPE_kP = 0.1;
   private static final double TELESCOPE_kI = 0.0;
   private static final double TELESCOPE_kD = 0.0;
   private static final double TELESCOPE_MECHANICAL_EFFICIENCY = 0.8;
   private static final double TELESCOPE_TOLERANCE = 100;
   private static final double TELESCOPE_LOWER_LIMIT = -290000;
   private static final double TELESCOPE_UPPER_LIMIT = 0;
-  private static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM;
-  private static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM * 0.75;
+  private static final double TELESCOPE_VELOCITY = FALCON_500_MAX_RPM * 0.125;
+  private static final double TELESCOPE_ACCELERATION = FALCON_500_MAX_RPM * 0.125;
   private static final int TELESCOPE_MOTION_SMOOTHING = 2;
   private static final int TELESCOPE_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final int TELESCOPE_MAX_RPM = FALCON_500_MAX_RPM;
@@ -194,10 +194,10 @@ public final class Constants {
   private static final double WINCH_MECHANICAL_EFFICIENCY = 0.8;
   private static final double WINCH_TOLERANCE = 1000;
   private static final double WINCH_LOWER_LIMIT = 0;
-  private static final double WINCH_UPPER_LIMIT = 265000;
-  private static final double WINCH_VELOCITY = FALCON_500_MAX_RPM * 0.5;
-  private static final double WINCH_ACCELERATION = FALCON_500_MAX_RPM * 0.5;
-  private static final int WINCH_MOTION_SMOOTHING = 4;
+  private static final double WINCH_UPPER_LIMIT = 380000;
+  private static final double WINCH_VELOCITY = FALCON_500_MAX_RPM * 0.6;
+  private static final double WINCH_ACCELERATION = FALCON_500_MAX_RPM * 0.6;
+  private static final int WINCH_MOTION_SMOOTHING = 2;
   private static final int WINCH_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final int WINCH_MAX_RPM = FALCON_500_MAX_RPM;
   private static final boolean WINCH_SOFT_LIMITS = true;

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.ClimberStateIterator;
 import frc.robot.utils.TalonPIDConfig;
+import frc.robot.utils.ClimberStateIterator.ClimberState;
 
 public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   public static class Hardware {
@@ -167,11 +168,16 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   /**
    * Stop climber after moving manually, and re-enable soft limits
    */
-  public void telescopeStop() {
+  public void telescopeStop(boolean override) {
     m_telescopeLeftMotor.stopMotor();
     m_telescopeRightMotor.stopMotor();
     m_telescopeLeftMotor.overrideSoftLimitsEnable(true);
     m_telescopeRightMotor.overrideSoftLimitsEnable(true);
+
+    if (!override) {
+      telescopeSetPosition(m_telescopeLeftMotor, m_telescopeLeftMotor.getSelectedSensorPosition());
+      telescopeSetPosition(m_telescopeRightMotor, m_telescopeRightMotor.getSelectedSensorPosition());
+    }
   }
 
   /**
@@ -219,9 +225,11 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   /**
    * Stop winch after moving manually and re-enable soft limits.
    */
-  public void winchStop() {
+  public void winchStop(boolean override) {
     m_winchMotor.stopMotor();
     m_winchMotor.overrideSoftLimitsEnable(true);
+
+    if (!override) winchSetPosition(m_winchMotor.getSelectedSensorPosition());
   }
 
   /**
@@ -266,15 +274,23 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * Go to climber state
+   * @param climberState climber state to go to
+   */
+  public void goToState(ClimberState climberState) {
+    winchSetPosition(m_winchMotor.getSelectedSensorPosition() + climberState.getWinchPosition());
+    telescopeSetPosition(m_telescopeLeftMotor, m_telescopeLeftMotor.getSelectedSensorPosition() + climberState.getTelescopePosition());
+    telescopeSetPosition(m_telescopeRightMotor, m_telescopeRightMotor.getSelectedSensorPosition() + climberState.getTelescopePosition());
+  }
+
+  /**
    * Advance climber to next climb state
    */
   public void nextClimberState() {
     m_climberStateIterator.nextState();
     m_currentState = m_climberStateIterator.getCurrentState();
 
-    telescopeSetPosition(m_telescopeLeftMotor, m_currentState.getTelescopePosition());
-    telescopeSetPosition(m_telescopeRightMotor, m_currentState.getTelescopePosition());
-    winchSetPosition(m_currentState.getWinchPosition());
+    goToState(m_currentState);
   }
 
   /**
@@ -284,9 +300,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_climberStateIterator.previousState();
     m_currentState = m_climberStateIterator.getCurrentState();
 
-    telescopeSetPosition(m_telescopeLeftMotor, m_currentState.getTelescopePosition());
-    telescopeSetPosition(m_telescopeRightMotor, m_currentState.getTelescopePosition());
-    winchSetPosition(m_currentState.getWinchPosition());
+    goToState(m_currentState);
   }
 
   @Override

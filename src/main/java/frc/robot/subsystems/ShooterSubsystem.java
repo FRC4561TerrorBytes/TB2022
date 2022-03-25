@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.BlinkinLEDController;
 import frc.robot.utils.TalonPIDConfig;
+import frc.robot.utils.BlinkinLEDController.BlinkinPattern;
 
 
 public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
@@ -328,7 +329,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     m_lowerFeederMotor.setOpenLoopRampRate(0.0);
     m_upperFeederMotor.set(+m_feederShootSpeed);
     m_lowerFeederMotor.set(+m_feederShootSpeed);
-    BlinkinLEDController.getInstance().setAllianceColorStrobe();
+    BlinkinLEDController.getInstance().setPattern(BlinkinPattern.GREEN);
   }
 
   /**
