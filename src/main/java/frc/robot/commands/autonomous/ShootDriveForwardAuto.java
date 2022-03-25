@@ -26,9 +26,6 @@ public class ShootDriveForwardAuto extends SequentialCommandGroup {
       // Shoots single preloaded ball
       new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.Low).withTimeout(1.0),
 
-      // Reset odometry
-      new InstantCommand(() -> LeaveTarmac.resetOdometry(), driveSubsystem),
-
       // Drives forward + exits tarmac
       LeaveTarmac.getCommandAndStop(),
       

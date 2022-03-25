@@ -252,7 +252,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if winch is at home
    */
   public boolean isWinchAtHome() {
-    return m_winchMotor.getSelectedSensorPosition() < m_winchConfig.getTolerance();
+    return Math.abs(m_winchMotor.getSelectedSensorPosition()) < m_winchConfig.getTolerance();
   }
 
   /**
