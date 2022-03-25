@@ -79,7 +79,7 @@ public class ClimberSubsystemTest {
 		m_climberSubsystem.telescopeManual(-1.0);
 		verify(m_telescopeRightMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(-1.0, DELTA));
 
-		m_climberSubsystem.telescopeStop(true);
+		m_climberSubsystem.telescopeStop();
 		verify(m_telescopeRightMotor, times(1)).stopMotor();
 	}
 
@@ -90,7 +90,7 @@ public class ClimberSubsystemTest {
 		m_climberSubsystem.telescopeManual(+1.0);
 		verify(m_telescopeRightMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.PercentOutput), AdditionalMatchers.eq(+1.0, DELTA));
 
-		m_climberSubsystem.telescopeStop(true);
+		m_climberSubsystem.telescopeStop();
 		verify(m_telescopeRightMotor, times(1)).stopMotor();
 	}
 
@@ -98,7 +98,7 @@ public class ClimberSubsystemTest {
 	@Order(5)
 	@DisplayName("Test if robot can stop moving manually")
 	public void climberStopManual() {
-		m_climberSubsystem.telescopeStop(true);
+		m_climberSubsystem.telescopeStop();
 		verify(m_telescopeRightMotor, times(1)).stopMotor();
 	}
 }

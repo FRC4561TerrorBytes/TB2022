@@ -34,7 +34,6 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utils.BlinkinLEDController;
-import frc.robot.utils.ClimberStateIterator;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -160,29 +159,27 @@ public class RobotContainer {
     primaryTriggerRight.whileActiveOnce(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
 
     primaryDPadUp.whileHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(-0.8), CLIMBER_SUBSYSTEM))
-                 .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(false), CLIMBER_SUBSYSTEM));
+                 .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
 
     primaryDPadDown.whileHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(+0.8), CLIMBER_SUBSYSTEM))
-                   .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(false), CLIMBER_SUBSYSTEM));
+                   .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
 
     primaryDPadLeft.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchManual(-0.5)))
-                   .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(true), CLIMBER_SUBSYSTEM));
+                   .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
     primaryDPadRight.whileHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchManual(+0.5)))
-                    .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(true), CLIMBER_SUBSYSTEM));
+                    .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
     // Secondary controller bindings
-    secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-0.15), () -> CLIMBER_SUBSYSTEM.telescopeStop(true), CLIMBER_SUBSYSTEM));
-    secondaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(+0.15), () -> CLIMBER_SUBSYSTEM.telescopeStop(true), CLIMBER_SUBSYSTEM));
-    secondaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManualOverride(-0.5), () -> CLIMBER_SUBSYSTEM.winchStop(true), CLIMBER_SUBSYSTEM));
-    secondaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManualOverride(+0.5), () -> CLIMBER_SUBSYSTEM.winchStop(true), CLIMBER_SUBSYSTEM));
-
-    secondaryButtonB.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.goToState(ClimberStateIterator.RobotSwing), CLIMBER_SUBSYSTEM));
+    secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-0.15), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    secondaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(+0.15), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    secondaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManualOverride(-0.5), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
+    secondaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManualOverride(+0.5), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
     secondaryLeftStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(SECONDARY_CONTROLLER.getLeftY()), CLIMBER_SUBSYSTEM))
-                      .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(false), CLIMBER_SUBSYSTEM));
+                      .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryRightStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchManual(SECONDARY_CONTROLLER.getRightX()), CLIMBER_SUBSYSTEM))
-                       .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(false), CLIMBER_SUBSYSTEM));
+                       .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
   }
 
   /**

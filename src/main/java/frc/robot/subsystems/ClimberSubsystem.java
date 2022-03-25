@@ -168,16 +168,11 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   /**
    * Stop climber after moving manually, and re-enable soft limits
    */
-  public void telescopeStop(boolean override) {
+  public void telescopeStop() {
     m_telescopeLeftMotor.stopMotor();
     m_telescopeRightMotor.stopMotor();
     m_telescopeLeftMotor.overrideSoftLimitsEnable(true);
     m_telescopeRightMotor.overrideSoftLimitsEnable(true);
-
-    if (!override) {
-      telescopeSetPosition(m_telescopeLeftMotor, m_telescopeLeftMotor.getSelectedSensorPosition());
-      telescopeSetPosition(m_telescopeRightMotor, m_telescopeRightMotor.getSelectedSensorPosition());
-    }
   }
 
   /**
@@ -225,11 +220,9 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   /**
    * Stop winch after moving manually and re-enable soft limits.
    */
-  public void winchStop(boolean override) {
+  public void winchStop() {
     m_winchMotor.stopMotor();
     m_winchMotor.overrideSoftLimitsEnable(true);
-
-    if (!override) winchSetPosition(m_winchMotor.getSelectedSensorPosition());
   }
 
   /**
