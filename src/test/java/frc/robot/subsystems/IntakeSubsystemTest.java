@@ -59,7 +59,7 @@ public class IntakeSubsystemTest {
 	@DisplayName("Test if robot can toggle up or down")
 	public void toggleArm() {
 		m_intakeSubsystem.toggleArmPosition();
-		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_CONFIG.getLowerLimit(), DELTA));
+		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_CONFIG.getUpperLimit(), DELTA));
 
 		m_intakeSubsystem.toggleArmPosition();
 		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_CONFIG.getLowerLimit(), DELTA));
@@ -100,7 +100,7 @@ public class IntakeSubsystemTest {
 		m_intakeSubsystem.intake();
 		m_intakeSubsystem.stop();
 		verify(m_armMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_CONFIG.getUpperLimit(), DELTA));
-		verify(m_armMotor, times(2)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_CONFIG.getUpperLimit(), DELTA));
+		verify(m_armMotor, times(2)).set(ArgumentMatchers.eq(ControlMode.MotionMagic), AdditionalMatchers.eq(Constants.INTAKE_ARM_CONFIG.getLowerLimit(), DELTA));
 		verify(m_rollerMotor, times(1)).set(AdditionalMatchers.eq(Constants.INTAKE_ROLLER_SPEED, DELTA));
 		verify(m_rollerMotor, times(1)).stopMotor();
 	}
