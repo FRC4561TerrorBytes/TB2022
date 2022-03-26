@@ -67,4 +67,12 @@ public class ShootCommand extends CommandBase {
   public boolean isFinished() {
     return false;
   }
+
+  /**
+   * Get delay loop number
+   * @return number of loops
+   */
+  public int getLoopNum() {
+    return m_loopNum;
+  }
 }

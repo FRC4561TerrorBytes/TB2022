@@ -80,8 +80,11 @@ public class ShootCommandTest {
   public void initializeLowGoal() {
     m_shootCommand = new ShootCommand(m_shooterSubsystem, Constants.SHOOT_DELAY, ShooterSubsystem.SelectedGoal.Low);
     m_shootCommand.initialize();
-    verify(m_flywheelMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(5529.6, DELTA));
-    verify(m_flywheelSmallMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(552.96, DELTA));
+
+    verify(m_flywheelMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), 
+      AdditionalMatchers.eq(Constants.FLYWHEEL_MASTER_CONFIG.rpmToTicksPer100ms(Constants.LOW_FLYWHEEL_SPEED.getBigFlywheelSpeed()), DELTA));
+    verify(m_flywheelSmallMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), 
+      AdditionalMatchers.eq(Constants.FLYWHEEL_SMALL_CONFIG.rpmToTicksPer100ms(Constants.LOW_FLYWHEEL_SPEED.getSmallFlywheelSpeed()), DELTA));
   }
 
   @Test
@@ -90,38 +93,49 @@ public class ShootCommandTest {
   public void initializeHighGoal() {
     m_shootCommand = new ShootCommand(m_shooterSubsystem, Constants.SHOOT_DELAY, ShooterSubsystem.SelectedGoal.High);
     m_shootCommand.initialize();
-    verify(m_flywheelMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(7850.666, DELTA));
-    verify(m_flywheelSmallMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(7168.0, DELTA));
+
+    verify(m_flywheelMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), 
+      AdditionalMatchers.eq(Constants.FLYWHEEL_MASTER_CONFIG.rpmToTicksPer100ms(Constants.HIGH_FLYWHEEL_SPEED.getBigFlywheelSpeed()), DELTA));
+    verify(m_flywheelSmallMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), 
+      AdditionalMatchers.eq(Constants.FLYWHEEL_SMALL_CONFIG.rpmToTicksPer100ms(Constants.HIGH_FLYWHEEL_SPEED.getSmallFlywheelSpeed()), DELTA));
   }
 
   @Test
   @Order(3)
-  @DisplayName("Test if robot can run feeder wheel when flywheel at speed")
+  @DisplayName("Test if robot can run feeder wheel when flywheel is at speed")
   public void executeMotorAtSpeed() {
     m_shootCommand = new ShootCommand(m_shooterSubsystem, Constants.SHOOT_DELAY, ShooterSubsystem.SelectedGoal.Low);
     m_shootCommand.initialize();
+    
     when(m_flywheelMasterMotor.getClosedLoopError()).thenReturn(0.0);
-    when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(5529.6);
+    when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(Constants.FLYWHEEL_MASTER_CONFIG.rpmToTicksPer100ms(Constants.LOW_FLYWHEEL_SPEED.getBigFlywheelSpeed()));
     when(m_flywheelSmallMotor.getClosedLoopError()).thenReturn(0.0);
-    when(m_flywheelSmallMotor.getClosedLoopTarget()).thenReturn(552.96);
-    for (int i = 0; i < 7; i++) m_shootCommand.execute();
+    when(m_flywheelSmallMotor.getClosedLoopTarget()).thenReturn(Constants.FLYWHEEL_SMALL_CONFIG.rpmToTicksPer100ms(Constants.LOW_FLYWHEEL_SPEED.getSmallFlywheelSpeed()));
+
+    for (int i = 0; i < m_shootCommand.getLoopNum() + 1; i++) m_shootCommand.execute();
+
     verify(m_upperFeederSensor, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
     verify(m_lowerFeederSensor, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
-    verify(m_lowerFeederMotor, times(1)).set(AdditionalMatchers.eq(Constants.FEEDER_SHOOT_SPEED, DELTA));
-    verify(m_upperFeederMotor, times(1)).set(AdditionalMatchers.eq(Constants.FEEDER_SHOOT_SPEED, DELTA));
+    verify(m_flywheelMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), 
+      AdditionalMatchers.eq(Constants.FLYWHEEL_MASTER_CONFIG.rpmToTicksPer100ms(Constants.LOW_FLYWHEEL_SPEED.getBigFlywheelSpeed()), DELTA));
+    verify(m_flywheelSmallMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), 
+      AdditionalMatchers.eq(Constants.FLYWHEEL_SMALL_CONFIG.rpmToTicksPer100ms(Constants.LOW_FLYWHEEL_SPEED.getSmallFlywheelSpeed()), DELTA));
   }
 
   @Test
   @Order(4)
-  @DisplayName("Test if robot stops feeder when flywheel not at speed")
+  @DisplayName("Test if robot stops feeder when flywheel is not at speed")
   public void executeMotorNotAtSpeed() {
     m_shootCommand = new ShootCommand(m_shooterSubsystem, Constants.SHOOT_DELAY, ShooterSubsystem.SelectedGoal.Low);
     m_shootCommand.initialize();
+
     when(m_flywheelMasterMotor.getClosedLoopError()).thenReturn(250.0);
-    when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(682.666);
+    when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(Constants.FLYWHEEL_MASTER_CONFIG.rpmToTicksPer100ms(Constants.LOW_FLYWHEEL_SPEED.getBigFlywheelSpeed()));
     when(m_flywheelSmallMotor.getClosedLoopError()).thenReturn(250.0);
-    when(m_flywheelSmallMotor.getClosedLoopTarget()).thenReturn(682.666);
+    when(m_flywheelSmallMotor.getClosedLoopTarget()).thenReturn(Constants.FLYWHEEL_SMALL_CONFIG.rpmToTicksPer100ms(Constants.LOW_FLYWHEEL_SPEED.getSmallFlywheelSpeed()));
+
     m_shootCommand.execute();
+
     verify(m_upperFeederMotor, times(1)).stopMotor();
     verify(m_lowerFeederMotor, times(1)).stopMotor();
   }
@@ -132,6 +146,7 @@ public class ShootCommandTest {
   public void end() {
     m_shootCommand = new ShootCommand(m_shooterSubsystem, Constants.SHOOT_DELAY, ShooterSubsystem.SelectedGoal.Low);
     m_shootCommand.end(true);
+
     verify(m_flywheelMasterMotor, times(1)).stopMotor();
     verify(m_flywheelSmallMotor, times(1)).stopMotor();
     verify(m_upperFeederMotor, times(1)).stopMotor();
