@@ -31,7 +31,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class ShootCommandTest {
   private final double DELTA = 2e-3;
   private ShooterSubsystem m_shooterSubsystem;
-  private ShootManualCommand m_shootCommand;
+  private ShootCommand m_shootCommand;
   private ShooterSubsystem.Hardware m_shooterHardware;
 
   private WPI_TalonFX m_flywheelMasterMotor, m_flywheelSlaveMotor, m_flywheelSmallMotor;
@@ -66,8 +66,6 @@ public class ShootCommandTest {
                                               Constants.HIGH_FLYWHEEL_SPEED,
                                               Constants.FEEDER_INTAKE_SPEED,
                                               Constants.FEEDER_SHOOT_SPEED);
-                                              
-    m_shootCommand = new ShootManualCommand(m_shooterSubsystem, 0.1, 200.0, 200.0);
   }
 
   @AfterEach
@@ -78,22 +76,34 @@ public class ShootCommandTest {
 
   @Test
   @Order(1)
-  @DisplayName("Test if robot can start flywheel")
-  public void initialize() {
+  @DisplayName("Test if robot can start flywheel for low goal")
+  public void initializeLowGoal() {
+    m_shootCommand = new ShootCommand(m_shooterSubsystem, Constants.SHOOT_DELAY, ShooterSubsystem.SelectedGoal.Low);
     m_shootCommand.initialize();
-    verify(m_flywheelMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(682.666, DELTA));
-    verify(m_flywheelSmallMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(682.666, DELTA));
+    verify(m_flywheelMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(5529.6, DELTA));
+    verify(m_flywheelSmallMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(552.96, DELTA));
   }
 
   @Test
   @Order(2)
+  @DisplayName("Test if robot can start flywheel for high goal")
+  public void initializeHighGoal() {
+    m_shootCommand = new ShootCommand(m_shooterSubsystem, Constants.SHOOT_DELAY, ShooterSubsystem.SelectedGoal.High);
+    m_shootCommand.initialize();
+    verify(m_flywheelMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(7850.666, DELTA));
+    verify(m_flywheelSmallMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), AdditionalMatchers.eq(7168.0, DELTA));
+  }
+
+  @Test
+  @Order(3)
   @DisplayName("Test if robot can run feeder wheel when flywheel at speed")
   public void executeMotorAtSpeed() {
+    m_shootCommand = new ShootCommand(m_shooterSubsystem, Constants.SHOOT_DELAY, ShooterSubsystem.SelectedGoal.Low);
     m_shootCommand.initialize();
     when(m_flywheelMasterMotor.getClosedLoopError()).thenReturn(0.0);
-    when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(682.666);
+    when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(5529.6);
     when(m_flywheelSmallMotor.getClosedLoopError()).thenReturn(0.0);
-    when(m_flywheelSmallMotor.getClosedLoopTarget()).thenReturn(682.666);
+    when(m_flywheelSmallMotor.getClosedLoopTarget()).thenReturn(552.96);
     for (int i = 0; i < 7; i++) m_shootCommand.execute();
     verify(m_upperFeederSensor, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
     verify(m_lowerFeederSensor, times(1)).enableLimitSwitch(ArgumentMatchers.eq(false));
@@ -102,9 +112,10 @@ public class ShootCommandTest {
   }
 
   @Test
-  @Order(3)
+  @Order(4)
   @DisplayName("Test if robot stops feeder when flywheel not at speed")
-  public void executeMotorNotAtSpeed(){
+  public void executeMotorNotAtSpeed() {
+    m_shootCommand = new ShootCommand(m_shooterSubsystem, Constants.SHOOT_DELAY, ShooterSubsystem.SelectedGoal.Low);
     m_shootCommand.initialize();
     when(m_flywheelMasterMotor.getClosedLoopError()).thenReturn(250.0);
     when(m_flywheelMasterMotor.getClosedLoopTarget()).thenReturn(682.666);
@@ -116,9 +127,10 @@ public class ShootCommandTest {
   }
 
   @Test
-  @Order(4)
+  @Order(5)
   @DisplayName("Test if robot can stop feeder wheel and flywheel")
-  public void end(){
+  public void end() {
+    m_shootCommand = new ShootCommand(m_shooterSubsystem, Constants.SHOOT_DELAY, ShooterSubsystem.SelectedGoal.Low);
     m_shootCommand.end(true);
     verify(m_flywheelMasterMotor, times(1)).stopMotor();
     verify(m_flywheelSmallMotor, times(1)).stopMotor();
