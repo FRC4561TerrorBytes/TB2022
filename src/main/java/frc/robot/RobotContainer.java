@@ -34,7 +34,6 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utils.BlinkinLEDController;
-import frc.robot.utils.BlinkinLEDController.BlinkinPattern;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -213,7 +212,7 @@ public class RobotContainer {
    * Do this when disabled
    */
   public void disabledInit() {
-    BlinkinLEDController.getInstance().setPattern(BlinkinPattern.GREEN);
+    BlinkinLEDController.getInstance().setTeamColor();
   }
 
   /**

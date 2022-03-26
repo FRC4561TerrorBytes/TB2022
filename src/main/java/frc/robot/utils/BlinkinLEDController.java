@@ -220,6 +220,13 @@ public class BlinkinLEDController {
   }
 
   /**
+   * Set LEDs to team color
+   */
+  public void setTeamColor() {
+    setPattern(BlinkinPattern.DARK_GREEN);
+  }
+
+  /**
    * Get current LED pattern
    * @return current LED pattern
    */
