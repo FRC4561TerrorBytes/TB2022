@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -81,6 +82,7 @@ public class ShootCommandTest {
     m_shootCommand = new ShootCommand(m_shooterSubsystem, Constants.SHOOT_DELAY, ShooterSubsystem.SelectedGoal.Low);
     m_shootCommand.initialize();
 
+    assertEquals(ShooterSubsystem.SelectedGoal.Low, m_shooterSubsystem.getSelectedGoal());
     verify(m_flywheelMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), 
       AdditionalMatchers.eq(Constants.FLYWHEEL_MASTER_CONFIG.rpmToTicksPer100ms(Constants.LOW_FLYWHEEL_SPEED.getBigFlywheelSpeed()), DELTA));
     verify(m_flywheelSmallMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), 
@@ -94,6 +96,7 @@ public class ShootCommandTest {
     m_shootCommand = new ShootCommand(m_shooterSubsystem, Constants.SHOOT_DELAY, ShooterSubsystem.SelectedGoal.High);
     m_shootCommand.initialize();
 
+    assertEquals(ShooterSubsystem.SelectedGoal.High, m_shooterSubsystem.getSelectedGoal());
     verify(m_flywheelMasterMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), 
       AdditionalMatchers.eq(Constants.FLYWHEEL_MASTER_CONFIG.rpmToTicksPer100ms(Constants.HIGH_FLYWHEEL_SPEED.getBigFlywheelSpeed()), DELTA));
     verify(m_flywheelSmallMotor, times(1)).set(ArgumentMatchers.eq(ControlMode.Velocity), 

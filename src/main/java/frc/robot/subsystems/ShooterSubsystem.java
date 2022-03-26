@@ -52,7 +52,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     Low(0),
     High(1);
 
-    int value;
+    public final int value;
     private SelectedGoal(int value) {
       this.value = value;
     }
@@ -173,7 +173,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   /**
    * Initialize hardware devices for shooter subsystem
    * @return hardware object containing all necessary devices for this subsystem
-*   */
+   */
   public static Hardware initializeHardware() {
     CANSparkMax upperFeederMotor = new CANSparkMax(Constants.UPPER_FEEDER_MOTOR_PORT, MotorType.kBrushless);
     CANSparkMax lowerFeederMotor = new CANSparkMax(Constants.LOWER_FEEDER_MOTOR_PORT, MotorType.kBrushless);
@@ -228,6 +228,14 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void toggleSelectedGoal() {
     if (m_selectedGoal == SelectedGoal.Low) m_selectedGoal = SelectedGoal.High;
     else m_selectedGoal = SelectedGoal.Low;
+  }
+
+  /**
+   * Get selected goal
+   * @return currently selected goal
+   */
+  public SelectedGoal getSelectedGoal() {
+    return m_selectedGoal;
   }
 
   /**
