@@ -71,7 +71,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     m_armPosition = ArmPosition.Top;
     m_prevArmPosition = m_armPosition;
     
-    m_rollerMotor.setIdleMode(IdleMode.kBrake);
+    m_rollerMotor.setIdleMode(IdleMode.kCoast);
     m_rollerMotor.setInverted(true);
 
     m_armConfig.initializeTalonPID(m_armMotor, FeedbackDevice.IntegratedSensor);

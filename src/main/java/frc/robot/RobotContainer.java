@@ -5,6 +5,7 @@
 package frc.robot;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.common.hardware.VisionLEDMode;
 
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.SpitOutCommand;
 import frc.robot.commands.autonomous.AlternateAuto;
 import frc.robot.commands.autonomous.FourBallAutoAdvanced;
 import frc.robot.commands.autonomous.LeaveTarmac;
@@ -34,6 +36,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utils.BlinkinLEDController;
+import frc.robot.utils.ClimberStateIterator;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -171,6 +174,10 @@ public class RobotContainer {
                     .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
     // Secondary controller bindings
+    secondaryButtonA.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.toggleClimberLED(), CLIMBER_SUBSYSTEM));
+    secondaryButtonB.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.goToState(ClimberStateIterator.RobotSwing), CLIMBER_SUBSYSTEM));
+    secondaryButtonRBumper.whenHeld(new SpitOutCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, Constants.SPIT_OUT_FLYWHEEL_SPEED));
+
     secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-0.2), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(+0.2), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManualOverride(-0.1), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
@@ -180,6 +187,11 @@ public class RobotContainer {
                       .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryRightStick.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchManual(SECONDARY_CONTROLLER.getRightX()), CLIMBER_SUBSYSTEM))
                        .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
+
+    secondaryTriggerLeft.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeLeftSlow(), CLIMBER_SUBSYSTEM))
+                        .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    secondaryTriggerRight.whenActive(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeRightSlow(), CLIMBER_SUBSYSTEM))
+                         .whenInactive(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
   }
 
   /**
@@ -206,6 +218,7 @@ public class RobotContainer {
   public void teleopInit() {
     DRIVE_SUBSYSTEM.teleopInit();
     BlinkinLEDController.getInstance().setAllianceColorSolid();
+    m_pi.setLED(VisionLEDMode.kOn);
   }
 
   /**
@@ -213,6 +226,7 @@ public class RobotContainer {
    */
   public void disabledInit() {
     BlinkinLEDController.getInstance().setTeamColor();
+    m_pi.setLED(VisionLEDMode.kOff);
   }
 
   /**

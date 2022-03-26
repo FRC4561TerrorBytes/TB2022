@@ -12,7 +12,6 @@ import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.SelectedGoal;
 import frc.robot.utils.AutoTrajectory;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -21,22 +20,25 @@ import frc.robot.utils.AutoTrajectory;
 public class ThreeBallAuto extends SequentialCommandGroup {
   /** Creates a new ThreeBallAuto. */
   public ThreeBallAuto(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
-    AutoTrajectory ThreeBallAuto_1 = new AutoTrajectory(driveSubsystem, "ThreeBallAuto_1", 3.0, 1.5);
-    AutoTrajectory ThreeBallAuto_2 = new AutoTrajectory(driveSubsystem, "ThreeBallAuto_2", 3.0, 1.5);
-    AutoTrajectory ThreeBallAuto_3 = new AutoTrajectory(driveSubsystem, "ThreeBallAuto_3", 2.0, 1.0);
+    AutoTrajectory ThreeBallAuto_1 = new AutoTrajectory(driveSubsystem, "ThreeBallAuto_1", 3.0, 1.7);
+    AutoTrajectory ThreeBallAuto_2 = new AutoTrajectory(driveSubsystem, "ThreeBallAuto_2", 3.0, 1.7);
+    AutoTrajectory ThreeBallAuto_3 = new AutoTrajectory(driveSubsystem, "ThreeBallAuto_3", 3.0, 1.5);
 
     addCommands(
+      // Toggle to high goal
+      new InstantCommand(() -> shooterSubsystem.toggleSelectedGoal(), shooterSubsystem),
+
       // leaves tarmac, gets new ball and returns to tarmac  
       ThreeBallAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots collected ball + preloaded ball
-      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High).withTimeout(1.0),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY).withTimeout(2.0),
      
       // leaves tarmac, gets new ball and returns to tarmac  
       ThreeBallAuto_2.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots last ball
-      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High).withTimeout(1.0),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY).withTimeout(1.5),
 
       // leaves tarmac
       ThreeBallAuto_3.getCommandAndStop(),

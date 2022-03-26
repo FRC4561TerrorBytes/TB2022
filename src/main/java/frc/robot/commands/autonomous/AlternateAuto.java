@@ -11,7 +11,6 @@ import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.SelectedGoal;
 import frc.robot.utils.AutoTrajectory;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -20,15 +19,18 @@ import frc.robot.utils.AutoTrajectory;
 public class AlternateAuto extends SequentialCommandGroup {
   /** Creates a new AlternateAuto. */
   public AlternateAuto(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
-    AutoTrajectory AlternateAuto_1 = new AutoTrajectory(driveSubsystem, "AlternateAuto_1", 3.0, 1.5);
-    AutoTrajectory AlternateAuto_2 = new AutoTrajectory(driveSubsystem, "AlternateAuto_2", 3.0, 1.5);
+    AutoTrajectory AlternateAuto_1 = new AutoTrajectory(driveSubsystem, "AlternateAuto_1", 3.0, 1.9);
+    AutoTrajectory AlternateAuto_2 = new AutoTrajectory(driveSubsystem, "AlternateAuto_2", 3.0, 1.9);
     
     addCommands(
+      // Toggle to high goal
+      new InstantCommand(() -> shooterSubsystem.toggleSelectedGoal(), shooterSubsystem),
+
       // Leaves tarmac and intakes new ball and returns to hub
       AlternateAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // Shoots balls
-      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.Low).withTimeout(1.0),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY).withTimeout(1.0),
       
       // Leaves tarmac
       AlternateAuto_2.getCommandAndStop(),

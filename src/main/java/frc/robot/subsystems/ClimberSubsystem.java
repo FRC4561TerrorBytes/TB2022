@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utils.BlinkinLEDController;
 import frc.robot.utils.ClimberStateIterator;
 import frc.robot.utils.ClimberStateIterator.ClimberState;
 import frc.robot.utils.TalonPIDConfig;
@@ -44,6 +45,8 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   private ClimberStateIterator m_climberStateIterator;
   private ClimberStateIterator.ClimberState m_currentState;
 
+  private boolean m_climberLED;
+
   /**
    * Creates an instance of ClimberSubsystem
    * <p>
@@ -61,6 +64,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_winchConfig = winchConfig;
     this.m_climberStateIterator = new ClimberStateIterator(m_telescopeConfig.getUpperLimit(), m_telescopeConfig.getLowerLimit(), m_winchConfig.getLowerLimit(), m_winchConfig.getUpperLimit());
     this.m_currentState = m_climberStateIterator.getCurrentState();
+    this.m_climberLED = false;
 
     m_telescopeConfig.initializeTalonPID(m_telescopeLeftMotor, FeedbackDevice.IntegratedSensor, true, false);
     m_telescopeLeftMotor.configForwardSoftLimitEnable(false);
@@ -73,7 +77,9 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_telescopeRightMotor.setInverted(true);
     m_telescopeRightMotor.setSelectedSensorPosition(0.0);
 
-    m_winchConfig.initializeTalonPID(m_winchMotor, FeedbackDevice.IntegratedSensor);
+    m_winchConfig.initializeTalonPID(m_winchMotor, FeedbackDevice.IntegratedSensor, false, true);
+    m_winchMotor.configReverseSoftLimitEnable(false);
+    m_winchMotor.configClearPositionOnLimitR(true, 0);
     m_winchMotor.setSelectedSensorPosition(0.0);
 
     m_telescopeLeftMotor.setNeutralMode(NeutralMode.Brake);
@@ -110,19 +116,21 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     tab.addNumber("Left telescope position", () -> m_telescopeLeftMotor.getSelectedSensorPosition());
     tab.addNumber("Right telescope position", () -> m_telescopeRightMotor.getSelectedSensorPosition());
     tab.addNumber("Winch position", () -> m_winchMotor.getSelectedSensorPosition());
-    tab.addNumber("Winch current", () -> m_winchMotor.getStatorCurrent());
   }
 
   /**
    * Create SmartDashboard indicators
    */
   public void smartDashboard() {
-    SmartDashboard.putBoolean("Winch in?", isWinchAtHome());
+    SmartDashboard.putBoolean("Climber mode?", m_climberLED);
   }
 
   @Override
   public void periodic() {
     smartDashboard();
+
+    if (m_climberLED && isWinchAtHome()) BlinkinLEDController.getInstance().setTeamColor();
+    else if (m_climberLED && !isWinchAtHome()) BlinkinLEDController.getInstance().setAllianceColorSolid();
   }
 
   /**
@@ -161,6 +169,20 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_telescopeRightMotor.overrideSoftLimitsEnable(false);
     m_telescopeLeftMotor.set(ControlMode.PercentOutput, speed);
     m_telescopeRightMotor.set(ControlMode.PercentOutput, speed);
+  }
+
+  /**
+   * Move left telescope down slowly
+   */
+  public void telescopeLeftSlow() {
+    m_telescopeLeftMotor.set(ControlMode.PercentOutput, +0.05);
+  }
+
+  /**
+   * Move right telescope down slowly
+   */
+  public void telescopeRightSlow() {
+    m_telescopeRightMotor.set(ControlMode.PercentOutput, +0.05);
   }
 
   /**
@@ -253,7 +275,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if winch is at home
    */
   public boolean isWinchAtHome() {
-    return Math.abs(m_winchMotor.getSelectedSensorPosition()) < m_winchConfig.getTolerance();
+    return m_winchMotor.isRevLimitSwitchClosed() == 1;
   }
 
   /**
@@ -292,6 +314,13 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     m_currentState = m_climberStateIterator.getCurrentState();
 
     goToState(m_currentState);
+  }
+
+  /**
+   * Put LEDs in climber mode
+   */
+  public void toggleClimberLED() {
+    m_climberLED = !m_climberLED;
   }
 
   @Override

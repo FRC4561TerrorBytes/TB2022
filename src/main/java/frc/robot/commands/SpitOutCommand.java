@@ -9,14 +9,14 @@ import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.FlywheelSpeed;
 
-public class ShootManualCommand extends CommandBase {
+public class SpitOutCommand extends CommandBase {
   private ShooterSubsystem m_shooterSubsystem;
   private double m_bigRPM, m_smallRPM;
   private int m_loops = 0;
   private int m_loopNum;
 
   /** Creates a new ShootCommand. */
-  public ShootManualCommand(ShooterSubsystem shooterSubsystem, double delay, FlywheelSpeed flywheelSpeed) {
+  public SpitOutCommand(ShooterSubsystem shooterSubsystem, double delay, FlywheelSpeed flywheelSpeed) {
     this.m_shooterSubsystem = shooterSubsystem;
     this.m_bigRPM = flywheelSpeed.getBigFlywheelSpeed();
     this.m_smallRPM = flywheelSpeed.getSmallFlywheelSpeed();
@@ -36,13 +36,8 @@ public class ShootManualCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_shooterSubsystem.isFlywheelAtSpeed()) {
       m_loops++;
       if (m_loops > m_loopNum) m_shooterSubsystem.feederShoot();
-    } else {
-      m_loops = 0;
-      m_shooterSubsystem.feederStop(false);
-    }
   }
 
   // Called once the command ends or is interrupted.

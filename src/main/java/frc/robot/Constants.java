@@ -49,7 +49,7 @@ public final class Constants {
   // Drive PID values
   public static final double DRIVE_kP = 0.008;
   public static final double DRIVE_kD = 0.00012;
-  public static final double DRIVE_TURN_SCALAR = 75.0;
+  public static final double DRIVE_TURN_SCALAR = 70.0;
   public static final double DRIVE_LOOKAHEAD = 6;
 
   private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };
@@ -109,7 +109,7 @@ public final class Constants {
   private static final double FLYWHEEL_kI = 0.0;
   private static final double FLYWHEEL_kD = 0.00025;
   private static final double FLYWHEEL_MECHANICAL_EFFICIENCY = 1.0;
-  private static final double FLYWHEEL_TOLERANCE = 80;
+  private static final double FLYWHEEL_TOLERANCE = 50;
   private static final double FLYWHEEL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
@@ -126,11 +126,11 @@ public final class Constants {
                                                                                  FLYWHEEL_MECHANICAL_EFFICIENCY,
                                                                                  FLYWHEEL_TOLERANCE);
 
-  private static final double FLYWHEEL_SMALL_kP = 0.01;
+  private static final double FLYWHEEL_SMALL_kP = 0.011;
   private static final double FLYWHEEL_SMALL_kI = 5e-4;
   private static final double FLYWHEEL_SMALL_kD = 0.0;
-  private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.0;
-  private static final double FLYWHEEL_SMALL_TOLERANCE = 90;
+  private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.02;
+  private static final double FLYWHEEL_SMALL_TOLERANCE = 100;
   private static final double FLYWHEEL_SMALL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
@@ -151,8 +151,9 @@ public final class Constants {
   public static final double FEEDER_INTAKE_SPEED = 0.2;
   public static final double FEEDER_SHOOT_SPEED = 0.3;
   public static final double SHOOT_DELAY = 0.1;
+  public static final FlywheelSpeed SPIT_OUT_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
   public static final FlywheelSpeed LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1620.0, 162.0);
-  public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(2300.0, 2100.0);
+  public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(2400.0, 3000.0);
 
   // Telescope PID variables
   private static final double TELESCOPE_kP = 0.1;
