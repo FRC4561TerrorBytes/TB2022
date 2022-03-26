@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.ClimberStateIterator;
-import frc.robot.utils.TalonPIDConfig;
 import frc.robot.utils.ClimberStateIterator.ClimberState;
+import frc.robot.utils.TalonPIDConfig;
 
 public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   public static class Hardware {
@@ -110,6 +110,7 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
     tab.addNumber("Left telescope position", () -> m_telescopeLeftMotor.getSelectedSensorPosition());
     tab.addNumber("Right telescope position", () -> m_telescopeRightMotor.getSelectedSensorPosition());
     tab.addNumber("Winch position", () -> m_winchMotor.getSelectedSensorPosition());
+    tab.addNumber("Winch current", () -> m_winchMotor.getStatorCurrent());
   }
 
   /**

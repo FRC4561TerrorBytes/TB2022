@@ -30,13 +30,13 @@ public class ThreeBallAuto extends SequentialCommandGroup {
       ThreeBallAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots collected ball + preloaded ball
-      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.Low).withTimeout(1.0),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High).withTimeout(1.0),
      
       // leaves tarmac, gets new ball and returns to tarmac  
       ThreeBallAuto_2.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots last ball
-      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.Low).withTimeout(1.0),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High).withTimeout(1.0),
 
       // leaves tarmac
       ThreeBallAuto_3.getCommandAndStop(),

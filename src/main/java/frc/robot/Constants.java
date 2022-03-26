@@ -192,9 +192,9 @@ public final class Constants {
   private static final double WINCH_kP = 0.1;
   private static final double WINCH_kD = 0.0;
   private static final double WINCH_MECHANICAL_EFFICIENCY = 0.8;
-  private static final double WINCH_TOLERANCE = 2000;
+  private static final double WINCH_TOLERANCE = 4000;
   private static final double WINCH_LOWER_LIMIT = 0;
-  private static final double WINCH_UPPER_LIMIT = 380000;
+  private static final double WINCH_UPPER_LIMIT = 330000;
   private static final double WINCH_VELOCITY = FALCON_500_MAX_RPM * 0.6;
   private static final double WINCH_ACCELERATION = FALCON_500_MAX_RPM * 0.6;
   private static final int WINCH_MOTION_SMOOTHING = 2;

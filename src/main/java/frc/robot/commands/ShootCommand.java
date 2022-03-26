@@ -24,8 +24,14 @@ public class ShootCommand extends CommandBase {
   }
 
   public ShootCommand(ShooterSubsystem shooterSubsystem, double delay, ShooterSubsystem.SelectedGoal goal) {
-    this(shooterSubsystem, delay);
-    shooterSubsystem.selectGoal(goal);
+    this.m_shooterSubsystem = shooterSubsystem;
+
+    m_loopNum = (int)Math.round(delay / Constants.ROBOT_LOOP_PERIOD);
+
+    m_shooterSubsystem.selectGoal(goal);
+
+    // Use addRequirements() here to declare subsystem dependencies
+    addRequirements(m_shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
