@@ -67,7 +67,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   private AHRS m_navx;
 
   private final double TOLERANCE = 0.125;
-  private final double MOTOR_DEADBAND = 0.005;
+  private final double MOTOR_DEADBAND = 0.02;
   private final double MAX_VOLTAGE = 12.0;
 
   private double m_turnScalar = 1.0; 
@@ -262,31 +262,24 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * Maintain robot angle using PID
+   * Turn robot by angleDelta
+   * @param angleDelta degrees to turn robot by [-turnScalar, +turnScalar]
    */
-  public void maintainAngle() {
-    double turnOutput = m_turnPIDController.calculate(getAngle());
+  public void aimToAngle(double angleDelta) {
+    angleDelta = MathUtil.clamp(angleDelta, -m_turnScalar, +m_turnScalar);
+    m_turnPIDController.setSetpoint(getAngle() + angleDelta);
 
+    double turnOutput = m_turnPIDController.calculate(getAngle());
     m_lMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, -turnOutput);
     m_rMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, +turnOutput);
   }
 
   /**
-   * Turn robot by angleDelta
-   * @param angleDelta degrees to turn robot by [-turnScalar, +turnScalar]
+   * If robot is pointed at target
+   * @return Whether robot is pointed at target
    */
-  public void aimToAngle(double angleDelta) throws InterruptedException {
-    angleDelta = MathUtil.clamp(angleDelta, -m_turnScalar, +m_turnScalar);
-    m_turnPIDController.setSetpoint(getAngle() + angleDelta);
-    long loopTime = (long)Constants.ROBOT_LOOP_PERIOD * 1000;
-
-    do {
-      double turnOutput = m_turnPIDController.calculate(getAngle());
-      m_lMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, -turnOutput);
-      m_rMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, +turnOutput);
-      
-      Thread.sleep(loopTime);
-    } while (!m_turnPIDController.atSetpoint());
+  public boolean isOnTarget() {
+    return m_turnPIDController.atSetpoint();
   }
 
   /**

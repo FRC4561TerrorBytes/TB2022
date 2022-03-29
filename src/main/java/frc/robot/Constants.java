@@ -47,9 +47,9 @@ public final class Constants {
   public static final double DRIVE_MAX_LINEAR_SPEED = (FALCON_500_MAX_RPM / 60) * DRIVE_METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY; // 3.766 m/s
 
   // Drive PID values
-  public static final double DRIVE_kP = 0.008;
-  public static final double DRIVE_kD = 0.00012;
-  public static final double DRIVE_TURN_SCALAR = 70.0;
+  public static final double DRIVE_kP = 0.01;
+  public static final double DRIVE_kD = 0.0;
+  public static final double DRIVE_TURN_SCALAR = 45.0;
   public static final double DRIVE_LOOKAHEAD = 6;
 
   private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };
@@ -63,14 +63,14 @@ public final class Constants {
   public static final PolynomialSplineFunction DRIVE_TRACTION_CONTROL_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TRACTION_CONTROL_CURVE_X, DRIVE_TRACTION_CONTROL_CURVE_Y);
   public static final PolynomialSplineFunction DRIVE_TURN_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TURN_INPUT_CURVE_X, DRIVE_TURN_INPUT_CURVE_Y);
 
-  private static final double CURRENT_LIMIT = 50.0;
+  private static final double CURRENT_LIMIT = 80.0;
   private static final double CURRENT_THRESHOLD = 120.0;
   private static final double CURRENT_THRESHOLD_TIME = 6 * ROBOT_LOOP_PERIOD;
   
   public static final StatorCurrentLimitConfiguration DRIVE_CURRENT_LIMIT_CONFIGURATION = new StatorCurrentLimitConfiguration(true, CURRENT_LIMIT, CURRENT_THRESHOLD, CURRENT_THRESHOLD_TIME);
 
   // Intake Arm PID config
-  private static final double INTAKE_ARM_kP = 0.8;
+  private static final double INTAKE_ARM_kP = 0.1;
   private static final double INTAKE_ARM_kD = 0.0;
   private static final double INTAKE_ARM_MECHANICAL_EFFICIENCY = 0.8;
   private static final double INTAKE_ARM_TOLERANCE = 10;

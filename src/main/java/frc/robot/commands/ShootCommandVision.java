@@ -6,20 +6,26 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
-public class ShootCommand extends CommandBase {
+public class ShootCommandVision extends CommandBase {
+  private DriveSubsystem m_driveSubsystem;
   private ShooterSubsystem m_shooterSubsystem;
+  private VisionSubsystem m_visionSubsystem;
   private int m_loops = 0;
   private int m_loopNum;
 
   /** Creates a new ShootCommand. */
-  public ShootCommand(ShooterSubsystem shooterSubsystem, double delay) {
-    this(shooterSubsystem, delay, shooterSubsystem.getSelectedGoal());
+  public ShootCommandVision(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, double delay) {
+    this(driveSubsystem, shooterSubsystem, visionSubsystem, delay, shooterSubsystem.getSelectedGoal());
   }
 
-  public ShootCommand(ShooterSubsystem shooterSubsystem, double delay, ShooterSubsystem.SelectedGoal goal) {
+  public ShootCommandVision(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, double delay, ShooterSubsystem.SelectedGoal goal) {
+    this.m_driveSubsystem = driveSubsystem;
     this.m_shooterSubsystem = shooterSubsystem;
+    this.m_visionSubsystem = visionSubsystem;
 
     m_loopNum = (int)Math.round(delay / Constants.ROBOT_LOOP_PERIOD);
 
@@ -33,14 +39,19 @@ public class ShootCommand extends CommandBase {
   @Override
   public void initialize() {
     // Start flywheel
-    m_shooterSubsystem.setFlywheelAuto(); 
+    m_shooterSubsystem.setFlywheelAuto();
+
+    // Disable driver mode
+    m_visionSubsystem.setDriverMode(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_driveSubsystem.aimToAngle(m_visionSubsystem.getYaw());
+
     // Only run feeder if flywheel is at speed, else stop
-    if (m_shooterSubsystem.isFlywheelAtSpeed()) {
+    if (m_shooterSubsystem.isFlywheelAtSpeed() && m_driveSubsystem.isOnTarget()) {
       m_loops++;
       if (m_loops > m_loopNum) m_shooterSubsystem.feederShoot();
     } else {
@@ -61,13 +72,5 @@ public class ShootCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
-  }
-
-  /**
-   * Get delay loop number
-   * @return number of loops
-   */
-  public int getLoopNum() {
-    return m_loopNum;
   }
 }
