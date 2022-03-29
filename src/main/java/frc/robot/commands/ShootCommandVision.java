@@ -32,7 +32,9 @@ public class ShootCommandVision extends CommandBase {
     m_shooterSubsystem.selectGoal(goal);
 
     // Use addRequirements() here to declare subsystem dependencies
+    addRequirements(m_driveSubsystem);
     addRequirements(m_shooterSubsystem);
+    addRequirements(m_visionSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -66,6 +68,9 @@ public class ShootCommandVision extends CommandBase {
     // Stop flywheel and feeder
     m_shooterSubsystem.flywheelStop();
     m_shooterSubsystem.feederStop(false);
+
+    // Re-enable driver mode
+    m_visionSubsystem.setDriverMode(true);
   }
 
   // Returns true when the command should end.
