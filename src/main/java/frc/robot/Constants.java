@@ -50,7 +50,7 @@ public final class Constants {
   public static final double DRIVE_kP = 0.01;
   public static final double DRIVE_kD = 0.0;
   public static final double DRIVE_TURN_SCALAR = 45.0;
-  public static final double DRIVE_LOOKAHEAD = 6;
+  public static final double DRIVE_LOOKAHEAD = 15;
 
   private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };
   private static final double DRIVE_THROTTLE_INPUT_CURVE_Y[] = { 0.0, 1.883, 3.766 };
@@ -70,7 +70,7 @@ public final class Constants {
   public static final StatorCurrentLimitConfiguration DRIVE_CURRENT_LIMIT_CONFIGURATION = new StatorCurrentLimitConfiguration(true, CURRENT_LIMIT, CURRENT_THRESHOLD, CURRENT_THRESHOLD_TIME);
 
   // Intake Arm PID config
-  private static final double INTAKE_ARM_kP = 0.1;
+  private static final double INTAKE_ARM_kP = 0.8;
   private static final double INTAKE_ARM_kD = 0.0;
   private static final double INTAKE_ARM_MECHANICAL_EFFICIENCY = 0.8;
   private static final double INTAKE_ARM_TOLERANCE = 10;

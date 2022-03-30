@@ -67,7 +67,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   private AHRS m_navx;
 
   private final double TOLERANCE = 0.125;
-  private final double MOTOR_DEADBAND = 0.02;
+  private final double MOTOR_DEADBAND = 0.025;
   private final double MAX_VOLTAGE = 12.0;
 
   private double m_turnScalar = 1.0; 
