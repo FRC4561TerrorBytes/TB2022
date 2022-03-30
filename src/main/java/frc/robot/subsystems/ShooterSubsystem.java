@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
+import java.util.Map.Entry;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
@@ -13,6 +16,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxLimitSwitch;
+
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -105,6 +111,10 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
  
   private SelectedGoal m_selectedGoal;
   private FlywheelSpeed[] m_flywheelSpeeds = new FlywheelSpeed[2];
+  private PolynomialSplineFunction m_bigFlywheelVisionCurve;
+  private PolynomialSplineFunction m_smallFlywheelVisionCurve;
+  private double m_minDistance;
+  private double m_maxDistance;
 
   private double m_feederIntakeSpeed;
   private double m_feederShootSpeed;
@@ -119,11 +129,13 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @param flywheelSmallConfig PID config for small flywheel
    * @param lowFlywheelSpeed Low speed for big and small flywheel
    * @param highFlywheelSpeed High speed for big and small flywheel
+   * @param flywheelVisionMap List of pairs relating distance (m) to flywheel speeds
    * @param feederIntakeSpeed Feeder intake speed in % [0.0, +1.0]
    * @param feederShootSpeed Feeder shoot speed in % [0.0, +1.0]
    */
-  public ShooterSubsystem(Hardware shooterHardware, TalonPIDConfig flywheelMasterConfig,
-                          TalonPIDConfig flywheelSmallConfig, FlywheelSpeed lowFlywheelSpeed, FlywheelSpeed highFlywheelSpeed,
+  public ShooterSubsystem(Hardware shooterHardware, TalonPIDConfig flywheelMasterConfig, TalonPIDConfig flywheelSmallConfig, 
+                          FlywheelSpeed lowFlywheelSpeed, FlywheelSpeed highFlywheelSpeed,
+                          List<Entry<Double, FlywheelSpeed>> flywheelVisionMap,
                           double feederIntakeSpeed, double feederShootSpeed) {
     BigFlywheel.masterMotor = shooterHardware.flywheelMasterMotor;
     BigFlywheel.slaveMotor = shooterHardware.flywheelSlaveMotor;
@@ -157,6 +169,9 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     m_upperFeederSensor.enableLimitSwitch(true);
     m_lowerFeederSensor.enableLimitSwitch(false);
 
+    // Initialize shooter vision curves
+    initializeFlywheelVisionCurve(flywheelVisionMap);
+
     // Initialize config for flywheel PID
     BigFlywheel.masterConfig.initializeTalonPID(BigFlywheel.masterMotor, FeedbackDevice.IntegratedSensor);
     BigFlywheel.slaveMotor.configFactoryDefault();
@@ -168,6 +183,28 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     // Initialize config for small flywheel PID
     SmallFlywheel.config.initializeTalonPID(SmallFlywheel.motor, FeedbackDevice.IntegratedSensor);
     SmallFlywheel.motor.setNeutralMode(NeutralMode.Coast);
+  }
+
+  /**
+   * Initialize vision curve spline functions
+   * @param flywheelVisionMap List of distance/FlywheelSpeed pairs
+   */
+  private void initializeFlywheelVisionCurve(List<Entry<Double, FlywheelSpeed>> flywheelVisionMap) {
+    double[] distances = new double[flywheelVisionMap.size()];
+    double[] smallFlywheelSpeeds = new double[flywheelVisionMap.size()];
+    double[] bigFlywheelSpeeds = new double[flywheelVisionMap.size()];
+
+    for (int i = 0; i < flywheelVisionMap.size(); i++) {
+      distances[i] = flywheelVisionMap.get(i).getKey();
+      bigFlywheelSpeeds[i] = flywheelVisionMap.get(i).getValue().getBigFlywheelSpeed();
+      smallFlywheelSpeeds[i] = flywheelVisionMap.get(i).getValue().getSmallFlywheelSpeed();
+    }
+
+    m_minDistance = distances[0];
+    m_maxDistance = distances[distances.length - 1];
+
+    m_bigFlywheelVisionCurve = new SplineInterpolator().interpolate(distances, bigFlywheelSpeeds);
+    m_smallFlywheelVisionCurve = new SplineInterpolator().interpolate(distances, smallFlywheelSpeeds);
   }
   
   /**
@@ -236,6 +273,18 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public SelectedGoal getSelectedGoal() {
     return m_selectedGoal;
+  }
+
+  /**
+   * Automatically sets the flywheel speed based on vision curve
+   * <p>
+   * NOTE: This method ALWAYS shoots high
+   */
+  public void setFlywheelVision(double distance) {
+    double bigFlywheelSpeed = m_bigFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
+    double smallFlywheelSpeed = m_smallFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
+
+    setFlywheelSpeed(bigFlywheelSpeed, smallFlywheelSpeed);
   }
 
   /**

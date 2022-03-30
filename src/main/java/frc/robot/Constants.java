@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
@@ -47,8 +52,8 @@ public final class Constants {
   public static final double DRIVE_MAX_LINEAR_SPEED = (FALCON_500_MAX_RPM / 60) * DRIVE_METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY; // 3.766 m/s
 
   // Drive PID values
-  public static final double DRIVE_kP = 0.01;
-  public static final double DRIVE_kD = 0.0;
+  public static final double DRIVE_kP = 0.017;
+  public static final double DRIVE_kD = 0.0001;
   public static final double DRIVE_TURN_SCALAR = 45.0;
   public static final double DRIVE_LOOKAHEAD = 15;
 
@@ -151,9 +156,15 @@ public final class Constants {
   public static final double FEEDER_INTAKE_SPEED = 0.2;
   public static final double FEEDER_SHOOT_SPEED = 0.3;
   public static final double SHOOT_DELAY = 0.1;
+  public static final double SHOOT_AIM_TOLERANCE = 1.0;
   public static final FlywheelSpeed SPIT_OUT_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
   public static final FlywheelSpeed LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1620.0, 162.0);
   public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(2400.0, 3000.0);
+  public static final List<Entry<Double, FlywheelSpeed>> FLYWHEEL_VISION_MAP = Arrays.asList(
+    Map.entry(0.0, new FlywheelSpeed(2400.0, 3000.0)),
+    Map.entry(1.0, new FlywheelSpeed(2400.0, 3000.0)),
+    Map.entry(2.0, new FlywheelSpeed(2400.0, 3000.0))
+  );
 
   // Telescope PID variables
   private static final double TELESCOPE_kP = 0.1;

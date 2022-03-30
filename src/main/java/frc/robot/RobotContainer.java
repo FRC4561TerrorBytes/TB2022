@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import org.photonvision.PhotonCamera;
-import org.photonvision.common.hardware.VisionLEDMode;
-
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -26,6 +23,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SpitOutCommand;
+import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.autonomous.AlternateAuto;
 import frc.robot.commands.autonomous.FiveBallAuto;
 import frc.robot.commands.autonomous.FourBallAutoAdvanced;
@@ -70,6 +68,7 @@ public class RobotContainer {
                                                                                  Constants.FLYWHEEL_SMALL_CONFIG,
                                                                                  Constants.LOW_FLYWHEEL_SPEED,
                                                                                  Constants.HIGH_FLYWHEEL_SPEED,
+                                                                                 Constants.FLYWHEEL_VISION_MAP,
                                                                                  Constants.FEEDER_INTAKE_SPEED,
                                                                                  Constants.FEEDER_SHOOT_SPEED);
 
@@ -86,8 +85,6 @@ public class RobotContainer {
   private static final XboxController SECONDARY_CONTROLLER = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
 
   private static SendableChooser<SequentialCommandGroup> m_automodeChooser = new SendableChooser<>();
-
-  private static PhotonCamera m_pi = new PhotonCamera("photonvision");
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -164,6 +161,8 @@ public class RobotContainer {
     // Primary controller bindings
     primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY));
     primaryTriggerLeft.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    primaryButtonA.whenPressed(new TurnToAngleCommand(DRIVE_SUBSYSTEM, +30.0));
+    primaryButtonB.whenPressed(new TurnToAngleCommand(DRIVE_SUBSYSTEM, -30.0));
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
     primaryButtonY.whenPressed(new InstantCommand(() -> SHOOTER_SUBSYSTEM.toggleSelectedGoal(), SHOOTER_SUBSYSTEM));
     primaryTriggerRight.whileActiveOnce(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
@@ -225,15 +224,14 @@ public class RobotContainer {
   public void teleopInit() {
     DRIVE_SUBSYSTEM.teleopInit();
     BlinkinLEDController.getInstance().setAllianceColorSolid();
-    m_pi.setLED(VisionLEDMode.kOn);
   }
 
   /**
    * Do this when disabled
    */
   public void disabledInit() {
+    VISION_SUBSYSTEM.disabledInit();
     BlinkinLEDController.getInstance().setTeamColor();
-    m_pi.setLED(VisionLEDMode.kOff);
   }
 
   /**
@@ -263,7 +261,6 @@ public class RobotContainer {
    * Configure default Shuffleboard tab
    */
   public void defaultShuffleboardTab() {
-    m_pi.setDriverMode(true);
     Shuffleboard.selectTab("SmartDashboard");
     autoModeChooser();
     SmartDashboard.putData("Auto Mode", m_automodeChooser);
