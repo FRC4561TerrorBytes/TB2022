@@ -76,11 +76,10 @@ public class RobotContainer {
                                                                                  Constants.TELESCOPE_CONFIG,
                                                                                  Constants.WINCH_CONFIG);
 
-  // Not sure if we need this??? Added it here though <3
-  // private static final VisionSubsystem VISION_SUBSYSTEM = new VisionSubsystem(VisionSubsystem.initializeHardware(),
-  //                                                                             Constants.CAMERA_HEIGHT_METERS,
-  //                                                                             Constants.TARGET_HEIGHT_METERS,
-  //                                                                             Constants.CAMERA_PITCH_DEGREES);
+  private static final VisionSubsystem VISION_SUBSYSTEM = new VisionSubsystem(VisionSubsystem.initializeHardware(),
+                                                                              Constants.CAMERA_HEIGHT_METERS,
+                                                                              Constants.TARGET_HEIGHT_METERS,
+                                                                              Constants.CAMERA_PITCH_DEGREES);
   
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
   private static final XboxController SECONDARY_CONTROLLER = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
