@@ -86,10 +86,12 @@ public class VisionSubsystem extends SubsystemBase {
     if (!m_pi.getDriverMode()) {
       m_latestResult = m_pi.getLatestResult();
       m_latestTarget = m_latestResult.getBestTarget();
-      m_latestRange = PhotonUtils.calculateDistanceToTargetMeters(m_cameraHeightMeters,
-                                                                  m_targetHeightMeters, 
-                                                                  m_cameraPitchRadians,
-                                                                  m_latestTarget.getPitch());
+      if (m_latestTarget != null) {
+        m_latestRange = PhotonUtils.calculateDistanceToTargetMeters(m_cameraHeightMeters,
+                                                                    m_targetHeightMeters, 
+                                                                    m_cameraPitchRadians,
+                                                                    m_latestTarget.getPitch());
+      }
     }
   }
 }
