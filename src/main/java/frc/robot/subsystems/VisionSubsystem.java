@@ -49,11 +49,19 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Toggles driver mode
+   * Enable or disable driver mode
    * @param enable Whether to set driver mode
    */
   public void setDriverMode(boolean enable) {
     m_pi.setDriverMode(enable);
+  }
+
+  /**
+   * Get driver mode
+   * @return true if driver mode enabled
+   */
+  public boolean getDriverMode() {
+    return m_pi.getDriverMode();
   }
 
   /**
@@ -66,7 +74,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   /**
    * Get yaw angle to target
-   * @return yaw angle to target in degrees
+   * @return yaw angle to best target in degrees
    */
   public double getYaw() {
     return m_latestTarget.getYaw();
@@ -91,7 +99,7 @@ public class VisionSubsystem extends SubsystemBase {
                                                                     m_targetHeightMeters, 
                                                                     m_cameraPitchRadians,
                                                                     m_latestTarget.getPitch());
-      }
+      } else m_latestRange = 0.0;
     }
   }
 }
