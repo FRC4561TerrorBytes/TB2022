@@ -28,7 +28,13 @@ public class VisionSubsystem extends SubsystemBase {
   double m_cameraHeightMeters, m_targetHeightMeters;
   double m_cameraPitchRadians;
 
-  /** Creates a new VisionSubsystem. */
+  /**
+   * Create a new vision subsystem
+   * @param visionHardware Vision hardware
+   * @param cameraHeightMeters Camera height in meters
+   * @param targetHeightMeters Target height in meters
+   * @param cameraPitchDegrees Camera pitch in degrees
+   */
   public VisionSubsystem(Hardware visionHardware, double cameraHeightMeters, double targetHeightMeters, double cameraPitchDegrees) {
     this.m_pi = visionHardware.pi;
     this.m_cameraHeightMeters = cameraHeightMeters;
