@@ -51,7 +51,7 @@ public class TurnPIDController extends PIDController {
    * @param turnRate current yaw turn rate of robot (degrees/sec)
    * @param turnRequest turn request [-1.0, +1.0]
    * 
-  * @return optimal turn output [-1.0, +1.0]
+   * @return optimal turn output [-1.0, +1.0]
    */
   public double calculate(double currentAngle, double turnRate, double turnRequest) {
     // Start turning if input is greater than deadband
