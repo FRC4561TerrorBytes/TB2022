@@ -222,6 +222,12 @@ public final class Constants {
                                                                        WINCH_ACCELERATION, 
                                                                        WINCH_MOTION_SMOOTHING);
 
+  // Vision constants
+  public static final double CAMERA_HEIGHT_METERS = 0.75565;
+  public static final double TARGET_HEIGHT_METERS = 2.7432;
+  public static final double CAMERA_PITCH_DEGREES = 21;
+
+
   // Xbox controller ports
   public static final int PRIMARY_CONTROLLER_PORT = 0;
   public static final int SECONDARY_CONTROLLER_PORT = 1;
