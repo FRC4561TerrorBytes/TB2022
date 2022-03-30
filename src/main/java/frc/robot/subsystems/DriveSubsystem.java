@@ -66,7 +66,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
   private AHRS m_navx;
 
-  private final double TOLERANCE = 0.125;
+  private final double TOLERANCE = 0.5;
   private final double MOTOR_DEADBAND = 0.025;
   private final double MAX_VOLTAGE = 12.0;
 
@@ -208,6 +208,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public void shuffleboard() {
     ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
+    tab.addBoolean("Is on target?", () -> isOnTarget());
     tab.addNumber("Drive Angle (degrees)", () -> getAngle());
     tab.addNumber("Right master current (amps)", () -> m_rMasterMotor.getSupplyCurrent());
     tab.addNumber("Left master current (amps)", () -> m_lMasterMotor.getSupplyCurrent());
@@ -275,11 +276,21 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
-   * If robot is pointed at target
-   * @return Whether robot is pointed at target
+   * Whether robot is aimed at target
+   * @param tolerance tolerance in degrees
+   * @return true if robot is aimed at target within tolerance
    */
   public boolean isOnTarget() {
     return m_turnPIDController.atSetpoint();
+  }
+
+  /**
+   * Maintain setpoint angle
+   */
+  public void maintainAngle() {
+    double turnOutput = m_turnPIDController.calculate(getAngle());
+    m_lMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, -turnOutput);
+    m_rMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, +turnOutput);
   }
 
   /**
@@ -431,6 +442,14 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     resetAngle();
     m_turnPIDController.setSetpoint(0.0);
     m_turnPIDController.reset();
+  }
+
+  /**
+   * Set setpoint for drive PID
+   * @param setpoint setpoint in degrees
+   */
+  public void setDrivePIDSetpoint(double setpoint) {
+    m_turnPIDController.setSetpoint(setpoint);
   }
 
   /**

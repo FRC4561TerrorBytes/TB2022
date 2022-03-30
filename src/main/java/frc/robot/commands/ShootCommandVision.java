@@ -9,27 +9,30 @@ import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.SelectedGoal;
 
 public class ShootCommandVision extends CommandBase {
   private DriveSubsystem m_driveSubsystem;
   private ShooterSubsystem m_shooterSubsystem;
   private VisionSubsystem m_visionSubsystem;
+  private SelectedGoal m_prevSelectedGoal;
   private int m_loops = 0;
   private int m_loopNum;
 
-  /** Creates a new ShootCommand. */
+  /**
+   * Shoot using vision
+   * @param driveSubsystem drive subsystem
+   * @param shooterSubsystem shooter subsystem
+   * @param visionSubsystem vision subsystem
+   * @param delay shoot delay in seconds
+   * @param tolerance aiming tolerance in degrees
+   */
   public ShootCommandVision(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, double delay) {
-    this(driveSubsystem, shooterSubsystem, visionSubsystem, delay, shooterSubsystem.getSelectedGoal());
-  }
-
-  public ShootCommandVision(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, double delay, ShooterSubsystem.SelectedGoal goal) {
     this.m_driveSubsystem = driveSubsystem;
     this.m_shooterSubsystem = shooterSubsystem;
     this.m_visionSubsystem = visionSubsystem;
-
-    m_loopNum = (int)Math.round(delay / Constants.ROBOT_LOOP_PERIOD);
-
-    m_shooterSubsystem.selectGoal(goal);
+    this.m_prevSelectedGoal = m_shooterSubsystem.getSelectedGoal();
+    this.m_loopNum = (int)Math.round(delay / Constants.ROBOT_LOOP_PERIOD);
 
     // Use addRequirements() here to declare subsystem dependencies
     addRequirements(m_driveSubsystem);
@@ -40,8 +43,8 @@ public class ShootCommandVision extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // Start flywheel
-    m_shooterSubsystem.setFlywheelAuto();
+    // Select high goal
+    m_shooterSubsystem.selectGoal(SelectedGoal.High);
 
     // Disable driver mode
     m_visionSubsystem.setDriverMode(false);
@@ -50,15 +53,22 @@ public class ShootCommandVision extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_driveSubsystem.aimToAngle(m_visionSubsystem.getYaw());
+    // Only run if target is valid
+    if (m_visionSubsystem.isTargetValid()) {
+      // Run flywheel based on distance from target
+      m_shooterSubsystem.setFlywheelVision(m_visionSubsystem.getDistance());
 
-    // Only run feeder if flywheel is at speed, else stop
-    if (m_shooterSubsystem.isFlywheelAtSpeed() && m_driveSubsystem.isOnTarget()) {
-      m_loops++;
-      if (m_loops > m_loopNum) m_shooterSubsystem.feederShoot();
-    } else {
-      m_loops = 0;
-      m_shooterSubsystem.feederStop(false);
+      // Aim robot toward target
+      m_driveSubsystem.aimToAngle(m_visionSubsystem.getYaw());
+
+      // Only run feeder if flywheel is at speed and robot is on target, else stop
+      if (m_shooterSubsystem.isFlywheelAtSpeed() && m_driveSubsystem.isOnTarget()) {
+        m_loops++;
+        if (m_loops > m_loopNum) m_shooterSubsystem.feederShoot();
+      } else {
+        m_loops = 0;
+        m_shooterSubsystem.feederStop(false);
+      }
     }
   }
 
@@ -68,6 +78,9 @@ public class ShootCommandVision extends CommandBase {
     // Stop flywheel and feeder
     m_shooterSubsystem.flywheelStop();
     m_shooterSubsystem.feederStop(false);
+
+    // Reset selected goal
+    m_shooterSubsystem.selectGoal(m_prevSelectedGoal);
 
     // Re-enable driver mode
     m_visionSubsystem.setDriverMode(true);

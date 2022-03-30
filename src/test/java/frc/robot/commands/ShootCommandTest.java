@@ -65,6 +65,7 @@ public class ShootCommandTest {
                                               Constants.FLYWHEEL_SMALL_CONFIG,
                                               Constants.LOW_FLYWHEEL_SPEED,
                                               Constants.HIGH_FLYWHEEL_SPEED,
+                                              Constants.FLYWHEEL_VISION_MAP,
                                               Constants.FEEDER_INTAKE_SPEED,
                                               Constants.FEEDER_SHOOT_SPEED);
   }

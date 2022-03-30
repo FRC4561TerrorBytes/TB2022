@@ -24,7 +24,7 @@ public class VisionSubsystem extends SubsystemBase {
   PhotonCamera m_pi;
   PhotonPipelineResult m_latestResult;
   PhotonTrackedTarget m_latestTarget;
-  double m_latestRange;
+  double m_latestDistance;
   double m_cameraHeightMeters, m_targetHeightMeters;
   double m_cameraPitchRadians;
 
@@ -46,6 +46,13 @@ public class VisionSubsystem extends SubsystemBase {
     Hardware visionHardware = new Hardware(new PhotonCamera("photonvision"));
 
     return visionHardware;
+  }
+
+  /**
+   * Initialize VisionSubsystem before disable
+   */
+  public void disabledInit() {
+    setDriverMode(true);
   }
 
   /**
@@ -73,19 +80,28 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
+   * If PhotonVision has found a valid target
+   * @return true if target has been identified
+   */
+  public boolean isTargetValid() {
+    return m_latestTarget != null;
+  }
+
+  /**
    * Get yaw angle to target
    * @return yaw angle to best target in degrees
    */
   public double getYaw() {
-    return m_latestTarget.getYaw();
+    if (isTargetValid()) return m_latestTarget.getYaw();
+    else return 0.0;
   }
 
   /**
    * Get latest range
    * @return range to best target in meters
    */
-  public double getRange() {
-    return m_latestRange;
+  public double getDistance() {
+    return m_latestDistance;
   }
 
   @Override
@@ -94,12 +110,12 @@ public class VisionSubsystem extends SubsystemBase {
     if (!m_pi.getDriverMode()) {
       m_latestResult = m_pi.getLatestResult();
       m_latestTarget = m_latestResult.getBestTarget();
-      if (m_latestTarget != null) {
-        m_latestRange = PhotonUtils.calculateDistanceToTargetMeters(m_cameraHeightMeters,
+      if (isTargetValid()) {
+        m_latestDistance = PhotonUtils.calculateDistanceToTargetMeters(m_cameraHeightMeters,
                                                                     m_targetHeightMeters, 
                                                                     m_cameraPitchRadians,
                                                                     m_latestTarget.getPitch());
-      } else m_latestRange = 0.0;
+      } else m_latestDistance = 0.0;
     }
   }
 }
