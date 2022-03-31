@@ -11,6 +11,7 @@ import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.SelectedGoal;
 import frc.robot.utils.AutoTrajectory;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -22,11 +23,8 @@ public class ShootDriveForwardAuto extends SequentialCommandGroup {
     AutoTrajectory LeaveTarmac = new AutoTrajectory(driveSubsystem, "LeaveTarmac", 2.0, 1.0);
 
     addCommands(
-      // Toggle to high goal
-      new InstantCommand(() -> shooterSubsystem.toggleSelectedGoal(), shooterSubsystem),
-
       // Shoots single preloaded ball
-      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY).withTimeout(1.0),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High).withTimeout(1.0),
 
       // Drives forward + exits tarmac
       LeaveTarmac.getCommandAndStop(),
