@@ -191,8 +191,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    */
   private void initializeFlywheelVisionCurve(List<Entry<Double, FlywheelSpeed>> flywheelVisionMap) {
     double[] distances = new double[flywheelVisionMap.size()];
-    double[] smallFlywheelSpeeds = new double[flywheelVisionMap.size()];
     double[] bigFlywheelSpeeds = new double[flywheelVisionMap.size()];
+    double[] smallFlywheelSpeeds = new double[flywheelVisionMap.size()];
 
     for (int i = 0; i < flywheelVisionMap.size(); i++) {
       distances[i] = flywheelVisionMap.get(i).getKey();
@@ -283,6 +283,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   public void setFlywheelVision(double distance) {
     double bigFlywheelSpeed = m_bigFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
     double smallFlywheelSpeed = m_smallFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
+
+    selectGoal(SelectedGoal.High);
 
     setFlywheelSpeed(bigFlywheelSpeed, smallFlywheelSpeed);
   }
