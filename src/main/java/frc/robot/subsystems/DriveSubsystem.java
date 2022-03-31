@@ -66,8 +66,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
   private AHRS m_navx;
 
-  private final double TOLERANCE = 0.5;
-  private final double MOTOR_DEADBAND = 0.025;
+  private final double TOLERANCE = 1.75;
+  private final double MOTOR_DEADBAND = 0.04;
   private final double MAX_VOLTAGE = 12.0;
 
   private double m_turnScalar = 1.0; 
@@ -159,7 +159,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     m_turnPIDController.setSetpoint(0.0);
 
     // Set drive PID tolerance
-    m_turnPIDController.setTolerance(TOLERANCE);
+    m_turnPIDController.setTolerance(TOLERANCE, 1);
 
     // Initialise odometry
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
