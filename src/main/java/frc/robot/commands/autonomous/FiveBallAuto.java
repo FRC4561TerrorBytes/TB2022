@@ -7,6 +7,7 @@ import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.SelectedGoal;
 import frc.robot.utils.AutoTrajectory;
 
 public class FiveBallAuto extends SequentialCommandGroup {
@@ -18,26 +19,23 @@ public class FiveBallAuto extends SequentialCommandGroup {
     AutoTrajectory FiveBallAuto_4 = new AutoTrajectory(driveSubsystem, "ThreeBallAuto_3", 3.0, 1.5);
     
     addCommands(
-      // Toggle to high goal
-      new InstantCommand(() -> shooterSubsystem.toggleSelectedGoal(), shooterSubsystem),
-
       // Leaves tarmac, gets a ball, and returns
       FiveBallAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
 
       // Shoot both stored ball and new ball
-      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High),
 
       // Leave tarmac again and get one more ball, then return
       FiveBallAuto_2.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
 
       // Shoot ball
-      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High),
 
       // Get two balls from the terminal
       FiveBallAuto_3.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
 
       // Shoot balls
-      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High),
 
       // Leave tarmac
       FiveBallAuto_4.getCommandAndStop()
