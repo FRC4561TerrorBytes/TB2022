@@ -30,7 +30,7 @@ public final class Constants {
   public static final double ROBOT_LOOP_PERIOD = 1.0 / 60.0;
 
   // Automode Constants
-  public static final double TRACK_WIDTH = 0.71452;
+  public static final double TRACK_WIDTH = 0.82124;
 
   // Controller deadband
   public static final double CONTROLLER_DEADBAND = 0.12;
@@ -52,9 +52,9 @@ public final class Constants {
   public static final double DRIVE_MAX_LINEAR_SPEED = (FALCON_500_MAX_RPM / 60) * DRIVE_METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY; // 3.766 m/s
 
   // Drive PID values
-  public static final double DRIVE_kP = 0.017;
-  public static final double DRIVE_kD = 0.0001;
-  public static final double DRIVE_TURN_SCALAR = 45.0;
+  public static final double DRIVE_kP = 0.024;
+  public static final double DRIVE_kD = 0.002;
+  public static final double DRIVE_TURN_SCALAR = 20.0;
   public static final double DRIVE_LOOKAHEAD = 15;
 
   private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };

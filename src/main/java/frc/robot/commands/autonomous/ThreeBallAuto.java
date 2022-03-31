@@ -12,6 +12,7 @@ import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.SelectedGoal;
 import frc.robot.utils.AutoTrajectory;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -26,19 +27,19 @@ public class ThreeBallAuto extends SequentialCommandGroup {
 
     addCommands(
       // Toggle to high goal
-      new InstantCommand(() -> shooterSubsystem.toggleSelectedGoal(), shooterSubsystem),
+      //new InstantCommand(() -> shooterSubsystem.toggleSelectedGoal(), shooterSubsystem),
 
       // leaves tarmac, gets new ball and returns to tarmac  
-      ThreeBallAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      ThreeBallAuto_1.getCommandAndStop(),//.deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots collected ball + preloaded ball
-      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY).withTimeout(2.0),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High).withTimeout(2.0),
      
       // leaves tarmac, gets new ball and returns to tarmac  
-      ThreeBallAuto_2.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
+      ThreeBallAuto_2.getCommandAndStop(),//.deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots last ball
-      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY).withTimeout(1.5),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High).withTimeout(1.5),
 
       // leaves tarmac
       ThreeBallAuto_3.getCommandAndStop(),

@@ -31,11 +31,13 @@ import frc.robot.subsystems.DriveSubsystem;
 public class AutoTrajectory {
   // Ramsete Command values
   private final DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(Constants.TRACK_WIDTH);
-  private final double VOLTS_kS = 0.4; 
-  private final double VOLT_SECONDS_PER_METER_kV = 2.4;
-  private final double VOLT_SECONDS_SQUARED_PER_METER_kA = 0.2;
-  private final double kP = 1;
+  private final double VOLTS_kS = 0.74849; 
+  private final double VOLT_SECONDS_PER_METER_kV = 2.4385;
+  private final double VOLT_SECONDS_SQUARED_PER_METER_kA = 0.29283;
+  private final double kP = 0;
   private final double kD = 0; 
+  private final double kRamseteB = 2.2;
+  private final double kRamseteZeta = 0.7;
   private final double MAX_VOLTAGE = 11.0;
 
   DriveSubsystem m_driveSubsystem;
@@ -54,7 +56,7 @@ public class AutoTrajectory {
 
     m_pathplannerTrajectory = PathPlanner.loadPath(pathName, maxVelocity, maxAcceleration);
 
-    RamseteController ramseteController = new RamseteController();
+    RamseteController ramseteController = new RamseteController(kRamseteB, kRamseteZeta);
     ramseteController.setEnabled(true);
 
     m_ramseteCommand = new RamseteCommand(
@@ -112,7 +114,7 @@ public class AutoTrajectory {
     Transform2d transform = driveSubsystem.getPose().minus(trajectory.getInitialPose());
     Trajectory transformedTrajectory = trajectory.transformBy(transform);
 
-    RamseteController ramseteController = new RamseteController();
+    RamseteController ramseteController = new RamseteController(kRamseteB, kRamseteZeta);
     ramseteController.setEnabled(true);
 
     // This is a method used to get the desired trajectory, put it into the command, have the command calculate the 
