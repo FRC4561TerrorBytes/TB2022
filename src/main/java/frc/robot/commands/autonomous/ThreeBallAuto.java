@@ -7,7 +7,6 @@ package frc.robot.commands.autonomous;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -26,9 +25,6 @@ public class ThreeBallAuto extends SequentialCommandGroup {
     AutoTrajectory ThreeBallAuto_3 = new AutoTrajectory(driveSubsystem, "ThreeBallAuto_3", 3.0, 1.5);
 
     addCommands(
-      // Toggle to high goal
-      //new InstantCommand(() -> shooterSubsystem.toggleSelectedGoal(), shooterSubsystem),
-
       // leaves tarmac, gets new ball and returns to tarmac  
       ThreeBallAuto_1.getCommandAndStop(),//.deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
