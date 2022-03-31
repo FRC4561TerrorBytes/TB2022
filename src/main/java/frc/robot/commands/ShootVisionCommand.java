@@ -11,7 +11,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.SelectedGoal;
 
-public class ShootCommandVision extends CommandBase {
+public class ShootVisionCommand extends CommandBase {
   private DriveSubsystem m_driveSubsystem;
   private ShooterSubsystem m_shooterSubsystem;
   private VisionSubsystem m_visionSubsystem;
@@ -27,7 +27,7 @@ public class ShootCommandVision extends CommandBase {
    * @param delay shoot delay in seconds
    * @param tolerance aiming tolerance in degrees
    */
-  public ShootCommandVision(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, double delay) {
+  public ShootVisionCommand(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, double delay) {
     this.m_driveSubsystem = driveSubsystem;
     this.m_shooterSubsystem = shooterSubsystem;
     this.m_visionSubsystem = visionSubsystem;
@@ -35,17 +35,12 @@ public class ShootCommandVision extends CommandBase {
     this.m_loopNum = (int)Math.round(delay / Constants.ROBOT_LOOP_PERIOD);
 
     // Use addRequirements() here to declare subsystem dependencies
-    addRequirements(m_driveSubsystem);
-    addRequirements(m_shooterSubsystem);
-    addRequirements(m_visionSubsystem);
+    addRequirements(m_driveSubsystem, m_shooterSubsystem, m_visionSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // Select high goal
-    m_shooterSubsystem.selectGoal(SelectedGoal.High);
-
     // Disable driver mode
     m_visionSubsystem.setDriverMode(false);
   }
