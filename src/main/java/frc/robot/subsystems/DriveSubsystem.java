@@ -69,8 +69,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   private final double TOLERANCE = 1.75;
   private final double MOTOR_DEADBAND = 0.04;
   private final double MAX_VOLTAGE = 12.0;
-
-  private double m_turnScalar = 1.0; 
+ 
   private double m_metersPerTick = 0.0;
   private double m_deadband = 0.0;
 
@@ -106,7 +105,6 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_navx = drivetrainHardware.navx;
 
     this.m_deadband = deadband;
-    this.m_turnScalar = turnScalar;
     this.m_metersPerTick = metersPerTick;
 
     // Reset TalonFX settings
@@ -267,7 +265,6 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param angleDelta degrees to turn robot by [-turnScalar, +turnScalar]
    */
   public void aimToAngle(double angleDelta) {
-    angleDelta = MathUtil.clamp(angleDelta, -m_turnScalar, +m_turnScalar);
     m_turnPIDController.setSetpoint(getAngle() + angleDelta);
 
     double turnOutput = m_turnPIDController.calculate(getAngle());
