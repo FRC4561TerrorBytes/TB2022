@@ -262,7 +262,6 @@ public final class Constants {
   public static final int FLYWHEEL_SMALL_MOTOR_PORT = 15;
 
   // Climber hardware ports
-  public static final int CLIMBER_MOTOR_PORT = 11;
   public static final int CLIMBER_WINCH_MOTOR_PORT = 12;
   public static final int CLIMBER_LEFT_TELESCOPE_MOTOR_PORT = 13;
   public static final int CLIMBER_RIGHT_TELESCOPE_MOTOR_PORT = 14;
