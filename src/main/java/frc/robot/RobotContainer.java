@@ -248,7 +248,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_automodeChooser.getSelected();
+    // Get selected auto mode from ShuffleBoard, and set drive subsystem for teleop
+    return m_automodeChooser.getSelected()
+                            .andThen(new InstantCommand(() -> DRIVE_SUBSYSTEM.teleopInit(), DRIVE_SUBSYSTEM));
   }
 
   /**

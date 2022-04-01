@@ -40,10 +40,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
       new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY),
 
       // Leave tarmac
-      FiveBallAuto_4.getCommandAndStop(),
-
-      // Reset drive PID and reverse motors again
-      new InstantCommand(() -> driveSubsystem.teleopInit(), driveSubsystem)
+      FiveBallAuto_4.getCommandAndStop()
     );
   }
 }

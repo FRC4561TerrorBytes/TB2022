@@ -42,10 +42,7 @@ public class FourBallAutoAdvanced extends SequentialCommandGroup {
       new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY).withTimeout(1.0),
       
       // Leaves tarmac
-      FourBallAuto_3.getCommandAndStop(),
-
-      // Reset drive PID and reverse motors again
-      new InstantCommand(() -> driveSubsystem.teleopInit(), driveSubsystem)
+      FourBallAuto_3.getCommandAndStop()
     );
   }
 }

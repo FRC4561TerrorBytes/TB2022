@@ -29,10 +29,7 @@ public class ShootDriveForwardAuto extends SequentialCommandGroup {
       new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY).withTimeout(1.0),
 
       // Drives forward + exits tarmac
-      LeaveTarmac.getCommandAndStop(),
-      
-      // Reset drive PID and reverse motors again
-      new InstantCommand(() -> driveSubsystem.teleopInit(), driveSubsystem)
+      LeaveTarmac.getCommandAndStop()
     );
   }
 }

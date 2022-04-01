@@ -33,10 +33,7 @@ public class AlternateAuto extends SequentialCommandGroup {
       new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY).withTimeout(1.0),
       
       // Leaves tarmac
-      AlternateAuto_2.getCommandAndStop(),
-
-      // Reset drive PID and reverse motors again
-      new InstantCommand(() -> driveSubsystem.teleopInit(), driveSubsystem)
+      AlternateAuto_2.getCommandAndStop()
     );
   }
 }
