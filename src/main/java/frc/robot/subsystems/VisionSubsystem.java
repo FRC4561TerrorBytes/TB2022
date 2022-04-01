@@ -49,6 +49,13 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
+   * Initialize VisionSubsystem
+   */
+  public void initialize() {
+    setDriverMode(true);
+  }
+
+  /**
    * Initialize VisionSubsystem before disable
    */
   public void disabledInit() {
