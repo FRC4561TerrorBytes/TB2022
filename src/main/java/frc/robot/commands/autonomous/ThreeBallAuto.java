@@ -4,7 +4,6 @@
 
 package frc.robot.commands.autonomous;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.ShootCommand;
@@ -38,10 +37,7 @@ public class ThreeBallAuto extends SequentialCommandGroup {
       new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High).withTimeout(1.5),
 
       // leaves tarmac
-      ThreeBallAuto_3.getCommandAndStop(),
-
-      // Reset drive PID and reverse motors again
-      new InstantCommand(() -> driveSubsystem.teleopInit(), driveSubsystem)
+      ThreeBallAuto_3.getCommandAndStop()
     );
   }
 }
