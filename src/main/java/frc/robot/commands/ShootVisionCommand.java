@@ -25,7 +25,6 @@ public class ShootVisionCommand extends CommandBase {
    * @param shooterSubsystem shooter subsystem
    * @param visionSubsystem vision subsystem
    * @param delay shoot delay in seconds
-   * @param tolerance aiming tolerance in degrees
    */
   public ShootVisionCommand(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, double delay) {
     this.m_driveSubsystem = driveSubsystem;
