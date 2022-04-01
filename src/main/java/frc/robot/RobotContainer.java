@@ -205,6 +205,7 @@ public class RobotContainer {
     // Initialize subsystems
     INTAKE_SUBSYSTEM.initialize();
     CLIMBER_SUBSYSTEM.initialize();
+    VISION_SUBSYSTEM.initialize();
     BlinkinLEDController.getInstance().setTeamColor();
   }
 
