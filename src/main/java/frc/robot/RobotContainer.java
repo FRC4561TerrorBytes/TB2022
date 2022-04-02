@@ -78,7 +78,8 @@ public class RobotContainer {
   private static final VisionSubsystem VISION_SUBSYSTEM = new VisionSubsystem(VisionSubsystem.initializeHardware(),
                                                                               Constants.CAMERA_HEIGHT_METERS,
                                                                               Constants.TARGET_HEIGHT_METERS,
-                                                                              Constants.CAMERA_PITCH_DEGREES);
+                                                                              Constants.CAMERA_PITCH_DEGREES,
+                                                                              Constants.VISION_TOLERANCE);
   
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
   private static final XboxController SECONDARY_CONTROLLER = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);

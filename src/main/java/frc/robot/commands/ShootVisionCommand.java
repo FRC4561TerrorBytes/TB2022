@@ -56,7 +56,7 @@ public class ShootVisionCommand extends CommandBase {
       m_driveSubsystem.aimToAngle(m_visionSubsystem.getYaw());
 
       // Only run feeder if flywheel is at speed and robot is on target, else stop
-      if (m_shooterSubsystem.isFlywheelAtSpeed() && m_driveSubsystem.isOnTarget()) {
+      if (m_shooterSubsystem.isFlywheelAtSpeed() && m_visionSubsystem.isOnTarget()) {
         m_loops++;
         if (m_loops > m_loopNum) m_shooterSubsystem.feederShoot();
       } else {

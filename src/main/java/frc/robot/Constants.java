@@ -237,6 +237,7 @@ public final class Constants {
   public static final double CAMERA_HEIGHT_METERS = 0.75565;
   public static final double TARGET_HEIGHT_METERS = 2.7432;
   public static final double CAMERA_PITCH_DEGREES = 21;
+  public static final double VISION_TOLERANCE = 1.0;
 
 
   // Xbox controller ports

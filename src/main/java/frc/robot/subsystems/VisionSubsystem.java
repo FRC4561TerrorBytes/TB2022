@@ -27,6 +27,7 @@ public class VisionSubsystem extends SubsystemBase {
   double m_latestDistance;
   double m_cameraHeightMeters, m_targetHeightMeters;
   double m_cameraPitchRadians;
+  double m_visionTolerance;
 
   /**
    * Create a new vision subsystem
@@ -35,11 +36,12 @@ public class VisionSubsystem extends SubsystemBase {
    * @param targetHeightMeters Target height in meters
    * @param cameraPitchDegrees Camera pitch in degrees
    */
-  public VisionSubsystem(Hardware visionHardware, double cameraHeightMeters, double targetHeightMeters, double cameraPitchDegrees) {
+  public VisionSubsystem(Hardware visionHardware, double cameraHeightMeters, double targetHeightMeters, double cameraPitchDegrees, double visionTolerance) {
     this.m_pi = visionHardware.pi;
     this.m_cameraHeightMeters = cameraHeightMeters;
     this.m_targetHeightMeters = targetHeightMeters;
     this.m_cameraPitchRadians = Units.degreesToRadians(cameraPitchDegrees);
+    this.m_visionTolerance = visionTolerance;
   }
 
   public static Hardware initializeHardware() {
@@ -99,7 +101,8 @@ public class VisionSubsystem extends SubsystemBase {
    * @return yaw angle to best target in degrees
    */
   public double getYaw() {
-    if (isTargetValid()) return m_latestTarget.getYaw();
+    // Negate angle since Pi is on the back of the robot
+    if (isTargetValid()) return -m_latestTarget.getYaw();
     else return 0.0;
   }
 
@@ -109,6 +112,14 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public double getDistance() {
     return m_latestDistance;
+  }
+
+  /**
+   * If PhotonVision is lined up on target
+   * @return true if aimed at target within tolerance
+   */
+  public boolean isOnTarget() {
+    return isTargetValid() && Math.abs(m_latestTarget.getYaw()) < m_visionTolerance;
   }
 
   @Override
