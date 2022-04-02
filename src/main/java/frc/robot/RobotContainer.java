@@ -22,8 +22,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShootVisionCommand;
 import frc.robot.commands.SpitOutCommand;
-import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.autonomous.AlternateAuto;
 import frc.robot.commands.autonomous.FiveBallAuto;
 import frc.robot.commands.autonomous.FourBallAutoAdvanced;
@@ -159,10 +159,10 @@ public class RobotContainer {
     Trigger secondaryRightStick = new Trigger(() -> Math.abs(SECONDARY_CONTROLLER.getRightX()) > Constants.CONTROLLER_DEADBAND);
 
     // Primary controller bindings
-    primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY));
+    primaryButtonLBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY));
+    primaryButtonRBumper.whenHeld(new ShootVisionCommand(DRIVE_SUBSYSTEM, SHOOTER_SUBSYSTEM, VISION_SUBSYSTEM, Constants.SHOOT_DELAY));
     primaryTriggerLeft.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-    primaryButtonA.whenPressed(new TurnToAngleCommand(DRIVE_SUBSYSTEM, +30.0));
-    primaryButtonB.whenPressed(new TurnToAngleCommand(DRIVE_SUBSYSTEM, -30.0));
+    
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
     primaryButtonY.whenPressed(new InstantCommand(() -> SHOOTER_SUBSYSTEM.toggleSelectedGoal(), SHOOTER_SUBSYSTEM));
     primaryTriggerRight.whileActiveOnce(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
