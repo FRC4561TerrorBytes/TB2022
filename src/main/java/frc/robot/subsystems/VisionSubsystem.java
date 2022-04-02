@@ -119,9 +119,9 @@ public class VisionSubsystem extends SubsystemBase {
       m_latestTarget = m_latestResult.getBestTarget();
       if (isTargetValid()) {
         m_latestDistance = PhotonUtils.calculateDistanceToTargetMeters(m_cameraHeightMeters,
-                                                                    m_targetHeightMeters, 
-                                                                    m_cameraPitchRadians,
-                                                                    m_latestTarget.getPitch());
+                                                                       m_targetHeightMeters, 
+                                                                       m_cameraPitchRadians,
+                                                                       m_latestTarget.getPitch());
       } else m_latestDistance = 0.0;
     }
   }
