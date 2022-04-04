@@ -26,7 +26,7 @@ import frc.robot.commands.ShootVisionCommand;
 import frc.robot.commands.SpitOutCommand;
 import frc.robot.commands.autonomous.AlternateAuto;
 import frc.robot.commands.autonomous.FiveBallAuto;
-import frc.robot.commands.autonomous.FourBallAutoAdvanced;
+import frc.robot.commands.autonomous.FourBallAuto;
 import frc.robot.commands.autonomous.LeaveTarmac;
 import frc.robot.commands.autonomous.ShootDriveForwardAuto;
 import frc.robot.commands.autonomous.ThreeBallAuto;
@@ -242,7 +242,7 @@ public class RobotContainer {
     m_automodeChooser.setDefaultOption("Leave Tarmac", new LeaveTarmac(DRIVE_SUBSYSTEM));
     m_automodeChooser.addOption("Shoot Drive Forward Auto", new ShootDriveForwardAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     m_automodeChooser.addOption("Three Ball Auto", new ThreeBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-    m_automodeChooser.addOption("Four Ball Auto Advanced", new FourBallAutoAdvanced(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    m_automodeChooser.addOption("Four Ball Auto", new FourBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     m_automodeChooser.addOption("Five Ball Auto", new FiveBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     m_automodeChooser.addOption("Alternate Auto", new AlternateAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     m_automodeChooser.addOption("Do nothing", null);
