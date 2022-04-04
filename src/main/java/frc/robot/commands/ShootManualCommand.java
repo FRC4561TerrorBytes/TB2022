@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -11,15 +13,14 @@ import frc.robot.subsystems.ShooterSubsystem.FlywheelSpeed;
 
 public class ShootManualCommand extends CommandBase {
   private ShooterSubsystem m_shooterSubsystem;
-  private double m_bigRPM, m_smallRPM;
+  private Supplier<FlywheelSpeed> m_flywheelSpeedSupplier;
   private int m_loops = 0;
   private int m_loopNum;
 
   /** Creates a new ShootCommand. */
-  public ShootManualCommand(ShooterSubsystem shooterSubsystem, double delay, FlywheelSpeed flywheelSpeed) {
+  public ShootManualCommand(ShooterSubsystem shooterSubsystem, double delay, Supplier<FlywheelSpeed> flywheelSpeedSupplier) {
     this.m_shooterSubsystem = shooterSubsystem;
-    this.m_bigRPM = flywheelSpeed.getBigFlywheelSpeed();
-    this.m_smallRPM = flywheelSpeed.getSmallFlywheelSpeed();
+    this.m_flywheelSpeedSupplier = flywheelSpeedSupplier;
 
     m_loopNum = (int)Math.round(delay / Constants.ROBOT_LOOP_PERIOD);
 
@@ -30,7 +31,8 @@ public class ShootManualCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooterSubsystem.setFlywheelSpeed(m_bigRPM, m_smallRPM);
+    m_shooterSubsystem.setFlywheelSpeed(m_flywheelSpeedSupplier.get().getBigFlywheelSpeed(),
+                                        m_flywheelSpeedSupplier.get().getSmallFlywheelSpeed());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

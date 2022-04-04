@@ -52,9 +52,9 @@ public final class Constants {
   public static final double DRIVE_MAX_LINEAR_SPEED = (FALCON_500_MAX_RPM / 60) * DRIVE_METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY; // 3.766 m/s
 
   // Drive PID values
-  public static final double DRIVE_kP = 0.024;
-  public static final double DRIVE_kD = 0.002;
-  public static final double DRIVE_TURN_SCALAR = 20.0;
+  public static final double DRIVE_kP = 0.0175;
+  public static final double DRIVE_kD = 0.00027;
+  public static final double DRIVE_TURN_SCALAR = 30.0;
   public static final double DRIVE_LOOKAHEAD = 15;
 
   private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };
@@ -113,8 +113,8 @@ public final class Constants {
   private static final double FLYWHEEL_kP = 0.002;
   private static final double FLYWHEEL_kI = 0.0;
   private static final double FLYWHEEL_kD = 0.00025;
-  private static final double FLYWHEEL_MECHANICAL_EFFICIENCY = 1.0;
-  private static final double FLYWHEEL_TOLERANCE = 50;
+  private static final double FLYWHEEL_MECHANICAL_EFFICIENCY = 1.01;
+  private static final double FLYWHEEL_TOLERANCE = 80;
   private static final double FLYWHEEL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_MASTER_ENCODER_SENSOR_PHASE = false;
@@ -131,10 +131,10 @@ public final class Constants {
                                                                                  FLYWHEEL_MECHANICAL_EFFICIENCY,
                                                                                  FLYWHEEL_TOLERANCE);
 
-  private static final double FLYWHEEL_SMALL_kP = 0.011;
-  private static final double FLYWHEEL_SMALL_kI = 5e-4;
-  private static final double FLYWHEEL_SMALL_kD = 0.0;
-  private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.02;
+  private static final double FLYWHEEL_SMALL_kP = 0.02;
+  private static final double FLYWHEEL_SMALL_kI = 0.0;
+  private static final double FLYWHEEL_SMALL_kD = 0.001;
+  private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.01;
   private static final double FLYWHEEL_SMALL_TOLERANCE = 100;
   private static final double FLYWHEEL_SMALL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
@@ -234,10 +234,10 @@ public final class Constants {
                                                                        WINCH_MOTION_SMOOTHING);
 
   // Vision constants
-  public static final double CAMERA_HEIGHT_METERS = 0.75565;
-  public static final double TARGET_HEIGHT_METERS = 2.7432;
-  public static final double CAMERA_PITCH_DEGREES = 21;
-  public static final double VISION_TOLERANCE = 1.0;
+  public static final double CAMERA_HEIGHT_METERS = 0.792;
+  public static final double TARGET_HEIGHT_METERS = 2.642;
+  public static final double CAMERA_PITCH_DEGREES = 41.8;
+  public static final double VISION_TOLERANCE = 2.5;
 
 
   // Xbox controller ports

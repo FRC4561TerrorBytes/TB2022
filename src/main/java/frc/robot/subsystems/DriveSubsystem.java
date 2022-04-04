@@ -22,11 +22,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.TractionControlController;
@@ -66,7 +64,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
   private AHRS m_navx;
 
-  private final double TOLERANCE = 1.75;
+  private final double TOLERANCE = 0.125;
   private final double MOTOR_DEADBAND = 0.04;
   private final double MAX_VOLTAGE = 12.0;
  
@@ -217,9 +215,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   /**
    * Create SmartDashboard indicators
    */
-  public void smartDashboard() {
-    SmartDashboard.putString("Match Time Remaining", String.valueOf(DriverStation.getMatchTime()));
-  }
+  public void smartDashboard() {}
 
   @Override
   public void periodic() {
@@ -265,6 +261,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param angleDelta degrees to turn robot by [-turnScalar, +turnScalar]
    */
   public void aimToAngle(double angleDelta) {
+    angleDelta *= 0.75;
     m_turnPIDController.setSetpoint(getAngle() + angleDelta);
 
     double turnOutput = m_turnPIDController.calculate(getAngle());

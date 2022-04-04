@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.OuttakeCommand;
-import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShootManualCommand;
 import frc.robot.commands.ShootVisionCommand;
 import frc.robot.commands.SpitOutCommand;
 import frc.robot.commands.autonomous.AlternateAuto;
@@ -34,6 +34,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.FlywheelSpeed;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.utils.BlinkinLEDController;
 
@@ -159,7 +160,7 @@ public class RobotContainer {
     Trigger secondaryRightStick = new Trigger(() -> Math.abs(SECONDARY_CONTROLLER.getRightX()) > Constants.CONTROLLER_DEADBAND);
 
     // Primary controller bindings
-    primaryButtonLBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY));
+    primaryButtonLBumper.whenHeld(new ShootManualCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> getManualFlywheelSpeeds()));
     primaryButtonRBumper.whenHeld(new ShootVisionCommand(DRIVE_SUBSYSTEM, SHOOTER_SUBSYSTEM, VISION_SUBSYSTEM, Constants.SHOOT_DELAY));
     primaryTriggerLeft.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     
@@ -206,7 +207,6 @@ public class RobotContainer {
     // Initialize subsystems
     INTAKE_SUBSYSTEM.initialize();
     CLIMBER_SUBSYSTEM.initialize();
-    VISION_SUBSYSTEM.initialize();
     BlinkinLEDController.getInstance().setTeamColor();
   }
 
@@ -223,6 +223,7 @@ public class RobotContainer {
    */
   public void teleopInit() {
     DRIVE_SUBSYSTEM.teleopInit();
+    VISION_SUBSYSTEM.initialize();
     BlinkinLEDController.getInstance().setAllianceColorSolid();
   }
 
@@ -258,11 +259,21 @@ public class RobotContainer {
   }
 
   /**
+   * Get manual flywheel speeds
+   * @return
+   */
+  public FlywheelSpeed getManualFlywheelSpeeds() {
+    return new FlywheelSpeed(SmartDashboard.getNumber("Big", 0.0), SmartDashboard.getNumber("Small", 0.0));
+  }
+
+  /**
    * Configure default Shuffleboard tab
    */
   public void defaultShuffleboardTab() {
     Shuffleboard.selectTab("SmartDashboard");
     autoModeChooser();
     SmartDashboard.putData("Auto Mode", m_automodeChooser);
+    SmartDashboard.putNumber("Big", 0.0);
+    SmartDashboard.putNumber("Small", 0.0);
   }
 }

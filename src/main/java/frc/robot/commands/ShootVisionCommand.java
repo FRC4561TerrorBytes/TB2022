@@ -39,10 +39,7 @@ public class ShootVisionCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    // Disable driver mode
-    m_visionSubsystem.setDriverMode(false);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -75,9 +72,6 @@ public class ShootVisionCommand extends CommandBase {
 
     // Reset selected goal
     m_shooterSubsystem.selectGoal(m_prevSelectedGoal);
-
-    // Re-enable driver mode
-    m_visionSubsystem.setDriverMode(true);
   }
 
   // Returns true when the command should end.

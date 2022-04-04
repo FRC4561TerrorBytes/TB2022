@@ -11,6 +11,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
   public static class Hardware {
@@ -38,9 +39,9 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public VisionSubsystem(Hardware visionHardware, double cameraHeightMeters, double targetHeightMeters, double cameraPitchDegrees, double visionTolerance) {
     this.m_pi = visionHardware.pi;
-    this.m_cameraHeightMeters = cameraHeightMeters;
-    this.m_targetHeightMeters = targetHeightMeters;
-    this.m_cameraPitchRadians = Units.degreesToRadians(cameraPitchDegrees);
+    this.m_cameraHeightMeters = Constants.CAMERA_HEIGHT_METERS;
+    this.m_targetHeightMeters = Constants.TARGET_HEIGHT_METERS;
+    this.m_cameraPitchRadians = Units.degreesToRadians(Constants.CAMERA_PITCH_DEGREES);
     this.m_visionTolerance = visionTolerance;
   }
 
@@ -54,7 +55,7 @@ public class VisionSubsystem extends SubsystemBase {
    * Initialize VisionSubsystem
    */
   public void initialize() {
-    setDriverMode(true);
+    setDriverMode(false);
   }
 
   /**
@@ -102,7 +103,7 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public double getYaw() {
     // Negate angle since Pi is on the back of the robot
-    if (isTargetValid()) return -m_latestTarget.getYaw();
+    if (isTargetValid()) return m_latestTarget.getYaw();
     else return 0.0;
   }
 
@@ -132,8 +133,9 @@ public class VisionSubsystem extends SubsystemBase {
         m_latestDistance = PhotonUtils.calculateDistanceToTargetMeters(m_cameraHeightMeters,
                                                                        m_targetHeightMeters, 
                                                                        m_cameraPitchRadians,
-                                                                       m_latestTarget.getPitch());
+                                                                       Units.degreesToRadians(m_latestTarget.getPitch()));
       } else m_latestDistance = 0.0;
-    }
+    } else m_latestTarget = null;
+    System.out.println("Vision Distance: " + getDistance());
   }
 }
