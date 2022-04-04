@@ -18,9 +18,9 @@ import frc.robot.utils.AutoTrajectory;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class FourBallAutoAdvanced extends SequentialCommandGroup {
+public class FourBallAuto extends SequentialCommandGroup {
   /** Creates a new FourBallAutoAdvanced. */
-  public FourBallAutoAdvanced(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
+  public FourBallAuto(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
     AutoTrajectory FourBallAuto_1 = new AutoTrajectory(driveSubsystem, "FourBallAuto_1", 3.0, 3.0);
     AutoTrajectory FourBallAuto_2 = new AutoTrajectory(driveSubsystem, "FourBallAuto_2", 3.5, 3.0);
     AutoTrajectory FourBallAuto_3 = new AutoTrajectory(driveSubsystem, "FourBallAuto_3", 3.0, 2.0);

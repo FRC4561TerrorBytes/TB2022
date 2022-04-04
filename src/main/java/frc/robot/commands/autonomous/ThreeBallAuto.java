@@ -41,10 +41,7 @@ public class ThreeBallAuto extends SequentialCommandGroup {
       new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY).withTimeout(1.5),
 
       // leaves tarmac
-      ThreeBallAuto_3.getCommandAndStop(),
-
-      // Reset drive PID and reverse motors again
-      new InstantCommand(() -> driveSubsystem.teleopInit(), driveSubsystem)
+      ThreeBallAuto_3.getCommandAndStop()
     );
   }
 }
