@@ -160,8 +160,8 @@ public class RobotContainer {
     Trigger secondaryRightStick = new Trigger(() -> Math.abs(SECONDARY_CONTROLLER.getRightX()) > Constants.CONTROLLER_DEADBAND);
 
     // Primary controller bindings
-    primaryButtonLBumper.whenHeld(new ShootManualCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> getManualFlywheelSpeeds()));
-    primaryButtonRBumper.whenHeld(new ShootVisionCommand(DRIVE_SUBSYSTEM, SHOOTER_SUBSYSTEM, VISION_SUBSYSTEM, Constants.SHOOT_DELAY));
+    primaryButtonLBumper.whenHeld(new ShootVisionCommand(DRIVE_SUBSYSTEM, SHOOTER_SUBSYSTEM, VISION_SUBSYSTEM, Constants.SHOOT_DELAY));
+    primaryButtonRBumper.whenHeld(new ShootManualCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> getManualFlywheelSpeeds()));
     primaryTriggerLeft.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
@@ -260,7 +260,7 @@ public class RobotContainer {
 
   /**
    * Get manual flywheel speeds
-   * @return
+   * @return manual flywheel speeds
    */
   public FlywheelSpeed getManualFlywheelSpeeds() {
     return new FlywheelSpeed(SmartDashboard.getNumber("Big", 0.0), SmartDashboard.getNumber("Small", 0.0));

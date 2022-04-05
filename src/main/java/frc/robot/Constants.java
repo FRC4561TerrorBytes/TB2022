@@ -52,9 +52,9 @@ public final class Constants {
   public static final double DRIVE_MAX_LINEAR_SPEED = (FALCON_500_MAX_RPM / 60) * DRIVE_METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY; // 3.766 m/s
 
   // Drive PID values
-  public static final double DRIVE_kP = 0.0175;
+  public static final double DRIVE_kP = 0.018;
   public static final double DRIVE_kD = 0.00027;
-  public static final double DRIVE_TURN_SCALAR = 30.0;
+  public static final double DRIVE_TURN_SCALAR = 20.0;
   public static final double DRIVE_LOOKAHEAD = 15;
 
   private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };
@@ -135,7 +135,7 @@ public final class Constants {
   private static final double FLYWHEEL_SMALL_kI = 0.0;
   private static final double FLYWHEEL_SMALL_kD = 0.001;
   private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.01;
-  private static final double FLYWHEEL_SMALL_TOLERANCE = 100;
+  private static final double FLYWHEEL_SMALL_TOLERANCE = 200;
   private static final double FLYWHEEL_SMALL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
@@ -156,14 +156,21 @@ public final class Constants {
   public static final double FEEDER_INTAKE_SPEED = 0.2;
   public static final double FEEDER_SHOOT_SPEED = 0.3;
   public static final double SHOOT_DELAY = 0.1;
-  public static final double SHOOT_AIM_TOLERANCE = 1.0;
   public static final FlywheelSpeed SPIT_OUT_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
   public static final FlywheelSpeed LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1620.0, 162.0);
-  public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(2400.0, 3000.0);
+  public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(2400.0, 1000.0);
   public static final List<Entry<Double, FlywheelSpeed>> FLYWHEEL_VISION_MAP = Arrays.asList(
-    Map.entry(0.0, new FlywheelSpeed(2400.0, 3000.0)),
-    Map.entry(1.0, new FlywheelSpeed(2400.0, 3000.0)),
-    Map.entry(2.0, new FlywheelSpeed(2400.0, 3000.0))
+    Map.entry(0.00, new FlywheelSpeed(2400.0, 1000.0)),
+    Map.entry(1.10, new FlywheelSpeed(2400.0, 1000.0)),
+    Map.entry(1.50, new FlywheelSpeed(2400.0, 1000.0)),
+    Map.entry(1.75, new FlywheelSpeed(2100.0, 1500.0)),
+    Map.entry(2.00, new FlywheelSpeed(1800.0, 2100.0)),
+    Map.entry(2.25, new FlywheelSpeed(1800.0, 2100.0)),
+    Map.entry(2.50, new FlywheelSpeed(1750.0, 2150.0)),
+    Map.entry(3.00, new FlywheelSpeed(1650.0, 2800.0)),
+    Map.entry(3.25, new FlywheelSpeed(1600.0, 3200.0)),
+    Map.entry(3.50, new FlywheelSpeed(1600.0, 3700.0)),
+    Map.entry(3.75, new FlywheelSpeed(1600.0, 3700.0)) // retune this point
   );
 
   // Telescope PID variables

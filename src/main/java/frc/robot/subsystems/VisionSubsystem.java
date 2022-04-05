@@ -15,14 +15,16 @@ import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
   public static class Hardware {
-    private PhotonCamera pi;
+    private PhotonCamera pi, webcam;
 
-    public Hardware(PhotonCamera pi) {
+    public Hardware(PhotonCamera pi, PhotonCamera webcam) {
       this.pi = pi;
+      this.webcam = webcam;
     }
   }
 
   PhotonCamera m_pi;
+  PhotonCamera m_webcam;
   PhotonPipelineResult m_latestResult;
   PhotonTrackedTarget m_latestTarget;
   double m_latestDistance;
@@ -39,14 +41,18 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public VisionSubsystem(Hardware visionHardware, double cameraHeightMeters, double targetHeightMeters, double cameraPitchDegrees, double visionTolerance) {
     this.m_pi = visionHardware.pi;
+    this.m_webcam = visionHardware.webcam;
     this.m_cameraHeightMeters = Constants.CAMERA_HEIGHT_METERS;
     this.m_targetHeightMeters = Constants.TARGET_HEIGHT_METERS;
     this.m_cameraPitchRadians = Units.degreesToRadians(Constants.CAMERA_PITCH_DEGREES);
     this.m_visionTolerance = visionTolerance;
+
+    // Permanently set webcam to driver mode
+    m_webcam.setDriverMode(true);
   }
 
   public static Hardware initializeHardware() {
-    Hardware visionHardware = new Hardware(new PhotonCamera("photonvision"));
+    Hardware visionHardware = new Hardware(new PhotonCamera("photonvision"), new PhotonCamera("webcam"));
 
     return visionHardware;
   }
@@ -102,7 +108,6 @@ public class VisionSubsystem extends SubsystemBase {
    * @return yaw angle to best target in degrees
    */
   public double getYaw() {
-    // Negate angle since Pi is on the back of the robot
     if (isTargetValid()) return m_latestTarget.getYaw();
     else return 0.0;
   }
@@ -126,7 +131,7 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (!m_pi.getDriverMode()) {
+    if (!getDriverMode()) {
       m_latestResult = m_pi.getLatestResult();
       m_latestTarget = m_latestResult.getBestTarget();
       if (isTargetValid()) {
