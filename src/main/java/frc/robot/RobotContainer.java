@@ -80,7 +80,7 @@ public class RobotContainer {
                                                                               Constants.CAMERA_HEIGHT_METERS,
                                                                               Constants.TARGET_HEIGHT_METERS,
                                                                               Constants.CAMERA_PITCH_DEGREES,
-                                                                              Constants.VISION_TOLERANCE);
+                                                                              Constants.VISION_MAX_DISTANCE);
   
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
   private static final XboxController SECONDARY_CONTROLLER = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);

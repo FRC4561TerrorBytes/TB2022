@@ -244,7 +244,7 @@ public final class Constants {
   public static final double CAMERA_HEIGHT_METERS = 0.792;
   public static final double TARGET_HEIGHT_METERS = 2.642;
   public static final double CAMERA_PITCH_DEGREES = 41.8;
-  public static final double VISION_TOLERANCE = 2.5;
+  public static final double VISION_MAX_DISTANCE = FLYWHEEL_VISION_MAP.get(FLYWHEEL_VISION_MAP.size() - 1).getKey();
 
 
   // Xbox controller ports

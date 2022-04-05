@@ -23,14 +23,17 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  PhotonCamera m_pi;
-  PhotonCamera m_webcam;
-  PhotonPipelineResult m_latestResult;
-  PhotonTrackedTarget m_latestTarget;
-  double m_latestDistance;
-  double m_cameraHeightMeters, m_targetHeightMeters;
-  double m_cameraPitchRadians;
-  double m_visionTolerance;
+  private final double MAX_TOLERANCE = 5.0;
+  private final double MIN_TOLERANCE = 1.0;
+
+  private PhotonCamera m_pi;
+  private PhotonCamera m_webcam;
+  private PhotonPipelineResult m_latestResult;
+  private PhotonTrackedTarget m_latestTarget;
+  private double m_latestDistance;
+  private double m_cameraHeightMeters, m_targetHeightMeters;
+  private double m_cameraPitchRadians;
+  private double m_toleranceSlope;
 
   /**
    * Create a new vision subsystem
@@ -38,17 +41,26 @@ public class VisionSubsystem extends SubsystemBase {
    * @param cameraHeightMeters Camera height in meters
    * @param targetHeightMeters Target height in meters
    * @param cameraPitchDegrees Camera pitch in degrees
+   * @param maxDistance Max vision shooting distance in meters
    */
-  public VisionSubsystem(Hardware visionHardware, double cameraHeightMeters, double targetHeightMeters, double cameraPitchDegrees, double visionTolerance) {
+  public VisionSubsystem(Hardware visionHardware, double cameraHeightMeters, double targetHeightMeters, double cameraPitchDegrees, double maxDistance) {
     this.m_pi = visionHardware.pi;
     this.m_webcam = visionHardware.webcam;
     this.m_cameraHeightMeters = Constants.CAMERA_HEIGHT_METERS;
     this.m_targetHeightMeters = Constants.TARGET_HEIGHT_METERS;
     this.m_cameraPitchRadians = Units.degreesToRadians(Constants.CAMERA_PITCH_DEGREES);
-    this.m_visionTolerance = visionTolerance;
+    this.m_toleranceSlope = -MAX_TOLERANCE / maxDistance;
 
     // Permanently set webcam to driver mode
     m_webcam.setDriverMode(true);
+  }
+
+  /**
+   * Get aiming tolerance for current distance
+   * @return aiming tolerance in degrees
+   */
+  private double getTolerance() {
+    return Math.min(getDistance() * m_toleranceSlope + MAX_TOLERANCE, MIN_TOLERANCE);
   }
 
   public static Hardware initializeHardware() {
@@ -125,7 +137,7 @@ public class VisionSubsystem extends SubsystemBase {
    * @return true if aimed at target within tolerance
    */
   public boolean isOnTarget() {
-    return isTargetValid() && Math.abs(m_latestTarget.getYaw()) < m_visionTolerance;
+    return isTargetValid() && Math.abs(m_latestTarget.getYaw()) < getTolerance();
   }
 
   @Override
