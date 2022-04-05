@@ -215,6 +215,7 @@ public class RobotContainer {
    */
   public void autonomousInit() {
     DRIVE_SUBSYSTEM.autonomousInit();
+    VISION_SUBSYSTEM.initialize();
     BlinkinLEDController.getInstance().setAllianceColorSolid();
   }
 
@@ -228,10 +229,16 @@ public class RobotContainer {
   }
 
   /**
-   * Do this when disabled
+   * Initialize robot for disable
    */
   public void disabledInit() {
     VISION_SUBSYSTEM.disabledInit();
+  }
+
+  /**
+   * Do this while disabled
+   */
+  public void disabledPeriodic() {
     BlinkinLEDController.getInstance().setTeamColor();
   }
 

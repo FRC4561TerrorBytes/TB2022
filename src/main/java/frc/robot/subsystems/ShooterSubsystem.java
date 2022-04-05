@@ -303,10 +303,10 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @param speed input speed to keep the motor at (RPM)
    */
   public void setFlywheelSpeed(double bigSpeed, double smallSpeed) {
-    double mainFlywheelSpeed = MathUtil.clamp(bigSpeed, 0, BigFlywheel.MAX_SPEED_RPM);
+    double bigFlywheelSpeed = MathUtil.clamp(bigSpeed, 0, BigFlywheel.MAX_SPEED_RPM);
     double smallFlywheelSpeed = MathUtil.clamp(smallSpeed, 0, SmallFlywheel.MAX_SPEED_RPM);
 
-    BigFlywheel.masterMotor.set(ControlMode.Velocity, BigFlywheel.masterConfig.rpmToTicksPer100ms(mainFlywheelSpeed));
+    BigFlywheel.masterMotor.set(ControlMode.Velocity, BigFlywheel.masterConfig.rpmToTicksPer100ms(bigFlywheelSpeed));
     SmallFlywheel.motor.set(ControlMode.Velocity, SmallFlywheel.config.rpmToTicksPer100ms(smallFlywheelSpeed));
   }
 

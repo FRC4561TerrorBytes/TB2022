@@ -261,7 +261,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param angleDelta degrees to turn robot by [-turnScalar, +turnScalar]
    */
   public void aimToAngle(double angleDelta) {
-    angleDelta *= 0.75;
+    angleDelta *= 0.8;
     m_turnPIDController.setSetpoint(getAngle() + angleDelta);
 
     double turnOutput = m_turnPIDController.calculate(getAngle());
