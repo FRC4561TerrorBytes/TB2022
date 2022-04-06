@@ -280,7 +280,5 @@ public class RobotContainer {
     Shuffleboard.selectTab("SmartDashboard");
     autoModeChooser();
     SmartDashboard.putData("Auto Mode", m_automodeChooser);
-    SmartDashboard.putNumber("Big", 0.0);
-    SmartDashboard.putNumber("Small", 0.0);
   }
 }
