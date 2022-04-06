@@ -7,9 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.SelectedGoal;
 
 public class ShootCommand extends CommandBase {
   private ShooterSubsystem m_shooterSubsystem;
+  private SelectedGoal m_goal;
   private int m_loops = 0;
   private int m_loopNum;
 
@@ -18,12 +20,11 @@ public class ShootCommand extends CommandBase {
     this(shooterSubsystem, delay, shooterSubsystem.getSelectedGoal());
   }
 
-  public ShootCommand(ShooterSubsystem shooterSubsystem, double delay, ShooterSubsystem.SelectedGoal goal) {
+  public ShootCommand(ShooterSubsystem shooterSubsystem, double delay, SelectedGoal goal) {
     this.m_shooterSubsystem = shooterSubsystem;
+    this.m_goal = goal;
 
     m_loopNum = (int)Math.round(delay / Constants.ROBOT_LOOP_PERIOD);
-
-    m_shooterSubsystem.selectGoal(goal);
 
     // Use addRequirements() here to declare subsystem dependencies
     addRequirements(m_shooterSubsystem);
@@ -32,6 +33,8 @@ public class ShootCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_shooterSubsystem.selectGoal(m_goal);
+    
     // Start flywheel
     m_shooterSubsystem.setFlywheelAuto(); 
   }

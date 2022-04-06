@@ -23,8 +23,9 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  private final double MAX_TOLERANCE = 5.0;
-  private final double MIN_TOLERANCE = 1.0;
+  private final double MAX_TOLERANCE = 7.5;
+  private final double MIN_TOLERANCE = 2.0;
+  private final int VISION_PIPELINE_INDEX = 0;
 
   private PhotonCamera m_pi;
   private PhotonCamera m_webcam;
@@ -50,9 +51,6 @@ public class VisionSubsystem extends SubsystemBase {
     this.m_targetHeightMeters = Constants.TARGET_HEIGHT_METERS;
     this.m_cameraPitchRadians = Units.degreesToRadians(Constants.CAMERA_PITCH_DEGREES);
     this.m_toleranceSlope = -MAX_TOLERANCE / maxDistance;
-
-    // Permanently set webcam to driver mode
-    m_webcam.setDriverMode(true);
   }
 
   /**
@@ -60,7 +58,7 @@ public class VisionSubsystem extends SubsystemBase {
    * @return aiming tolerance in degrees
    */
   private double getTolerance() {
-    return Math.min(getDistance() * m_toleranceSlope + MAX_TOLERANCE, MIN_TOLERANCE);
+    return Math.max(getDistance() * m_toleranceSlope + MAX_TOLERANCE, MIN_TOLERANCE);
   }
 
   public static Hardware initializeHardware() {
@@ -88,7 +86,12 @@ public class VisionSubsystem extends SubsystemBase {
    * @param enable Whether to set driver mode
    */
   public void setDriverMode(boolean enable) {
+    // webcam is always in driver mode
+    m_webcam.setDriverMode(true);
+
+    // only toggle pi
     m_pi.setDriverMode(enable);
+    if (enable) m_pi.setPipelineIndex(VISION_PIPELINE_INDEX);
   }
 
   /**
@@ -151,6 +154,8 @@ public class VisionSubsystem extends SubsystemBase {
                                                                        m_targetHeightMeters, 
                                                                        m_cameraPitchRadians,
                                                                        Units.degreesToRadians(m_latestTarget.getPitch()));
+        System.out.println("Vision Yaw: " + getYaw());
+        System.out.println("Vision Tolerance: " + getTolerance());
       } else m_latestDistance = 0.0;
     } else m_latestTarget = null;
     System.out.println("Vision Distance: " + getDistance());

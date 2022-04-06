@@ -52,9 +52,9 @@ public final class Constants {
   public static final double DRIVE_MAX_LINEAR_SPEED = (FALCON_500_MAX_RPM / 60) * DRIVE_METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY; // 3.766 m/s
 
   // Drive PID values
-  public static final double DRIVE_kP = 0.018;
-  public static final double DRIVE_kD = 0.00027;
-  public static final double DRIVE_TURN_SCALAR = 20.0;
+  public static final double DRIVE_kP = 0.02;
+  public static final double DRIVE_kD = 0.0003;
+  public static final double DRIVE_TURN_SCALAR = 18.0;
   public static final double DRIVE_LOOKAHEAD = 15;
 
   private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };
@@ -131,11 +131,11 @@ public final class Constants {
                                                                                  FLYWHEEL_MECHANICAL_EFFICIENCY,
                                                                                  FLYWHEEL_TOLERANCE);
 
-  private static final double FLYWHEEL_SMALL_kP = 0.02;
+  private static final double FLYWHEEL_SMALL_kP = 0.08;
   private static final double FLYWHEEL_SMALL_kI = 0.0;
-  private static final double FLYWHEEL_SMALL_kD = 0.001;
-  private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.01;
-  private static final double FLYWHEEL_SMALL_TOLERANCE = 200;
+  private static final double FLYWHEEL_SMALL_kD = 0.002;
+  private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.02;
+  private static final double FLYWHEEL_SMALL_TOLERANCE = 220;
   private static final double FLYWHEEL_SMALL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
@@ -170,7 +170,8 @@ public final class Constants {
     Map.entry(3.00, new FlywheelSpeed(1650.0, 2800.0)),
     Map.entry(3.25, new FlywheelSpeed(1600.0, 3200.0)),
     Map.entry(3.50, new FlywheelSpeed(1600.0, 3700.0)),
-    Map.entry(3.75, new FlywheelSpeed(1600.0, 3700.0)) // retune this point
+    Map.entry(3.75, new FlywheelSpeed(1500.0, 3800.0)),
+    Map.entry(4.00, new FlywheelSpeed(1500.0, 3800.0))
   );
 
   // Telescope PID variables
