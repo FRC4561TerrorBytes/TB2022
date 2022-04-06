@@ -110,9 +110,9 @@ public final class Constants {
                                                                             INTAKE_ARM_MOTION_SMOOTHING);
 
   // Shooter PID Values
-  private static final double FLYWHEEL_kP = 0.002;
+  private static final double FLYWHEEL_kP = 0.01;
   private static final double FLYWHEEL_kI = 0.0;
-  private static final double FLYWHEEL_kD = 0.00025;
+  private static final double FLYWHEEL_kD = 0.001;
   private static final double FLYWHEEL_MECHANICAL_EFFICIENCY = 1.01;
   private static final double FLYWHEEL_TOLERANCE = 80;
   private static final double FLYWHEEL_MAX_RPM = FALCON_500_MAX_RPM;
@@ -131,11 +131,11 @@ public final class Constants {
                                                                                  FLYWHEEL_MECHANICAL_EFFICIENCY,
                                                                                  FLYWHEEL_TOLERANCE);
 
-  private static final double FLYWHEEL_SMALL_kP = 0.08;
-  private static final double FLYWHEEL_SMALL_kI = 0.0;
-  private static final double FLYWHEEL_SMALL_kD = 0.002;
+  private static final double FLYWHEEL_SMALL_kP = 0.09;
+  private static final double FLYWHEEL_SMALL_kI = 0.0001;
+  private static final double FLYWHEEL_SMALL_kD = 0.008;
   private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.02;
-  private static final double FLYWHEEL_SMALL_TOLERANCE = 220;
+  private static final double FLYWHEEL_SMALL_TOLERANCE = 100;
   private static final double FLYWHEEL_SMALL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
