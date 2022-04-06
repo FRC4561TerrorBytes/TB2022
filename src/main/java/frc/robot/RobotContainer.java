@@ -161,7 +161,7 @@ public class RobotContainer {
 
     // Primary controller bindings
     primaryButtonLBumper.whenHeld(new ShootVisionCommand(DRIVE_SUBSYSTEM, SHOOTER_SUBSYSTEM, VISION_SUBSYSTEM, Constants.SHOOT_DELAY));
-    primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY));
+    primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> SHOOTER_SUBSYSTEM.getSelectedGoal()));
     primaryTriggerLeft.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
