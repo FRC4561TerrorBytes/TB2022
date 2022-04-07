@@ -67,6 +67,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   private final double TOLERANCE = 0.125;
   private final double MOTOR_DEADBAND = 0.04;
   private final double MAX_VOLTAGE = 12.0;
+  private final double VISION_AIM_DAMPENER = 0.85;
  
   private double m_metersPerTick = 0.0;
   private double m_deadband = 0.0;
@@ -261,7 +262,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param angleDelta degrees to turn robot by [-turnScalar, +turnScalar]
    */
   public void aimToAngle(double angleDelta) {
-    angleDelta *= 0.8;
+    angleDelta *= VISION_AIM_DAMPENER;
     m_turnPIDController.setSetpoint(getAngle() + angleDelta);
 
     double turnOutput = m_turnPIDController.calculate(getAngle());
