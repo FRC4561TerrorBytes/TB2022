@@ -154,10 +154,7 @@ public class VisionSubsystem extends SubsystemBase {
                                                                        m_targetHeightMeters, 
                                                                        m_cameraPitchRadians,
                                                                        Units.degreesToRadians(m_latestTarget.getPitch()));
-        System.out.println("Vision Yaw: " + getYaw());
-        System.out.println("Vision Tolerance: " + getTolerance());
       } else m_latestDistance = 0.0;
     } else m_latestTarget = null;
-    System.out.println("Vision Distance: " + getDistance());
   }
 }
