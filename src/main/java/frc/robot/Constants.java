@@ -135,7 +135,7 @@ public final class Constants {
   private static final double FLYWHEEL_SMALL_kI = 0.0008;
   private static final double FLYWHEEL_SMALL_kD = 0.008;
   private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.02;
-  private static final double FLYWHEEL_SMALL_TOLERANCE = 150;
+  private static final double FLYWHEEL_SMALL_TOLERANCE = 170;
   private static final double FLYWHEEL_SMALL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
