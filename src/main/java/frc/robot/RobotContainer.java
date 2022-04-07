@@ -168,10 +168,10 @@ public class RobotContainer {
     primaryButtonY.whenPressed(new InstantCommand(() -> SHOOTER_SUBSYSTEM.toggleSelectedGoal(), SHOOTER_SUBSYSTEM));
     primaryTriggerRight.whileActiveOnce(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
 
-    primaryDPadUp.whileHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(-0.8), CLIMBER_SUBSYSTEM))
+    primaryDPadUp.whileHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(-0.5), CLIMBER_SUBSYSTEM))
                  .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
 
-    primaryDPadDown.whileHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(+0.8), CLIMBER_SUBSYSTEM))
+    primaryDPadDown.whileHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(+0.5), CLIMBER_SUBSYSTEM))
                    .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
 
     primaryDPadLeft.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchManual(-0.5)))
