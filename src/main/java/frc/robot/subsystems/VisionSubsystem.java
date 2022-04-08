@@ -10,6 +10,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -35,6 +36,7 @@ public class VisionSubsystem extends SubsystemBase {
   private double m_cameraHeightMeters, m_targetHeightMeters;
   private double m_cameraPitchRadians;
   private double m_toleranceSlope;
+  private double m_maxDistance;
 
   /**
    * Create a new vision subsystem
@@ -50,7 +52,8 @@ public class VisionSubsystem extends SubsystemBase {
     this.m_cameraHeightMeters = Constants.CAMERA_HEIGHT_METERS;
     this.m_targetHeightMeters = Constants.TARGET_HEIGHT_METERS;
     this.m_cameraPitchRadians = Units.degreesToRadians(Constants.CAMERA_PITCH_DEGREES);
-    this.m_toleranceSlope = -MAX_TOLERANCE / maxDistance;
+    this.m_maxDistance = maxDistance;
+    this.m_toleranceSlope = -MAX_TOLERANCE / m_maxDistance;
   }
 
   /**
@@ -65,6 +68,13 @@ public class VisionSubsystem extends SubsystemBase {
     Hardware visionHardware = new Hardware(new PhotonCamera("photonvision"), new PhotonCamera("webcam"));
 
     return visionHardware;
+  }
+
+  /**
+   * Create SmartDashboard indicators
+   */
+  public void smartDashboard() {
+    SmartDashboard.putBoolean("Target Acquired", isTargetValid() && getDistance() < m_maxDistance);
   }
 
   /**
@@ -156,5 +166,7 @@ public class VisionSubsystem extends SubsystemBase {
                                                                        Units.degreesToRadians(m_latestTarget.getPitch()));
       } else m_latestDistance = 0.0;
     } else m_latestTarget = null;
+
+    smartDashboard();
   }
 }
