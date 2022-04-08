@@ -172,6 +172,14 @@ public class ClimberSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * Move both telescopes down slowly
+   */
+  public void telescopeSlow() {
+    telescopeLeftSlow();
+    telescopeRightSlow();
+  }
+
+  /**
    * Move left telescope down slowly
    */
   public void telescopeLeftSlow() {

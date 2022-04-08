@@ -182,6 +182,8 @@ public class RobotContainer {
 
     // Secondary controller bindings
     secondaryButtonA.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.toggleClimberLED(), CLIMBER_SUBSYSTEM));
+    secondaryButtonB.whileHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeSlow(), CLIMBER_SUBSYSTEM))
+                    .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryButtonRBumper.whenHeld(new SpitOutCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, Constants.SPIT_OUT_FLYWHEEL_SPEED));
 
     secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-0.2), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
