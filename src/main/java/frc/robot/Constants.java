@@ -158,20 +158,20 @@ public final class Constants {
   public static final double SHOOT_DELAY = 0.1;
   public static final FlywheelSpeed SPIT_OUT_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
   public static final FlywheelSpeed LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1620.0, 162.0);
-  public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(2400.0, 1000.0);
+  public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(2700.0, 700.0);
   public static final List<Entry<Double, FlywheelSpeed>> FLYWHEEL_VISION_MAP = Arrays.asList(
-    Map.entry(0.00, new FlywheelSpeed(2400.0, 1000.0)),
-    Map.entry(1.10, new FlywheelSpeed(2400.0, 1000.0)),
+    Map.entry(0.00, new FlywheelSpeed(2700.0, 700.0)),
+    Map.entry(1.10, new FlywheelSpeed(2700.0, 700.0)),
     Map.entry(1.50, new FlywheelSpeed(2400.0, 1000.0)),
     Map.entry(1.75, new FlywheelSpeed(2100.0, 1500.0)),
     Map.entry(2.00, new FlywheelSpeed(1800.0, 2100.0)),
-    Map.entry(2.25, new FlywheelSpeed(1800.0, 2100.0)),
-    Map.entry(2.50, new FlywheelSpeed(1750.0, 2150.0)),
-    Map.entry(3.00, new FlywheelSpeed(1650.0, 2800.0)),
-    Map.entry(3.25, new FlywheelSpeed(1600.0, 3200.0)),
-    Map.entry(3.50, new FlywheelSpeed(1600.0, 3700.0)),
-    Map.entry(3.75, new FlywheelSpeed(1500.0, 3800.0)),
-    Map.entry(4.00, new FlywheelSpeed(1500.0, 3800.0))
+    Map.entry(2.25, new FlywheelSpeed(1800.0, 2150.0)),
+    Map.entry(2.50, new FlywheelSpeed(1800.0, 2300.0)),
+    Map.entry(3.00, new FlywheelSpeed(1800.0, 3000.0)),
+    Map.entry(3.25, new FlywheelSpeed(1550.0, 3400.0)),
+    Map.entry(3.50, new FlywheelSpeed(1550.0, 3800.0)),
+    Map.entry(3.75, new FlywheelSpeed(1500.0, 3900.0)),
+    Map.entry(4.00, new FlywheelSpeed(1500.0, 3950.0))
   );
 
   // Telescope PID variables

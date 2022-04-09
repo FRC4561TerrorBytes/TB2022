@@ -146,7 +146,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_lowerFeederSensor = shooterHardware.lowerFeederSensor;
     this.m_flywheelSpeeds[SelectedGoal.Low.value] = lowFlywheelSpeed;
     this.m_flywheelSpeeds[SelectedGoal.High.value] = highFlywheelSpeed;
-    this.m_selectedGoal = SelectedGoal.Low;
+    this.m_selectedGoal = SelectedGoal.High;
     this.m_feederIntakeSpeed = feederIntakeSpeed;
     this.m_feederShootSpeed = feederShootSpeed;
 

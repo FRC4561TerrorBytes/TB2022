@@ -164,6 +164,7 @@ public class VisionSubsystem extends SubsystemBase {
                                                                        m_targetHeightMeters, 
                                                                        m_cameraPitchRadians,
                                                                        Units.degreesToRadians(m_latestTarget.getPitch()));
+        System.out.println("Vision distance: " + m_latestDistance);
       } else m_latestDistance = 0.0;
     } else m_latestTarget = null;
 
