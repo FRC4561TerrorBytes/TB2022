@@ -181,10 +181,10 @@ public class RobotContainer {
     primaryDPadDown.whileHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(+0.5), CLIMBER_SUBSYSTEM))
                    .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
 
-    primaryDPadLeft.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchManual(-0.5)))
+    primaryDPadLeft.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchManual(-0.8)))
                    .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
-    primaryDPadRight.whileHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchManual(+0.5)))
+    primaryDPadRight.whileHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchManual(+0.8)))
                     .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
     // Secondary controller bindings
