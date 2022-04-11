@@ -23,7 +23,6 @@ public class IntakeCommand extends CommandBase {
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intakeSubsystem);
-    addRequirements(m_shooterSubsystem);
   }
 
   /** Create a new IntakeCommand w/o controller */

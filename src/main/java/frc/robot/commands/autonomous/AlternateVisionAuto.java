@@ -27,7 +27,7 @@ public class AlternateVisionAuto extends SequentialCommandGroup {
       AlternateVizAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // Shoots balls
-      new ShootVisionCommand(driveSubsystem, shooterSubsystem, visionSubsystem, Constants.SHOOT_DELAY).withTimeout(1.5),
+      new ShootVisionCommand(driveSubsystem, shooterSubsystem, visionSubsystem, Constants.SHOOT_DELAY, true).withTimeout(1.5),
 
       // Leave tarmac
       AlternateVizAuto_2.getCommandAndStop()

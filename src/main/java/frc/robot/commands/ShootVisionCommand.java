@@ -18,6 +18,7 @@ public class ShootVisionCommand extends CommandBase {
   private SelectedGoal m_prevSelectedGoal;
   private int m_loops = 0;
   private int m_loopNum;
+  private boolean m_odometry;
 
   /**
    * Shoot using vision
@@ -26,12 +27,13 @@ public class ShootVisionCommand extends CommandBase {
    * @param visionSubsystem vision subsystem
    * @param delay shoot delay in seconds
    */
-  public ShootVisionCommand(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, double delay) {
+  public ShootVisionCommand(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, double delay, boolean odometry) {
     this.m_driveSubsystem = driveSubsystem;
     this.m_shooterSubsystem = shooterSubsystem;
     this.m_visionSubsystem = visionSubsystem;
     this.m_prevSelectedGoal = m_shooterSubsystem.getSelectedGoal();
     this.m_loopNum = (int)Math.round(delay / Constants.ROBOT_LOOP_PERIOD);
+    this.m_odometry = odometry;
 
     // Use addRequirements() here to declare subsystem dependencies
     addRequirements(m_driveSubsystem, m_shooterSubsystem, m_visionSubsystem);
@@ -61,6 +63,8 @@ public class ShootVisionCommand extends CommandBase {
         m_shooterSubsystem.feederStop(false);
       }
     }
+
+    if (m_odometry) m_driveSubsystem.updateOdometry();
   }
 
   // Called once the command ends or is interrupted.

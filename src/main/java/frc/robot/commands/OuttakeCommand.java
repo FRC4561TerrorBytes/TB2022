@@ -18,7 +18,6 @@ public class OuttakeCommand extends CommandBase {
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intakeSubsytem);
-    addRequirements(m_shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.

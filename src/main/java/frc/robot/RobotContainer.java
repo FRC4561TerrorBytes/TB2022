@@ -83,6 +83,9 @@ public class RobotContainer {
                                                                               Constants.TARGET_HEIGHT_METERS,
                                                                               Constants.CAMERA_PITCH_DEGREES,
                                                                               Constants.VISION_MAX_DISTANCE);
+
+  // private static final Joystick L_JOYSTICK = new Joystick(0);
+  // private static final Joystick R_JOYSTICK = new Joystick(1);
   
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
   private static final XboxController SECONDARY_CONTROLLER = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
@@ -99,6 +102,14 @@ public class RobotContainer {
       new RunCommand(
         () -> DRIVE_SUBSYSTEM.teleopPID(PRIMARY_CONTROLLER.getLeftY(), PRIMARY_CONTROLLER.getRightX()), 
         DRIVE_SUBSYSTEM
+      )
+    );
+
+    SHOOTER_SUBSYSTEM.setDefaultCommand(
+      new RunCommand(
+        () -> SHOOTER_SUBSYSTEM.setFlywheelSpeed(Constants.HIGH_FLYWHEEL_SPEED.getBigFlywheelSpeed(), 
+                                                 Constants.HIGH_FLYWHEEL_SPEED.getSmallFlywheelSpeed()),
+        SHOOTER_SUBSYSTEM
       )
     );
 
@@ -166,7 +177,7 @@ public class RobotContainer {
     Trigger secondaryRightStick = new Trigger(() -> Math.abs(SECONDARY_CONTROLLER.getRightX()) > Constants.CONTROLLER_DEADBAND);
 
     // Primary controller bindings
-    primaryButtonLBumper.whenHeld(new ShootVisionCommand(DRIVE_SUBSYSTEM, SHOOTER_SUBSYSTEM, VISION_SUBSYSTEM, Constants.SHOOT_DELAY));
+    primaryButtonLBumper.whenHeld(new ShootVisionCommand(DRIVE_SUBSYSTEM, SHOOTER_SUBSYSTEM, VISION_SUBSYSTEM, Constants.SHOOT_DELAY, false));
     primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> SHOOTER_SUBSYSTEM.getSelectedGoal()));
     //primaryButtonRBumper.whenHeld(new ShootManualCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> getManualFlywheelSpeeds()));
     primaryTriggerLeft.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
@@ -185,7 +196,7 @@ public class RobotContainer {
                    .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
     primaryDPadRight.whileHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchManual(+0.8)))
-                    .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
+                   .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
     // Secondary controller bindings
     secondaryButtonA.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.toggleClimberLED(), CLIMBER_SUBSYSTEM));

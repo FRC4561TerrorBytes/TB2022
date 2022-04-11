@@ -29,13 +29,13 @@ public class ThreeBallVisionAuto extends SequentialCommandGroup {
       ThreeBallVizAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots collected ball + preloaded ball
-      new ShootVisionCommand(driveSubsystem, shooterSubsystem, visionSubsystem, Constants.SHOOT_DELAY).withTimeout(2.0),
+      new ShootVisionCommand(driveSubsystem, shooterSubsystem, visionSubsystem, Constants.SHOOT_DELAY, true).withTimeout(2.0),
      
       // leaves tarmac, gets new ball and returns to tarmac  
       ThreeBallVizAuto_2.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // shoots last ball
-      new ShootVisionCommand(driveSubsystem, shooterSubsystem, visionSubsystem, Constants.SHOOT_DELAY).withTimeout(2.0),
+      new ShootVisionCommand(driveSubsystem, shooterSubsystem, visionSubsystem, Constants.SHOOT_DELAY, true).withTimeout(2.0),
 
       // leaves tarmac
       ThreeBallVizAuto_3.getCommandAndStop()

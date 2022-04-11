@@ -53,16 +53,16 @@ public final class Constants {
 
   // Drive PID values
   public static final double DRIVE_kP = 0.02;
-  public static final double DRIVE_kD = 0.0003;
-  public static final double DRIVE_TURN_SCALAR = 18.0;
+  public static final double DRIVE_kD = 0.00042;
+  public static final double DRIVE_TURN_SCALAR = 20.0;
   public static final double DRIVE_LOOKAHEAD = 15;
 
   private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };
   private static final double DRIVE_THROTTLE_INPUT_CURVE_Y[] = { 0.0, 1.883, 3.766 };
   private static final double DRIVE_TRACTION_CONTROL_CURVE_X[] = { 0.0, 1.883, 3.766 };
   private static final double DRIVE_TRACTION_CONTROL_CURVE_Y[] = { 0.0, 0.5,   1.0 };
-  private static final double DRIVE_TURN_INPUT_CURVE_X[] = { 0.0, 0.5, 1.0 };
-  private static final double DRIVE_TURN_INPUT_CURVE_Y[] = { 0.0, 0.5, 1.0 };
+  private static final double DRIVE_TURN_INPUT_CURVE_X[] = { 0.0, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.0 };
+  private static final double DRIVE_TURN_INPUT_CURVE_Y[] = { 0.0, 0.01, 0.04, 0.09, 0.16, 0.25, 0.36, 0.49, 0.64, 0.81, 1.0 };
 
   public static final PolynomialSplineFunction DRIVE_THROTTLE_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_THROTTLE_INPUT_CURVE_X, DRIVE_THROTTLE_INPUT_CURVE_Y);
   public static final PolynomialSplineFunction DRIVE_TRACTION_CONTROL_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TRACTION_CONTROL_CURVE_X, DRIVE_TRACTION_CONTROL_CURVE_Y);
@@ -110,7 +110,7 @@ public final class Constants {
                                                                             INTAKE_ARM_MOTION_SMOOTHING);
 
   // Shooter PID Values
-  private static final double FLYWHEEL_kP = 0.01;
+  private static final double FLYWHEEL_kP = 0.011;
   private static final double FLYWHEEL_kI = 0.0;
   private static final double FLYWHEEL_kD = 0.001;
   private static final double FLYWHEEL_MECHANICAL_EFFICIENCY = 1.01;
@@ -131,11 +131,11 @@ public final class Constants {
                                                                                  FLYWHEEL_MECHANICAL_EFFICIENCY,
                                                                                  FLYWHEEL_TOLERANCE);
 
-  private static final double FLYWHEEL_SMALL_kP = 0.11;
+  private static final double FLYWHEEL_SMALL_kP = 0.18;
   private static final double FLYWHEEL_SMALL_kI = 0.0008;
-  private static final double FLYWHEEL_SMALL_kD = 0.008;
-  private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.02;
-  private static final double FLYWHEEL_SMALL_TOLERANCE = 170;
+  private static final double FLYWHEEL_SMALL_kD = 0.012;
+  private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.0;
+  private static final double FLYWHEEL_SMALL_TOLERANCE = 200;
   private static final double FLYWHEEL_SMALL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
