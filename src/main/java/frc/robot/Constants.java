@@ -155,10 +155,12 @@ public final class Constants {
   // Shooter settings
   public static final double FEEDER_INTAKE_SPEED = 0.2;
   public static final double FEEDER_SHOOT_SPEED = 0.3;
-  public static final double SHOOT_DELAY = 0.1;
+  public static final double SHOOT_DELAY = 0.05;
   public static final FlywheelSpeed SPIT_OUT_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
   public static final FlywheelSpeed LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1620.0, 162.0);
   public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(2700.0, 700.0);
+  public static final FlywheelSpeed FLYWHEEL_IDLE_SPEED = new FlywheelSpeed(1800.0, 2300.0);
+  public static final boolean FLYWHEEL_IDLE_DEFAULT_ENABLED = true;
   public static final List<Entry<Double, FlywheelSpeed>> FLYWHEEL_VISION_MAP = Arrays.asList(
     Map.entry(0.00, new FlywheelSpeed(2700.0, 700.0)),
     Map.entry(1.10, new FlywheelSpeed(2700.0, 700.0)),

@@ -276,6 +276,18 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * Automatically sets the flywheel speed to idle based on vision curve
+   * <p>
+   * NOTE: This method should only be used for idling the flywheels, NOT SHOOTING
+   */
+  public void setFlywheelVisionIdle(double distance) {
+    double bigFlywheelSpeed = m_bigFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
+    double smallFlywheelSpeed = m_smallFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
+
+    setFlywheelSpeed(bigFlywheelSpeed, smallFlywheelSpeed);
+  }
+
+  /**
    * Automatically sets the flywheel speed based on vision curve
    * <p>
    * NOTE: This method ALWAYS shoots high
@@ -294,13 +306,21 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @param distance Distance in meters
    */
   public void setFlywheelAuto() {
-    setFlywheelSpeed(m_flywheelSpeeds[m_selectedGoal.value].getBigFlywheelSpeed(),
-                     m_flywheelSpeeds[m_selectedGoal.value].getSmallFlywheelSpeed());
+    setFlywheelSpeed(m_flywheelSpeeds[m_selectedGoal.value]);
   }
 
   /**
-   * Moves flywheel to a speed
-   * @param speed input speed to keep the motor at (RPM)
+   * Set flywheel to speed
+   * @param flywheelSpeed flywheel speed
+   */
+  public void setFlywheelSpeed(FlywheelSpeed flywheelSpeed) {
+    setFlywheelSpeed(flywheelSpeed.getBigFlywheelSpeed(), flywheelSpeed.getSmallFlywheelSpeed());
+  }
+
+  /**
+   * Set flywheel to a speed
+   * @param bigSpeed speed of big flywheel in RPM
+   * @param smallSpeed speed of small flywheel in RPM
    */
   public void setFlywheelSpeed(double bigSpeed, double smallSpeed) {
     double bigFlywheelSpeed = MathUtil.clamp(bigSpeed, 0, BigFlywheel.MAX_SPEED_RPM);
@@ -349,9 +369,18 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
 
   /**
    * Returns whether or not the feeder is full
+   * @return true if feeder is full
    */
   public boolean isFeederFull() {
     return m_upperFeederSensor.isPressed() && m_lowerFeederSensor.isPressed();
+  }
+
+  /**
+   * Returns whether or not feeder is empty
+   * @return true if feeder is empty
+   */
+  public boolean isFeederEmpty() {
+    return !m_upperFeederSensor.isPressed() && !m_lowerFeederSensor.isPressed();
   }
 
   /**

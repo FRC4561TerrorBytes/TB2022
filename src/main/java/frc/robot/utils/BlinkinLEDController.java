@@ -128,11 +128,7 @@ public class BlinkinLEDController {
     WHITE(+0.93),
     GRAY(+0.95),
     DARK_GRAY(+0.97),
-    BLACK(+0.99),
-    /**
-     * Off
-     */
-    OFF(0.0);
+    BLACK(+0.99);
 
     public final double value;
     private BlinkinPattern(double value) {
@@ -238,6 +234,6 @@ public class BlinkinLEDController {
    * Turn off LEDs
    */
   public void off() {
-    setPattern(BlinkinPattern.OFF);
+    setPattern(BlinkinPattern.BLACK);
   }
 }

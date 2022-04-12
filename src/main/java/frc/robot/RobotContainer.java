@@ -84,9 +84,6 @@ public class RobotContainer {
                                                                               Constants.CAMERA_PITCH_DEGREES,
                                                                               Constants.VISION_MAX_DISTANCE);
 
-  // private static final Joystick L_JOYSTICK = new Joystick(0);
-  // private static final Joystick R_JOYSTICK = new Joystick(1);
-  
   private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
   private static final XboxController SECONDARY_CONTROLLER = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
 
@@ -107,9 +104,14 @@ public class RobotContainer {
 
     SHOOTER_SUBSYSTEM.setDefaultCommand(
       new RunCommand(
-        () -> SHOOTER_SUBSYSTEM.setFlywheelSpeed(Constants.HIGH_FLYWHEEL_SPEED.getBigFlywheelSpeed(), 
-                                                 Constants.HIGH_FLYWHEEL_SPEED.getSmallFlywheelSpeed()),
-        SHOOTER_SUBSYSTEM
+        () -> {
+          if (SmartDashboard.getBoolean("Flywheel Idle", Constants.FLYWHEEL_IDLE_DEFAULT_ENABLED)) {
+            if (VISION_SUBSYSTEM.isTargetValid()) SHOOTER_SUBSYSTEM.setFlywheelVisionIdle(VISION_SUBSYSTEM.getDistance());
+            else SHOOTER_SUBSYSTEM.setFlywheelSpeed(Constants.FLYWHEEL_IDLE_SPEED);
+          } else SHOOTER_SUBSYSTEM.flywheelStop();
+        },
+        SHOOTER_SUBSYSTEM,
+        VISION_SUBSYSTEM
       )
     );
 
@@ -302,6 +304,7 @@ public class RobotContainer {
     Shuffleboard.selectTab("SmartDashboard");
     autoModeChooser();
     SmartDashboard.putData("Auto Mode", m_automodeChooser);
+    SmartDashboard.putBoolean("Flywheel Idle", Constants.FLYWHEEL_IDLE_DEFAULT_ENABLED);
     SmartDashboard.putNumber("Big", 0.0);
     SmartDashboard.putNumber("Small", 0.0);
   }

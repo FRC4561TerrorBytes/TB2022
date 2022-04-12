@@ -26,6 +26,7 @@ public class ShootVisionCommand extends CommandBase {
    * @param shooterSubsystem shooter subsystem
    * @param visionSubsystem vision subsystem
    * @param delay shoot delay in seconds
+   * @param odometry whether to update drive odometry or not
    */
   public ShootVisionCommand(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, double delay, boolean odometry) {
     this.m_driveSubsystem = driveSubsystem;
