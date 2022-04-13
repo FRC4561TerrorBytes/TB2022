@@ -284,7 +284,13 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     double bigFlywheelSpeed = m_bigFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
     double smallFlywheelSpeed = m_smallFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
 
+    BigFlywheel.masterMotor.configClosedloopRamp(Constants.FLYWHEEL_VISION_IDLE_RAMP);
+    SmallFlywheel.motor.configClosedloopRamp(Constants.FLYWHEEL_SMALL_VISION_IDLE_RAMP);
+
     setFlywheelSpeed(bigFlywheelSpeed, smallFlywheelSpeed);
+
+    BigFlywheel.masterMotor.configClosedloopRamp(0.0);
+    SmallFlywheel.motor.configClosedloopRamp(0.0);
   }
 
   /**
