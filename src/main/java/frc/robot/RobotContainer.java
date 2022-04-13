@@ -106,7 +106,7 @@ public class RobotContainer {
       new RunCommand(
         () -> {
           if (SmartDashboard.getBoolean("Flywheel Idle", Constants.FLYWHEEL_IDLE_DEFAULT_ENABLED)) {
-            if (VISION_SUBSYSTEM.isTargetValid()) SHOOTER_SUBSYSTEM.setFlywheelVisionIdle(VISION_SUBSYSTEM.getDistance());
+            if (VISION_SUBSYSTEM.isTargetValid() && !DRIVE_SUBSYSTEM.isTurning()) SHOOTER_SUBSYSTEM.setFlywheelVisionIdle(VISION_SUBSYSTEM.getDistance());
             else SHOOTER_SUBSYSTEM.setFlywheelSpeed(Constants.FLYWHEEL_IDLE_SPEED);
           } else SHOOTER_SUBSYSTEM.flywheelStop();
         },
