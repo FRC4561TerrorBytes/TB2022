@@ -159,7 +159,7 @@ public final class Constants {
   public static final FlywheelSpeed SPIT_OUT_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
   public static final FlywheelSpeed LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1620.0, 162.0);
   public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(2700.0, 700.0);
-  public static final FlywheelSpeed FLYWHEEL_IDLE_SPEED = new FlywheelSpeed(1800.0, 2300.0);
+  public static final FlywheelSpeed FLYWHEEL_IDLE_SPEED = new FlywheelSpeed(500.0, 500.0);
   public static final boolean FLYWHEEL_IDLE_DEFAULT_ENABLED = true;
   public static final List<Entry<Double, FlywheelSpeed>> FLYWHEEL_VISION_MAP = Arrays.asList(
     Map.entry(0.00, new FlywheelSpeed(2700.0, 700.0)),
