@@ -156,7 +156,7 @@ public final class Constants {
 
   // Shooter settings
   public static final double FEEDER_INTAKE_SPEED = 0.2;
-  public static final double FEEDER_SHOOT_SPEED = 0.3;
+  public static final double FEEDER_SHOOT_SPEED = 0.4;
   public static final double SHOOT_DELAY = 0.05;
   public static final FlywheelSpeed SPIT_OUT_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
   public static final FlywheelSpeed LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1620.0, 162.0);

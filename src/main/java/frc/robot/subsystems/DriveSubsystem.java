@@ -416,6 +416,14 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * Get whether robot is turning or not
+   * @return true if robot is turning
+   */
+  public boolean isTurning() {
+    return m_turnPIDController.isTurning();
+  }
+
+  /**
    * Get DriveSubsystem angle as detected by the navX MXP
    * @return Total accumulated yaw angle
    */
