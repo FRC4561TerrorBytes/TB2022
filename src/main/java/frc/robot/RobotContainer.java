@@ -276,7 +276,7 @@ public class RobotContainer {
     m_automodeChooser.addOption("Five Ball Auto", new FiveBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     m_automodeChooser.addOption("Alternate Auto", new AlternateAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     m_automodeChooser.addOption("Alternate Vision Auto", new AlternateVisionAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, VISION_SUBSYSTEM));
-    m_automodeChooser.addOption("Do nothing", null);
+    m_automodeChooser.addOption("Do nothing", new SequentialCommandGroup());
   }
 
   /**
