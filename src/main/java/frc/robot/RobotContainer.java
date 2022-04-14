@@ -183,10 +183,10 @@ public class RobotContainer {
     // primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> SHOOTER_SUBSYSTEM.getSelectedGoal()));
     primaryButtonRBumper.whenHeld(new ShootManualCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> getManualFlywheelSpeeds()));
     primaryTriggerLeft.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
+    primaryTriggerRight.whileActiveOnce(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
     
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
     primaryButtonY.whenPressed(new InstantCommand(() -> SHOOTER_SUBSYSTEM.toggleSelectedGoal(), SHOOTER_SUBSYSTEM));
-    primaryTriggerRight.whileActiveOnce(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
 
     primaryDPadUp.whileHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(-0.5), CLIMBER_SUBSYSTEM))
                  .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));

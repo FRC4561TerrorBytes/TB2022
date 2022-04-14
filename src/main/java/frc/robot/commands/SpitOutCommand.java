@@ -11,15 +11,14 @@ import frc.robot.subsystems.ShooterSubsystem.FlywheelSpeed;
 
 public class SpitOutCommand extends CommandBase {
   private ShooterSubsystem m_shooterSubsystem;
-  private double m_bigRPM, m_smallRPM;
+  private FlywheelSpeed m_flywheelSpeed;
   private int m_loops = 0;
   private int m_loopNum;
 
   /** Creates a new ShootCommand. */
   public SpitOutCommand(ShooterSubsystem shooterSubsystem, double delay, FlywheelSpeed flywheelSpeed) {
     this.m_shooterSubsystem = shooterSubsystem;
-    this.m_bigRPM = flywheelSpeed.getBigFlywheelSpeed();
-    this.m_smallRPM = flywheelSpeed.getSmallFlywheelSpeed();
+    this.m_flywheelSpeed = flywheelSpeed;
 
     m_loopNum = (int)Math.round(delay / Constants.ROBOT_LOOP_PERIOD);
 
@@ -30,7 +29,7 @@ public class SpitOutCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooterSubsystem.setFlywheelSpeed(m_bigRPM, m_smallRPM);
+    m_shooterSubsystem.setFlywheelSpeed(m_flywheelSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
