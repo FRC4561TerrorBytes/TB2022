@@ -138,8 +138,8 @@ public final class Constants {
   private static final double FLYWHEEL_SMALL_TOLERANCE = 200;
   private static final double FLYWHEEL_SMALL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
-  public static final double FLYWHEEL_VISION_IDLE_RAMP = 0.8;
-  public static final double FLYWHEEL_SMALL_VISION_IDLE_RAMP = 0.6;
+  public static final double FLYWHEEL_VISION_IDLE_RAMP = 1;
+  public static final double FLYWHEEL_SMALL_VISION_IDLE_RAMP = 1;
   private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
   private static final boolean FLYWHEEL_SMALL_MOTOR_INVERTED = true;
 
@@ -156,7 +156,7 @@ public final class Constants {
 
   // Shooter settings
   public static final double FEEDER_INTAKE_SPEED = 0.2;
-  public static final double FEEDER_SHOOT_SPEED = 0.4;
+  public static final double FEEDER_SHOOT_SPEED = 0.3;
   public static final double SHOOT_DELAY = 0.05;
   public static final FlywheelSpeed SPIT_OUT_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
   public static final FlywheelSpeed LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1620.0, 162.0);
@@ -165,8 +165,8 @@ public final class Constants {
   public static final boolean FLYWHEEL_IDLE_DEFAULT_ENABLED = true;
   public static final List<Entry<Double, FlywheelSpeed>> FLYWHEEL_VISION_MAP = Arrays.asList(
     Map.entry(0.00, new FlywheelSpeed(2700.0, 700.0)),
-    Map.entry(1.10, new FlywheelSpeed(2700.0, 700.0)),
-    Map.entry(1.50, new FlywheelSpeed(2400.0, 1000.0)),
+    Map.entry(1.10, new FlywheelSpeed(2300.0, 900.0)),
+    Map.entry(1.50, new FlywheelSpeed(2300.0, 1050.0)),
     Map.entry(1.75, new FlywheelSpeed(2100.0, 1500.0)),
     Map.entry(2.00, new FlywheelSpeed(1800.0, 2100.0)),
     Map.entry(2.25, new FlywheelSpeed(1800.0, 2150.0)),

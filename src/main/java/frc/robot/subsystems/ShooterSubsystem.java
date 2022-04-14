@@ -281,16 +281,17 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * NOTE: This method should only be used for idling the flywheels, NOT SHOOTING
    */
   public void setFlywheelVisionIdle(double distance) {
-    double bigFlywheelSpeed = m_bigFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
-    double smallFlywheelSpeed = m_smallFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
+    // double bigFlywheelSpeed = m_bigFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
+    // double smallFlywheelSpeed = m_smallFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
 
-    BigFlywheel.masterMotor.configClosedloopRamp(Constants.FLYWHEEL_VISION_IDLE_RAMP);
-    SmallFlywheel.motor.configClosedloopRamp(Constants.FLYWHEEL_SMALL_VISION_IDLE_RAMP);
+    // BigFlywheel.masterMotor.configClosedloopRamp(Constants.FLYWHEEL_VISION_IDLE_RAMP);
+    // SmallFlywheel.motor.configClosedloopRamp(Constants.FLYWHEEL_SMALL_VISION_IDLE_RAMP);
 
-    setFlywheelSpeed(bigFlywheelSpeed, smallFlywheelSpeed);
+    // setFlywheelSpeed(bigFlywheelSpeed, smallFlywheelSpeed);
+    setFlywheelSpeed(Constants.FLYWHEEL_IDLE_SPEED);
 
-    BigFlywheel.masterMotor.configClosedloopRamp(0.0);
-    SmallFlywheel.motor.configClosedloopRamp(0.0);
+    // BigFlywheel.masterMotor.configClosedloopRamp(0.0);
+    // SmallFlywheel.motor.configClosedloopRamp(0.0);
   }
 
   /**
