@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.OuttakeCommand;
-import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShootManualCommand;
 import frc.robot.commands.ShootVisionCommand;
 import frc.robot.commands.SpitOutCommand;
@@ -106,10 +105,10 @@ public class RobotContainer {
     SHOOTER_SUBSYSTEM.setDefaultCommand(
       new RunCommand(
         () -> {
-          // if (SmartDashboard.getBoolean("Flywheel Idle", Constants.FLYWHEEL_IDLE_DEFAULT_ENABLED)) {
-          //   if (VISION_SUBSYSTEM.isTargetValid() && !DRIVE_SUBSYSTEM.isTurning()) SHOOTER_SUBSYSTEM.setFlywheelVisionIdle(VISION_SUBSYSTEM.getDistance());
-          //   else SHOOTER_SUBSYSTEM.setFlywheelSpeed(Constants.FLYWHEEL_IDLE_SPEED);
-          // } else SHOOTER_SUBSYSTEM.flywheelStop();
+          if (SmartDashboard.getBoolean("Flywheel Idle", Constants.FLYWHEEL_IDLE_DEFAULT_ENABLED)) {
+            if (VISION_SUBSYSTEM.isTargetValid() && !DRIVE_SUBSYSTEM.isTurning()) SHOOTER_SUBSYSTEM.setFlywheelVisionIdle(VISION_SUBSYSTEM.getDistance());
+            else SHOOTER_SUBSYSTEM.setFlywheelSpeed(Constants.FLYWHEEL_IDLE_SPEED);
+          } else SHOOTER_SUBSYSTEM.flywheelStop();
         },
         SHOOTER_SUBSYSTEM,
         VISION_SUBSYSTEM
