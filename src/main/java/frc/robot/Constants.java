@@ -155,7 +155,7 @@ public final class Constants {
   // Shooter settings
   public static final double FEEDER_INTAKE_SPEED = 0.2;
   public static final double FEEDER_SHOOT_SPEED = 0.3;
-  public static final double SHOOT_DELAY = 0.05;
+  public static final double SHOOT_DELAY = 0.1;
   public static final double FLYWHEEL_BIG_VISION_IDLE_RAMP = 1;
   public static final double FLYWHEEL_SMALL_VISION_IDLE_RAMP = 1;
   public static final FlywheelSpeed SPIT_OUT_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
@@ -166,12 +166,19 @@ public final class Constants {
   public static final List<Entry<Double, FlywheelSpeed>> FLYWHEEL_VISION_MAP = Arrays.asList(
     Map.entry(0.00, new FlywheelSpeed(2700.0, 700.0)),
     Map.entry(1.10, new FlywheelSpeed(2300.0, 900.0)),
-    Map.entry(1.50, new FlywheelSpeed(2300.0, 1050.0)),
-    Map.entry(1.75, new FlywheelSpeed(2100.0, 1500.0)),
+    Map.entry(1.20, new FlywheelSpeed(2300.0, 900.0)),
+    Map.entry(1.30, new FlywheelSpeed(2350.0, 940.0)),
+    Map.entry(1.40, new FlywheelSpeed(2330.0, 955.0)),
+    Map.entry(1.50, new FlywheelSpeed(2250.0, 1150.0)),
+    Map.entry(1.60, new FlywheelSpeed(2200.0, 1200.0)),
+    Map.entry(1.70, new FlywheelSpeed(2150.0, 1400.0)),
+    Map.entry(1.80, new FlywheelSpeed(2050.0, 1600.0)),
     Map.entry(2.00, new FlywheelSpeed(1800.0, 2100.0)),
     Map.entry(2.25, new FlywheelSpeed(1800.0, 2150.0)),
-    Map.entry(2.50, new FlywheelSpeed(1800.0, 2300.0)),
-    Map.entry(3.00, new FlywheelSpeed(1800.0, 3000.0)),
+    Map.entry(2.50, new FlywheelSpeed(1750.0, 2500.0)),
+    Map.entry(2.75, new FlywheelSpeed(1600.0, 3000.0)),
+    Map.entry(3.00, new FlywheelSpeed(1725.0, 3200.0)),
+    Map.entry(3.05, new FlywheelSpeed(1750.0, 3150.0)),
     Map.entry(3.25, new FlywheelSpeed(1550.0, 3400.0)),
     Map.entry(3.50, new FlywheelSpeed(1550.0, 3800.0)),
     Map.entry(3.75, new FlywheelSpeed(1500.0, 3900.0)),
