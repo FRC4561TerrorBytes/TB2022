@@ -188,25 +188,25 @@ public class RobotContainer {
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
     primaryButtonY.whenPressed(new InstantCommand(() -> SHOOTER_SUBSYSTEM.toggleSelectedGoal(), SHOOTER_SUBSYSTEM));
 
-    primaryDPadUp.whileHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(-0.5), CLIMBER_SUBSYSTEM))
+    primaryDPadUp.whenHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(-0.5)))
                  .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
 
-    primaryDPadDown.whileHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(+0.5), CLIMBER_SUBSYSTEM))
+    primaryDPadDown.whenHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(+0.5)))
                    .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
 
-    primaryDPadLeft.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchManual(-0.8)))
+    primaryDPadLeft.whenHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchManual(-0.8)))
                    .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
-    primaryDPadRight.whileHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.winchManual(+0.8)))
-                   .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
+    primaryDPadRight.whenHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchManual(+0.8)))
+                    .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
 
     // Secondary controller bindings
     secondaryButtonA.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.toggleClimberLED(), CLIMBER_SUBSYSTEM));
-    secondaryButtonB.whileHeld(new RunCommand(() -> CLIMBER_SUBSYSTEM.telescopeSlow(), CLIMBER_SUBSYSTEM))
+    secondaryButtonB.whenHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeSlow(), CLIMBER_SUBSYSTEM))
                     .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryButtonRBumper.whenHeld(new SpitOutCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, Constants.SPIT_OUT_FLYWHEEL_SPEED));
 
-    secondaryDPadUp.whileHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-0.2), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
+    secondaryDPadUp.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-0.2), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(+0.2), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryDPadLeft.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManualOverride(-0.1), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
     secondaryDPadRight.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.winchManualOverride(+0.1), () -> CLIMBER_SUBSYSTEM.winchStop(), CLIMBER_SUBSYSTEM));
