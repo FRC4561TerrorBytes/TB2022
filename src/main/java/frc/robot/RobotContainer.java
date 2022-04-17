@@ -97,7 +97,8 @@ public class RobotContainer {
     // Set default commands for subsystems
     DRIVE_SUBSYSTEM.setDefaultCommand(
       new RunCommand(
-        () -> DRIVE_SUBSYSTEM.teleopPID(PRIMARY_CONTROLLER.getLeftY(), PRIMARY_CONTROLLER.getRightX()), 
+        // () -> DRIVE_SUBSYSTEM.teleopPID(PRIMARY_CONTROLLER.getLeftY(), PRIMARY_CONTROLLER.getRightX()), 
+        () -> DRIVE_SUBSYSTEM.teleop(PRIMARY_CONTROLLER.getLeftY(), PRIMARY_CONTROLLER.getRightX(), 2), 
         DRIVE_SUBSYSTEM
       )
     );
