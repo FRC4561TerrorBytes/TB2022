@@ -246,11 +246,11 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
    * @param turnRequest Turn input [-1.0, +1.0]
    */
   public void teleopPID(double speedRequest, double turnRequest) {
-    // Calculate next PID turn output
-    double turnOutput = m_turnPIDController.calculate(getAngle(), getTurnRate(), turnRequest);
-
     // Calculate next speed output
     double speedOutput = m_tractionControlController.calculate(getInertialVelocity(), speedRequest);
+
+    // Calculate next PID turn output
+    double turnOutput = m_turnPIDController.calculate(getAngle(), getTurnRate(), turnRequest);
 
     // Run motors with appropriate values
     m_lMasterMotor.set(ControlMode.PercentOutput, speedOutput, DemandType.ArbitraryFeedForward, -turnOutput);
