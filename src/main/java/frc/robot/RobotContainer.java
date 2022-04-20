@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.OuttakeCommand;
-import frc.robot.commands.ShootManualCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShootVisionCommand;
 import frc.robot.commands.SpitOutCommand;
 import frc.robot.commands.autonomous.AlternateAuto;
@@ -180,8 +180,8 @@ public class RobotContainer {
 
     // Primary controller bindings
     primaryButtonLBumper.whenHeld(new ShootVisionCommand(DRIVE_SUBSYSTEM, SHOOTER_SUBSYSTEM, VISION_SUBSYSTEM, Constants.SHOOT_DELAY, false));
-    // primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> SHOOTER_SUBSYSTEM.getSelectedGoal()));
-    primaryButtonRBumper.whenHeld(new ShootManualCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> getManualFlywheelSpeeds()));
+    primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> SHOOTER_SUBSYSTEM.getSelectedGoal()));
+    //primaryButtonRBumper.whenHeld(new ShootManualCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> getManualFlywheelSpeeds()));
     primaryTriggerLeft.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     primaryTriggerRight.whileActiveOnce(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
     
