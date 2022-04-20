@@ -105,7 +105,7 @@ public class RobotContainer {
     SHOOTER_SUBSYSTEM.setDefaultCommand(
       new RunCommand(
         () -> {
-          if (SmartDashboard.getBoolean("Flywheel Idle", Constants.FLYWHEEL_IDLE_DEFAULT_ENABLED)) {
+          if (SmartDashboard.getBoolean(Constants.SMARTDASHBOARD_FLYWHEEL_IDLE_ENABLED, Constants.FLYWHEEL_IDLE_DEFAULT_ENABLED)) {
             if (VISION_SUBSYSTEM.isTargetValid() && !DRIVE_SUBSYSTEM.isTurning()) SHOOTER_SUBSYSTEM.setFlywheelVisionIdle(VISION_SUBSYSTEM.getDistance());
             else SHOOTER_SUBSYSTEM.setFlywheelSpeed(Constants.FLYWHEEL_IDLE_SPEED);
           } else SHOOTER_SUBSYSTEM.flywheelStop();
@@ -294,18 +294,19 @@ public class RobotContainer {
    * @return manual flywheel speeds
    */
   public FlywheelSpeed getManualFlywheelSpeeds() {
-    return new FlywheelSpeed(SmartDashboard.getNumber("Big", 0.0), SmartDashboard.getNumber("Small", 0.0));
+    return new FlywheelSpeed(SmartDashboard.getNumber(Constants.SMARTDASHBOARD_FLYWHEEL_BIG_INPUT, 0.0), 
+                             SmartDashboard.getNumber(Constants.SMARTDASHBOARD_FLYWHWEEL_SMALL_INPUT, 0.0));
   }
 
   /**
    * Configure default Shuffleboard tab
    */
   public void defaultShuffleboardTab() {
-    Shuffleboard.selectTab("SmartDashboard");
+    Shuffleboard.selectTab(Constants.SMARTDASHBOARD_DEFAULT_TAB);
     autoModeChooser();
-    SmartDashboard.putData("Auto Mode", m_automodeChooser);
-    SmartDashboard.putBoolean("Flywheel Idle", Constants.FLYWHEEL_IDLE_DEFAULT_ENABLED);
-    SmartDashboard.putNumber("Big", 0.0);
-    SmartDashboard.putNumber("Small", 0.0);
+    SmartDashboard.putData(Constants.SMARTDASHBOARD_AUTO_MODE, m_automodeChooser);
+    SmartDashboard.putBoolean(Constants.SMARTDASHBOARD_FLYWHEEL_IDLE_ENABLED, Constants.FLYWHEEL_IDLE_DEFAULT_ENABLED);
+    SmartDashboard.putNumber(Constants.SMARTDASHBOARD_FLYWHEEL_BIG_INPUT, 0.0);
+    SmartDashboard.putNumber(Constants.SMARTDASHBOARD_FLYWHWEEL_SMALL_INPUT, 0.0);
   }
 }

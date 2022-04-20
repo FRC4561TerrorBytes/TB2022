@@ -288,4 +288,11 @@ public final class Constants {
 
   // Accessories
   public static final int BLINKIN_LED_CONTROLLER_PORT = 0;
+
+  // SmartDashboard keys
+  public static final String SMARTDASHBOARD_DEFAULT_TAB = "SmartDashboard";
+  public static final String SMARTDASHBOARD_AUTO_MODE = "Auto Mode";
+  public static final String SMARTDASHBOARD_FLYWHEEL_IDLE_ENABLED = "Flywheel Idle";
+  public static final String SMARTDASHBOARD_FLYWHEEL_BIG_INPUT = "Big";
+  public static final String SMARTDASHBOARD_FLYWHWEEL_SMALL_INPUT = "Small";
 }
