@@ -104,6 +104,9 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     private static TalonPIDConfig config;
   }
 
+  private double FLYWHEEL_BIG_VISION_IDLE_RAMP = 1.0;
+  private double FLYWHEEL_SMALL_VISION_IDLE_RAMP = 1.0;
+
   private CANSparkMax m_upperFeederMotor;
   private CANSparkMax m_lowerFeederMotor;
   private SparkMaxLimitSwitch m_upperFeederSensor;
@@ -284,8 +287,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     double bigFlywheelSpeed = m_bigFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
     double smallFlywheelSpeed = m_smallFlywheelVisionCurve.value(MathUtil.clamp(distance, m_minDistance, m_maxDistance));
 
-    BigFlywheel.masterMotor.configClosedloopRamp(Constants.FLYWHEEL_BIG_VISION_IDLE_RAMP);
-    SmallFlywheel.motor.configClosedloopRamp(Constants.FLYWHEEL_SMALL_VISION_IDLE_RAMP);
+    BigFlywheel.masterMotor.configClosedloopRamp(FLYWHEEL_BIG_VISION_IDLE_RAMP);
+    SmallFlywheel.motor.configClosedloopRamp(FLYWHEEL_SMALL_VISION_IDLE_RAMP);
 
     setFlywheelSpeed(bigFlywheelSpeed, smallFlywheelSpeed);
   }

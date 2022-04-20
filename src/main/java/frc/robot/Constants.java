@@ -68,8 +68,8 @@ public final class Constants {
   public static final PolynomialSplineFunction DRIVE_TRACTION_CONTROL_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TRACTION_CONTROL_CURVE_X, DRIVE_TRACTION_CONTROL_CURVE_Y);
   public static final PolynomialSplineFunction DRIVE_TURN_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TURN_INPUT_CURVE_X, DRIVE_TURN_INPUT_CURVE_Y);
 
-  private static final double CURRENT_LIMIT = 80.0;
-  private static final double CURRENT_THRESHOLD = 120.0;
+  private static final double CURRENT_LIMIT = 100.0;
+  private static final double CURRENT_THRESHOLD = 200.0;
   private static final double CURRENT_THRESHOLD_TIME = 6 * ROBOT_LOOP_PERIOD;
   
   public static final StatorCurrentLimitConfiguration DRIVE_CURRENT_LIMIT_CONFIGURATION = new StatorCurrentLimitConfiguration(true, CURRENT_LIMIT, CURRENT_THRESHOLD, CURRENT_THRESHOLD_TIME);
@@ -156,7 +156,6 @@ public final class Constants {
   public static final double FEEDER_INTAKE_SPEED = 0.2;
   public static final double FEEDER_SHOOT_SPEED = 0.3;
   public static final double SHOOT_DELAY = 0.1;
-  public static final double FLYWHEEL_BIG_VISION_IDLE_RAMP = 1;
   public static final double FLYWHEEL_SMALL_VISION_IDLE_RAMP = 1;
   public static final FlywheelSpeed SPIT_OUT_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
   public static final FlywheelSpeed LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1620.0, 162.0);

@@ -30,7 +30,7 @@ public class TurnPIDController extends PIDController {
   public TurnPIDController(double kP, double kD, double turnScalar, double deadband, double lookAhead, PolynomialSplineFunction turnInputCurve) {
     super(kP, 0.0, kD, Constants.ROBOT_LOOP_PERIOD);
     this.m_turnScalar = turnScalar;
-    m_deadband = MathUtil.clamp(deadband, MIN_DEADBAND, MAX_DEADBAND);
+    this.m_deadband = MathUtil.clamp(deadband, MIN_DEADBAND, MAX_DEADBAND);
     this.m_lookAhead = lookAhead;
 
     // Fill turn input hashmap
