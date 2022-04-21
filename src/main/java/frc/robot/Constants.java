@@ -53,7 +53,7 @@ public final class Constants {
 
   // Drive PID values
   public static final double DRIVE_kP = 0.02;
-  public static final double DRIVE_kD = 0.00042;
+  public static final double DRIVE_kD = 0.0004;
   public static final double DRIVE_TURN_SCALAR = 15.0;
   public static final double DRIVE_LOOKAHEAD = 16;
 

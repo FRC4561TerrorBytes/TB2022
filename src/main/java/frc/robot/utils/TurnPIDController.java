@@ -11,11 +11,13 @@ import frc.robot.Constants;
 public class TurnPIDController extends PIDController {
   private final double MIN_DEADBAND = 0.001;
   private final double MAX_DEADBAND = 0.15;
+  private final double FILTER_FACTOR = 1.0 / 2.0;
 
   private HashMap<Double, Double> m_turnInputMap = new HashMap<Double, Double>();
   private double m_turnScalar = 0.0;
   private double m_lookAhead = 0.0;
   private double m_deadband = 0.0;
+  private double m_turnRequest = 0.0;
   private boolean m_isTurning = false;
 
   /**
@@ -54,11 +56,14 @@ public class TurnPIDController extends PIDController {
    * @return optimal turn output [-1.0, +1.0]
    */
   public double calculate(double currentAngle, double turnRate, double turnRequest) {
+    // Filter turnRequest
+    m_turnRequest -= (m_turnRequest - turnRequest) * FILTER_FACTOR;
+
     // Start turning if input is greater than deadband
-    if (Math.abs(turnRequest) >= m_deadband) {
+    if (Math.abs(m_turnRequest) >= m_deadband) {
       // Get scaled turnRequest
-      turnRequest = Math.copySign(Math.floor(Math.abs(turnRequest) * 1000) / 1000, turnRequest) + 0.0;
-      double scaledTurnRequest = m_turnInputMap.get(turnRequest);
+      m_turnRequest = Math.copySign(Math.floor(Math.abs(m_turnRequest) * 1000) / 1000, m_turnRequest) + 0.0;
+      double scaledTurnRequest = m_turnInputMap.get(m_turnRequest);
       // Add delta to setpoint scaled by factor
       super.setSetpoint(currentAngle + (scaledTurnRequest * m_turnScalar));
       m_isTurning = true;
