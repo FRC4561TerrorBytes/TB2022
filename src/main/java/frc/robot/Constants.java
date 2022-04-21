@@ -54,7 +54,7 @@ public final class Constants {
   // Drive PID values
   public static final double DRIVE_kP = 0.02;
   public static final double DRIVE_kD = 0.0004;
-  public static final double DRIVE_TURN_SCALAR = 15.0;
+  public static final double DRIVE_TURN_SCALAR = 18.0;
   public static final double DRIVE_LOOKAHEAD = 16;
 
   private static final double DRIVE_THROTTLE_INPUT_CURVE_X[] = { 0.0, 0.5,   1.0 };
@@ -155,7 +155,7 @@ public final class Constants {
   // Shooter settings
   public static final double FEEDER_INTAKE_SPEED = 0.2;
   public static final double FEEDER_SHOOT_SPEED = 0.3;
-  public static final double SHOOT_DELAY = 0.1;
+  public static final double SHOOT_DELAY = 0.2;
   public static final double FLYWHEEL_SMALL_VISION_IDLE_RAMP = 1;
   public static final FlywheelSpeed SPIT_OUT_LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
   public static final FlywheelSpeed SPIT_OUT_HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(5000.0, 5000.0);
