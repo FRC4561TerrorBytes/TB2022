@@ -25,7 +25,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private final double MAX_TOLERANCE = 7.5;
-  private final double MIN_TOLERANCE = 2.0;
+  private final double MIN_TOLERANCE = 2.2;
   private final int VISION_PIPELINE_INDEX = 0;
 
   private PhotonCamera m_pi;

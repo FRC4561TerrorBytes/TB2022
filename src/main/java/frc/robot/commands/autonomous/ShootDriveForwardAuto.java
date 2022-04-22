@@ -5,6 +5,7 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.DriveSubsystem;
@@ -19,11 +20,14 @@ import frc.robot.utils.AutoTrajectory;
 public class ShootDriveForwardAuto extends SequentialCommandGroup {
   /** Creates a new ShootDriveForwardAuto. */
   public ShootDriveForwardAuto(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
-    AutoTrajectory LeaveTarmac = new AutoTrajectory(driveSubsystem, "LeaveTarmac", 2.0, 1.0);
+    AutoTrajectory LeaveTarmac = new AutoTrajectory(driveSubsystem, "LeaveTarmac", 2.0, 1.5);
 
     addCommands(
       // Shoots single preloaded ball
-      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High).withTimeout(1.0),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High).withTimeout(2.0),
+
+      // Wait for a while
+      new WaitCommand(10.0),
 
       // Drives forward + exits tarmac
       LeaveTarmac.getCommandAndStop()

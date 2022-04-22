@@ -27,7 +27,7 @@ public class AlternateAuto extends SequentialCommandGroup {
       AlternateAuto_1.getCommandAndStop().deadlineWith(new IntakeCommand(intakeSubsystem, shooterSubsystem)),
       
       // Shoots balls
-      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High).withTimeout(2.5),
+      new ShootCommand(shooterSubsystem, Constants.SHOOT_DELAY, SelectedGoal.High).withTimeout(4.0),
       
       // Leaves tarmac
       AlternateAuto_2.getCommandAndStop()

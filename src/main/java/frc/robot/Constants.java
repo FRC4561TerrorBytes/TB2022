@@ -69,7 +69,7 @@ public final class Constants {
   public static final PolynomialSplineFunction DRIVE_TURN_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TURN_INPUT_CURVE_X, DRIVE_TURN_INPUT_CURVE_Y);
 
   private static final double CURRENT_LIMIT = 100.0;
-  private static final double CURRENT_THRESHOLD = 200.0;
+  private static final double CURRENT_THRESHOLD = 240.0;
   private static final double CURRENT_THRESHOLD_TIME = 6 * ROBOT_LOOP_PERIOD;
   
   public static final StatorCurrentLimitConfiguration DRIVE_CURRENT_LIMIT_CONFIGURATION = new StatorCurrentLimitConfiguration(true, CURRENT_LIMIT, CURRENT_THRESHOLD, CURRENT_THRESHOLD_TIME);
@@ -132,10 +132,10 @@ public final class Constants {
                                                                                  FLYWHEEL_TOLERANCE);
 
   private static final double FLYWHEEL_SMALL_kP = 0.18;
-  private static final double FLYWHEEL_SMALL_kI = 0.0008;
-  private static final double FLYWHEEL_SMALL_kD = 0.012;
+  private static final double FLYWHEEL_SMALL_kI = 0.001;
+  private static final double FLYWHEEL_SMALL_kD = 0.04;
   private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.0;
-  private static final double FLYWHEEL_SMALL_TOLERANCE = 200;
+  private static final double FLYWHEEL_SMALL_TOLERANCE = 250;
   private static final double FLYWHEEL_SMALL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
@@ -158,9 +158,9 @@ public final class Constants {
   public static final double SHOOT_DELAY = 0.2;
   public static final double FLYWHEEL_SMALL_VISION_IDLE_RAMP = 1;
   public static final FlywheelSpeed SPIT_OUT_LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
-  public static final FlywheelSpeed SPIT_OUT_HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(5000.0, 5000.0);
+  public static final FlywheelSpeed SPIT_OUT_HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(5500.0, 2000.0);
   public static final FlywheelSpeed LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1620.0, 162.0);
-  public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(2700.0, 700.0);
+  public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(2400.0, 800.0);
   public static final FlywheelSpeed FLYWHEEL_IDLE_SPEED = new FlywheelSpeed(500.0, 500.0);
   public static final boolean FLYWHEEL_IDLE_DEFAULT_ENABLED = false;
   public static final List<Entry<Double, FlywheelSpeed>> FLYWHEEL_VISION_MAP = Arrays.asList(
@@ -175,15 +175,14 @@ public final class Constants {
     Map.entry(1.80, new FlywheelSpeed(2050.0, 1600.0)),
     Map.entry(2.00, new FlywheelSpeed(1800.0, 2100.0)),
     Map.entry(2.25, new FlywheelSpeed(1700.0, 2200.0)),
-    Map.entry(2.50, new FlywheelSpeed(1750.0, 2500.0)),
-    Map.entry(2.75, new FlywheelSpeed(1600.0, 3000.0)),
-    Map.entry(3.00, new FlywheelSpeed(1730.0, 3300.0)),
-    Map.entry(3.05, new FlywheelSpeed(1750.0, 3150.0)),
-    Map.entry(3.15, new FlywheelSpeed(1600.0, 3500.0)),
-    Map.entry(3.25, new FlywheelSpeed(1575.0, 3675.0)),
-    Map.entry(3.50, new FlywheelSpeed(1550.0, 3800.0)),
-    Map.entry(3.75, new FlywheelSpeed(1500.0, 3900.0)),
-    Map.entry(4.00, new FlywheelSpeed(1500.0, 3950.0))
+    Map.entry(2.50, new FlywheelSpeed(1750.0, 2700.0)),
+    Map.entry(2.75, new FlywheelSpeed(1600.0, 3150.0)),
+    Map.entry(3.00, new FlywheelSpeed(1625.0, 3425.0)),
+    Map.entry(3.15, new FlywheelSpeed(1625.0, 3675.0)),
+    Map.entry(3.25, new FlywheelSpeed(1575.0, 3775.0)),
+    Map.entry(3.50, new FlywheelSpeed(1525.0, 4100.0)),
+    Map.entry(3.75, new FlywheelSpeed(1525.0, 4200.0)),
+    Map.entry(4.00, new FlywheelSpeed(1500.0, 4250.0))
   );
 
   // Telescope PID variables
