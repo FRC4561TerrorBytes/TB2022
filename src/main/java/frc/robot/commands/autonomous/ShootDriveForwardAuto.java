@@ -20,7 +20,7 @@ import frc.robot.utils.AutoTrajectory;
 public class ShootDriveForwardAuto extends SequentialCommandGroup {
   /** Creates a new ShootDriveForwardAuto. */
   public ShootDriveForwardAuto(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
-    AutoTrajectory LeaveTarmac = new AutoTrajectory(driveSubsystem, "LeaveTarmac", 2.0, 1.5);
+    AutoTrajectory DriveForward = new AutoTrajectory(driveSubsystem, "DriveForward", 3.0, 2.0);
 
     addCommands(
       // Shoots single preloaded ball
@@ -30,7 +30,7 @@ public class ShootDriveForwardAuto extends SequentialCommandGroup {
       new WaitCommand(10.0),
 
       // Drives forward + exits tarmac
-      LeaveTarmac.getCommandAndStop()
+      DriveForward.getCommandAndStop()
     );
   }
 }

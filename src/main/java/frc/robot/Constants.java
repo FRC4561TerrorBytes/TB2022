@@ -62,7 +62,7 @@ public final class Constants {
   private static final double DRIVE_TRACTION_CONTROL_CURVE_X[] = { 0.0, 1.883, 3.766 };
   private static final double DRIVE_TRACTION_CONTROL_CURVE_Y[] = { 0.0, 0.5,   1.0 };
   private static final double DRIVE_TURN_INPUT_CURVE_X[] = { 0.0, 0.100, 0.200, 0.300, 0.400, 0.500, 0.600, 0.700, 0.800, 0.900, 1.0 };
-  private static final double DRIVE_TURN_INPUT_CURVE_Y[] = { 0.0, 0.008, 0.032, 0.072, 0.128, 0.200, 0.288, 0.392, 0.512, 0.648, 1.0 };
+  private static final double DRIVE_TURN_INPUT_CURVE_Y[] = { 0.0, 0.008, 0.032, 0.072, 0.128, 0.200, 0.288, 0.392, 0.512, 0.768, 1.0 };
 
   public static final PolynomialSplineFunction DRIVE_THROTTLE_INPUT_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_THROTTLE_INPUT_CURVE_X, DRIVE_THROTTLE_INPUT_CURVE_Y);
   public static final PolynomialSplineFunction DRIVE_TRACTION_CONTROL_CURVE = SPLINE_INTERPOLATOR.interpolate(DRIVE_TRACTION_CONTROL_CURVE_X, DRIVE_TRACTION_CONTROL_CURVE_Y);
@@ -133,9 +133,9 @@ public final class Constants {
 
   private static final double FLYWHEEL_SMALL_kP = 0.18;
   private static final double FLYWHEEL_SMALL_kI = 0.001;
-  private static final double FLYWHEEL_SMALL_kD = 0.04;
+  private static final double FLYWHEEL_SMALL_kD = 0.045;
   private static final double FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY = 1.0;
-  private static final double FLYWHEEL_SMALL_TOLERANCE = 250;
+  private static final double FLYWHEEL_SMALL_TOLERANCE = 270;
   private static final double FLYWHEEL_SMALL_MAX_RPM = FALCON_500_MAX_RPM;
   private static final double FLYWHEEL_SMALL_TICKS_PER_ROTATION = CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
   private static final boolean FLYWHEEL_SMALL_ENCODER_SENSOR_PHASE = false;
@@ -155,7 +155,7 @@ public final class Constants {
   // Shooter settings
   public static final double FEEDER_INTAKE_SPEED = 0.2;
   public static final double FEEDER_SHOOT_SPEED = 0.3;
-  public static final double SHOOT_DELAY = 0.2;
+  public static final double SHOOT_DELAY = 0.175;
   public static final double FLYWHEEL_SMALL_VISION_IDLE_RAMP = 1;
   public static final FlywheelSpeed SPIT_OUT_LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
   public static final FlywheelSpeed SPIT_OUT_HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(5500.0, 2000.0);
@@ -177,9 +177,8 @@ public final class Constants {
     Map.entry(2.25, new FlywheelSpeed(1700.0, 2200.0)),
     Map.entry(2.50, new FlywheelSpeed(1750.0, 2700.0)),
     Map.entry(2.75, new FlywheelSpeed(1600.0, 3150.0)),
-    Map.entry(3.00, new FlywheelSpeed(1625.0, 3425.0)),
-    Map.entry(3.15, new FlywheelSpeed(1625.0, 3675.0)),
-    Map.entry(3.25, new FlywheelSpeed(1575.0, 3775.0)),
+    Map.entry(3.00, new FlywheelSpeed(1625.0, 3450.0)),
+    Map.entry(3.25, new FlywheelSpeed(1550.0, 3900.0)),
     Map.entry(3.50, new FlywheelSpeed(1525.0, 4100.0)),
     Map.entry(3.75, new FlywheelSpeed(1525.0, 4200.0)),
     Map.entry(4.00, new FlywheelSpeed(1500.0, 4250.0))
