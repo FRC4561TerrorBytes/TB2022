@@ -259,15 +259,27 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
 
   /**
    * Turn robot by angleDelta
-   * @param angleDelta degrees to turn robot by [-turnScalar, +turnScalar]
+   * @param angleDelta Degrees to turn robot by
    */
   public void aimToAngle(double angleDelta) {
+    aimToAngle(angleDelta, 0.0);
+  }
+
+  /**
+   * Turn robot by angleDelta
+   * @param angleDelta Degrees to turn robot by
+   * @param speedRequest Desired speed [-1.0, +1.0]
+   */
+  public void aimToAngle(double angleDelta, double speedRequest) {
     angleDelta *= VISION_AIM_DAMPENER;
     m_turnPIDController.setSetpoint(getAngle() + angleDelta);
 
+    // Calculate next speed output
+    double speedOutput = m_tractionControlController.calculate(getInertialVelocity(), speedRequest);
+
     double turnOutput = m_turnPIDController.calculate(getAngle());
-    m_lMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, -turnOutput);
-    m_rMasterMotor.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, +turnOutput);
+    m_lMasterMotor.set(ControlMode.PercentOutput, speedOutput, DemandType.ArbitraryFeedForward, -turnOutput);
+    m_rMasterMotor.set(ControlMode.PercentOutput, speedOutput, DemandType.ArbitraryFeedForward, +turnOutput);
   }
 
   /**
