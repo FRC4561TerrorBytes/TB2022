@@ -25,6 +25,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.TractionControlController;
@@ -50,16 +51,6 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     }
   }
 
-  private enum MaxMotorSpeed {
-    Slow(0.15),
-    Full(1.0);
-
-    public double speed;
-    private MaxMotorSpeed(double speed) {
-      this.speed = speed;
-    }
-  }
-
   private String SUBSYSTEM_NAME = "Drive Subsystem";
 
   private TurnPIDController m_turnPIDController;
@@ -78,8 +69,6 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   private final double MOTOR_DEADBAND = 0.04;
   private final double MAX_VOLTAGE = 12.0;
   private final double VISION_AIM_DAMPENER = 0.9;
-
-  private MaxMotorSpeed m_maxMotorSpeed = MaxMotorSpeed.Slow;
  
   private double m_metersPerTick = 0.0;
   private double m_deadband = 0.0;
@@ -163,7 +152,7 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     m_rSlaveMotor.configStatorCurrentLimit(currentLimitConfiguration);
     
     // Configure max motor speeds
-    setMaxMotorSpeed(m_maxMotorSpeed);
+    setMaxMotorSpeed(Constants.DRIVE_SLOW_SPEED);
 
     // Initialise PID subsystem setpoint and input
     m_navx.calibrate();
@@ -490,22 +479,15 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     return m_turnPIDController.getSetpoint();
   }
 
-public void setMaxMotorSpeed(MaxMotorSpeed m) {
-  m_lMasterMotor.configPeakOutputForward(+m.speed);
-  m_lMasterMotor.configPeakOutputReverse(-m.speed);
-  m_lSlaveMotor.configPeakOutputForward(+m.speed);
-  m_lSlaveMotor.configPeakOutputReverse(-m.speed);
-  m_rMasterMotor.configPeakOutputForward(+m.speed);
-  m_rMasterMotor.configPeakOutputReverse(-m.speed);
-  m_rSlaveMotor.configPeakOutputForward(+m.speed);
-  m_rSlaveMotor.configPeakOutputReverse(-m.speed);
-}
-
-public void toggleMaxSpeed() {
-  if (m_maxMotorSpeed == MaxMotorSpeed.Full)
-    m_maxMotorSpeed = MaxMotorSpeed.Slow;
-  else m_maxMotorSpeed = MaxMotorSpeed.Full;
-  setMaxMotorSpeed(m_maxMotorSpeed);
+public void setMaxMotorSpeed(double speed) {
+  m_lMasterMotor.configPeakOutputForward(+speed);
+  m_lMasterMotor.configPeakOutputReverse(-speed);
+  m_lSlaveMotor.configPeakOutputForward(+speed);
+  m_lSlaveMotor.configPeakOutputReverse(-speed);
+  m_rMasterMotor.configPeakOutputForward(+speed);
+  m_rMasterMotor.configPeakOutputReverse(-speed);
+  m_rSlaveMotor.configPeakOutputForward(+speed);
+  m_rSlaveMotor.configPeakOutputReverse(-speed);
 }
 
   @Override

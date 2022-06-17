@@ -50,6 +50,8 @@ public final class Constants {
   public static final double DRIVE_METERS_PER_ROTATION = DRIVE_METERS_PER_TICK * CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION; // 0.041798
   public static final double DRIVETRAIN_EFFICIENCY = 0.85;
   public static final double DRIVE_MAX_LINEAR_SPEED = (FALCON_500_MAX_RPM / 60) * DRIVE_METERS_PER_ROTATION * DRIVETRAIN_EFFICIENCY; // 3.766 m/s
+  public static final double DRIVE_SLOW_SPEED = 0.15;
+  public static final double DRIVE_FULL_SPEED = 1.0;
 
   // Drive PID values
   public static final double DRIVE_kP = 0.02;
@@ -294,4 +296,5 @@ public final class Constants {
   public static final String SMARTDASHBOARD_FLYWHEEL_IDLE_ENABLED = "Flywheel Idle";
   public static final String SMARTDASHBOARD_FLYWHEEL_BIG_INPUT = "Big";
   public static final String SMARTDASHBOARD_FLYWHWEEL_SMALL_INPUT = "Small";
+  public static final String SMARTDASHBOARD_DRIVE_SPEED = "Drive speed";
 }

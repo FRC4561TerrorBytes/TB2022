@@ -88,6 +88,7 @@ public class RobotContainer {
   private static final XboxController SECONDARY_CONTROLLER = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
 
   private static SendableChooser<SequentialCommandGroup> m_automodeChooser = new SendableChooser<>();
+  private static SendableChooser<Double> m_driveSpeedChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -186,7 +187,6 @@ public class RobotContainer {
     primaryTriggerRight.whileActiveOnce(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
     
     // primaryButtonA.whenHeld(new SpitOutCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, Constants.SPIT_OUT_HIGH_FLYWHEEL_SPEED));
-    primaryButtonA.whenPressed(new InstantCommand(() -> DRIVE_SUBSYSTEM.toggleMaxSpeed(), DRIVE_SUBSYSTEM));
     primaryButtonB.whenHeld(new SpitOutCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, Constants.SPIT_OUT_LOW_FLYWHEEL_SPEED));
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
     primaryButtonY.whenPressed(new InstantCommand(() -> SHOOTER_SUBSYSTEM.toggleSelectedGoal(), SHOOTER_SUBSYSTEM));
@@ -254,6 +254,13 @@ public class RobotContainer {
   }
 
   /**
+   * Constantly update drive motor speeds
+   */
+  public void teleopPeriodic() {
+    DRIVE_SUBSYSTEM.setMaxMotorSpeed(m_driveSpeedChooser.getSelected());
+  }
+
+  /**
    * Initialize robot for disable
    */
   public void disabledInit() {
@@ -280,6 +287,11 @@ public class RobotContainer {
     m_automodeChooser.addOption("Alternate Auto", new AlternateAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
     m_automodeChooser.addOption("Alternate Vision Auto", new AlternateVisionAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, VISION_SUBSYSTEM));
     m_automodeChooser.addOption("Do nothing", new SequentialCommandGroup());
+  }
+
+  private void driveSpeedChooser() {
+    m_driveSpeedChooser.setDefaultOption("Slow", Constants.DRIVE_SLOW_SPEED);
+    m_driveSpeedChooser.addOption("Full", Constants.DRIVE_FULL_SPEED);
   }
 
   /**
@@ -311,5 +323,7 @@ public class RobotContainer {
     SmartDashboard.putBoolean(Constants.SMARTDASHBOARD_FLYWHEEL_IDLE_ENABLED, Constants.FLYWHEEL_IDLE_DEFAULT_ENABLED);
     SmartDashboard.putNumber(Constants.SMARTDASHBOARD_FLYWHEEL_BIG_INPUT, 0.0);
     SmartDashboard.putNumber(Constants.SMARTDASHBOARD_FLYWHWEEL_SMALL_INPUT, 0.0);
+    driveSpeedChooser();
+    SmartDashboard.putData(Constants.SMARTDASHBOARD_DRIVE_SPEED, m_driveSpeedChooser);
   }
 }
