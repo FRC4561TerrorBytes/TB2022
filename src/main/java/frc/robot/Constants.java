@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 
 import frc.robot.subsystems.ShooterSubsystem.FlywheelSpeed;
 import frc.robot.utils.TalonPIDConfig;
@@ -266,23 +266,24 @@ public final class Constants {
   public static final int FRONT_LEFT_MOTOR_PORT = 1;
   public static final int REAR_LEFT_MOTOR_PORT = 2;
 
-  public static final int FRONT_RIGHT_MOTOR_PORT = 3;
+  public static final int FRONT_RIGHT_MOTOR_PORT = 3; 
+
   public static final int REAR_RIGHT_MOTOR_PORT = 4;
 
   // Intake hardware Ports
-  public static final int ARM_MOTOR_PORT = 5;
-  public static final int INTAKE_ROLLER_PORT = 6;
+  public static final int ARM_MOTOR_PORT =  6; // PORT 10
+  public static final int INTAKE_ROLLER_PORT = 11;   //PORT 6
 
   // Shooter hardware ports
   public static final int FLYWHEEL_MASTER_MOTOR_PORT = 7;
   public static final int FLYWHEEL_SLAVE_MOTOR_PORT = 8;
-  public static final int UPPER_FEEDER_MOTOR_PORT = 9;
+  public static final int UPPER_FEEDER_MOTOR_PORT = 9; 
   public static final int LOWER_FEEDER_MOTOR_PORT = 10;
-  public static final int FLYWHEEL_SMALL_MOTOR_PORT = 15;
+  public static final int FLYWHEEL_SMALL_MOTOR_PORT = 15; 
 
   // Climber hardware ports
   public static final int CLIMBER_WINCH_MOTOR_PORT = 12;
-  public static final int CLIMBER_LEFT_TELESCOPE_MOTOR_PORT = 13;
+  public static final int CLIMBER_LEFT_TELESCOPE_MOTOR_PORT = 0;
   public static final int CLIMBER_RIGHT_TELESCOPE_MOTOR_PORT = 14;
 
   // Accessories
