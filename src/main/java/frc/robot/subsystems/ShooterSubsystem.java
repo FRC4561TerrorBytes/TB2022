@@ -12,10 +12,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxLimitSwitch;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
@@ -34,23 +31,18 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
 
   public static class Hardware {
     private WPI_TalonFX flywheelMasterMotor, flywheelSlaveMotor, flywheelSmallMotor;
-    private CANSparkMax upperFeederMotor, lowerFeederMotor;
-    private SparkMaxLimitSwitch upperFeederSensor, lowerFeederSensor;
+    private WPI_TalonSRX upperFeederMotor, lowerFeederMotor;
 
     public Hardware(WPI_TalonFX flywheelMasterMotor, 
                     WPI_TalonFX flywheelSlaveMotor,
                     WPI_TalonFX flywheelSmallMotor, 
-                    CANSparkMax upperFeederMotor,
-                    CANSparkMax lowerFeederMotor,
-                    SparkMaxLimitSwitch upperFeederSensor,
-                    SparkMaxLimitSwitch lowerFeederSensor) {
+                    WPI_TalonSRX upperFeederMotor,
+                    WPI_TalonSRX lowerFeederMotor) {
       this.flywheelMasterMotor = flywheelMasterMotor;
       this.flywheelSlaveMotor = flywheelSlaveMotor;
       this.flywheelSmallMotor = flywheelSmallMotor;
       this.upperFeederMotor = upperFeederMotor;
       this.lowerFeederMotor = lowerFeederMotor;
-      this.upperFeederSensor = upperFeederSensor;
-      this.lowerFeederSensor = lowerFeederSensor;
     }
   }
 
@@ -107,10 +99,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   private double FLYWHEEL_BIG_VISION_IDLE_RAMP = 1.0;
   private double FLYWHEEL_SMALL_VISION_IDLE_RAMP = 1.0;
 
-  private CANSparkMax m_upperFeederMotor;
-  private CANSparkMax m_lowerFeederMotor;
-  private SparkMaxLimitSwitch m_upperFeederSensor;
-  private SparkMaxLimitSwitch m_lowerFeederSensor;
+  private WPI_TalonSRX m_upperFeederMotor;
+  private WPI_TalonSRX m_lowerFeederMotor;
  
   private SelectedGoal m_selectedGoal;
   private FlywheelSpeed[] m_flywheelSpeeds = new FlywheelSpeed[2];
@@ -145,8 +135,6 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     SmallFlywheel.motor = shooterHardware.flywheelSmallMotor;
     this.m_upperFeederMotor = shooterHardware.upperFeederMotor;
     this.m_lowerFeederMotor = shooterHardware.lowerFeederMotor;
-    this.m_upperFeederSensor = shooterHardware.upperFeederSensor;
-    this.m_lowerFeederSensor = shooterHardware.lowerFeederSensor;
     this.m_flywheelSpeeds[SelectedGoal.Low.value] = lowFlywheelSpeed;
     this.m_flywheelSpeeds[SelectedGoal.High.value] = highFlywheelSpeed;
     this.m_selectedGoal = SelectedGoal.High;
@@ -157,20 +145,20 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     SmallFlywheel.config = flywheelSmallConfig;
 
     // Reset feeder motors to default
-    m_upperFeederMotor.restoreFactoryDefaults();
-    m_lowerFeederMotor.restoreFactoryDefaults();
+    m_upperFeederMotor.configFactoryDefault();
+    m_lowerFeederMotor.configFactoryDefault();
 
     // Set feeder motors to brake mode
-    m_upperFeederMotor.setIdleMode(IdleMode.kBrake);
-    m_lowerFeederMotor.setIdleMode(IdleMode.kBrake);
+    m_upperFeederMotor.setNeutralMode(NeutralMode.Brake);
+    m_lowerFeederMotor.setNeutralMode(NeutralMode.Brake);
 
     // Set feeder motor inversion
     m_upperFeederMotor.setInverted(false);
     m_lowerFeederMotor.setInverted(true);
 
     // Enable beam beak sensor for only top feeder motor
-    m_upperFeederSensor.enableLimitSwitch(true);
-    m_lowerFeederSensor.enableLimitSwitch(false);
+    // m_upperFeederSensor.Deactivated;
+    // m_lowerFeederSensor.enableLimitSwitch(false);
 
     // Initialize shooter vision curves
     initializeFlywheelVisionCurve(flywheelVisionMap);
@@ -214,16 +202,12 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * Initialize hardware devices for shooter subsystem
    * @return hardware object containing all necessary devices for this subsystem
    */
-  public static Hardware initializeHardware() {
-    CANSparkMax upperFeederMotor = new CANSparkMax(Constants.UPPER_FEEDER_MOTOR_PORT, MotorType.kBrushless);
-    CANSparkMax lowerFeederMotor = new CANSparkMax(Constants.LOWER_FEEDER_MOTOR_PORT, MotorType.kBrushless);
+  public static Hardware initializeHardware() {    
     Hardware shooterHardware = new Hardware(new WPI_TalonFX(Constants.FLYWHEEL_MASTER_MOTOR_PORT),
                                             new WPI_TalonFX(Constants.FLYWHEEL_SLAVE_MOTOR_PORT),
                                             new WPI_TalonFX(Constants.FLYWHEEL_SMALL_MOTOR_PORT),
-                                            upperFeederMotor,
-                                            lowerFeederMotor,
-                                            upperFeederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed),
-                                            lowerFeederMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed));
+                                          new WPI_TalonSRX(Constants.UPPER_FEEDER_MOTOR_PORT),
+                                          new WPI_TalonSRX(Constants.LOWER_FEEDER_MOTOR_PORT));
 
     return shooterHardware;
   }
@@ -245,8 +229,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * Create SmartDashboard indicators
    */
   public void smartDashboard() {
-    SmartDashboard.putBoolean("Ball 1", m_upperFeederSensor.isPressed());
-    SmartDashboard.putBoolean("Ball 2", m_lowerFeederSensor.isPressed() && m_upperFeederSensor.isPressed());
+    SmartDashboard.putBoolean("Ball 1", m_upperFeederMotor.getSensorCollection().isFwdLimitSwitchClosed());
+    SmartDashboard.putBoolean("Ball 2", m_lowerFeederMotor.getSensorCollection().isFwdLimitSwitchClosed() && m_upperFeederMotor.getSensorCollection().isFwdLimitSwitchClosed());
     SmartDashboard.putBoolean("Selected Goal", m_selectedGoal == SelectedGoal.High);
   }
 
@@ -381,7 +365,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if feeder is full
    */
   public boolean isFeederFull() {
-    return m_upperFeederSensor.isPressed() && m_lowerFeederSensor.isPressed();
+    return m_upperFeederMotor.getSensorCollection().isFwdLimitSwitchClosed() && m_lowerFeederMotor.getSensorCollection().isFwdLimitSwitchClosed();
   }
 
   /**
@@ -389,20 +373,20 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if feeder is empty
    */
   public boolean isFeederEmpty() {
-    return !m_upperFeederSensor.isPressed() && !m_lowerFeederSensor.isPressed();
+    return !m_upperFeederMotor.getSensorCollection().isFwdLimitSwitchClosed() && !m_lowerFeederMotor.getSensorCollection().isFwdLimitSwitchClosed();
   }
 
   /**
    * Intake balls into feeder
    */
   public void feederIntake() {
-    m_upperFeederSensor.enableLimitSwitch(true);
+  
     m_upperFeederMotor.set(+m_feederIntakeSpeed);
     if (isFeederFull()) {
-      m_lowerFeederMotor.setOpenLoopRampRate(10.0);
+      m_lowerFeederMotor.configOpenloopRamp(10.0);
       m_lowerFeederMotor.stopMotor();
     } else {
-      m_lowerFeederMotor.setOpenLoopRampRate(0.0);
+      m_lowerFeederMotor.configOpenloopRamp(0.0);
       m_lowerFeederMotor.set(+m_feederIntakeSpeed);
     }
   }
@@ -411,8 +395,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * Outtake balls out of feeder
    */
   public void feederOuttake() {
-    m_upperFeederSensor.enableLimitSwitch(false);
-    m_lowerFeederMotor.setOpenLoopRampRate(0.0);
+    m_lowerFeederMotor.configOpenloopRamp(0.0);
     m_upperFeederMotor.set(-m_feederIntakeSpeed);
     m_lowerFeederMotor.set(-m_feederIntakeSpeed);
   }
@@ -421,8 +404,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * Shoot balls out of feeder
    */
   public void feederShoot() {
-    m_upperFeederSensor.enableLimitSwitch(false);
-    m_lowerFeederMotor.setOpenLoopRampRate(0.0);
+    m_lowerFeederMotor.configOpenloopRamp(0.0);
     m_upperFeederMotor.set(+m_feederShootSpeed);
     m_lowerFeederMotor.set(+m_feederShootSpeed);
     BlinkinLEDController.getInstance().setTeamColor();
@@ -433,8 +415,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @param wasIntaking if robot was intaking or not
    */
   public void feederStop(boolean wasIntaking) {
-    if (wasIntaking) m_lowerFeederMotor.setOpenLoopRampRate(10.0);
-    else m_lowerFeederMotor.setOpenLoopRampRate(0.0);
+    if (wasIntaking) m_lowerFeederMotor.configOpenloopRamp(10.0);
+    else m_lowerFeederMotor.configOpenloopRamp(0.0);
     
     m_upperFeederMotor.stopMotor();
     m_lowerFeederMotor.stopMotor();
@@ -448,7 +430,5 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     SmallFlywheel.motor = null;
     m_upperFeederMotor = null;
     m_lowerFeederMotor = null;
-    m_upperFeederSensor = null;
-    m_lowerFeederSensor = null;
-  }
+  } 
 }
