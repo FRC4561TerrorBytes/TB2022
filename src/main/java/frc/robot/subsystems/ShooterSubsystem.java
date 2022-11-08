@@ -380,6 +380,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * Intake balls into feeder
    */
   public void feederIntake() {
+    m_upperFeederMotor.overrideLimitSwitchesEnable(true);
   
     m_upperFeederMotor.set(+m_feederIntakeSpeed);
     if (isFeederFull()) {
@@ -395,6 +396,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * Outtake balls out of feeder
    */
   public void feederOuttake() {
+    m_upperFeederMotor.overrideLimitSwitchesEnable(false);
     m_lowerFeederMotor.configOpenloopRamp(0.0);
     m_upperFeederMotor.set(-m_feederIntakeSpeed);
     m_lowerFeederMotor.set(-m_feederIntakeSpeed);
@@ -404,6 +406,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * Shoot balls out of feeder
    */
   public void feederShoot() {
+    m_upperFeederMotor.overrideLimitSwitchesEnable(false);
+  
     m_lowerFeederMotor.configOpenloopRamp(0.0);
     m_upperFeederMotor.set(+m_feederShootSpeed);
     m_lowerFeederMotor.set(+m_feederShootSpeed);
