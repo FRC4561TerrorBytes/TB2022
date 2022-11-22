@@ -72,6 +72,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
   private double m_metersPerTick = 0.0;
   private double m_deadband = 0.0;
 
+  public double speedMult = 0.8f;
+
   /**
    * Create an instance of DriveSubsystem
    * <p>
@@ -236,9 +238,13 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     speed = MathUtil.applyDeadband(speed, m_deadband);
     turn = MathUtil.applyDeadband(turn, m_deadband);
 
-    m_lMasterMotor.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, -turn);
-    m_rMasterMotor.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, +turn);
+    m_lMasterMotor.set(ControlMode.PercentOutput, speed*speedMult, DemandType.ArbitraryFeedForward, -turn);
+    m_rMasterMotor.set(ControlMode.PercentOutput, speed*speedMult, DemandType.ArbitraryFeedForward, +turn);
 	}
+
+  public void setDriveSpeed(double s){
+    speedMult = s;
+  }
 
   /**
    * Call this repeatedly to drive using PID during teleoperation

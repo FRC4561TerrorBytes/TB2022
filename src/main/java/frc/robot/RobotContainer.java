@@ -24,6 +24,7 @@ import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShootVisionCommand;
 import frc.robot.commands.SpitOutCommand;
+import frc.robot.commands.TurboDrive;
 import frc.robot.commands.autonomous.AlternateAuto;
 import frc.robot.commands.autonomous.AlternateVisionAuto;
 import frc.robot.commands.autonomous.FiveBallAuto;
@@ -183,12 +184,18 @@ public class RobotContainer {
     primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> SHOOTER_SUBSYSTEM.getSelectedGoal()));
     //primaryButtonRBumper.whenHeld(new ShootManualCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> getManualFlywheelSpeeds()));
     primaryTriggerLeft.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-    primaryTriggerRight.whileActiveOnce(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
-    
+    primaryTriggerRight.whileActiveContinuous(new TurboDrive(DRIVE_SUBSYSTEM));
+    /*
     primaryButtonA.whenHeld(new SpitOutCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, Constants.SPIT_OUT_HIGH_FLYWHEEL_SPEED));
     primaryButtonB.whenHeld(new SpitOutCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, Constants.SPIT_OUT_LOW_FLYWHEEL_SPEED));
     primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
     primaryButtonY.whenPressed(new InstantCommand(() -> SHOOTER_SUBSYSTEM.toggleSelectedGoal(), SHOOTER_SUBSYSTEM));
+    */
+
+    primaryButtonA.whenPressed(new InstantCommand(() -> DRIVE_SUBSYSTEM.setDriveSpeed(0.2), DRIVE_SUBSYSTEM));
+    primaryButtonB.whenPressed(new InstantCommand(() -> DRIVE_SUBSYSTEM.setDriveSpeed(0.4), DRIVE_SUBSYSTEM));
+    primaryButtonX.whenPressed(new InstantCommand(() -> DRIVE_SUBSYSTEM.setDriveSpeed(0.6), DRIVE_SUBSYSTEM));
+    primaryButtonY.whenPressed(new InstantCommand(() -> DRIVE_SUBSYSTEM.setDriveSpeed(0.8), DRIVE_SUBSYSTEM));
 
     primaryDPadUp.whenHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(-0.5)))
                  .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
