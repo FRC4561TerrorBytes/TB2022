@@ -145,8 +145,10 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * Toggle arm between top and bottom positions
    */
   public void toggleArmPosition() {
-    if (m_armPosition == ArmPosition.Top) armDown();
-    else armUp();
+    if (m_armPosition == ArmPosition.Top) intake();
+    else stop();
+    // if (m_armPosition == ArmPosition.Top) armDown();
+    // else armUp();
   }
 
   /**
@@ -189,7 +191,8 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   public void stop() {
     m_rollerMotor.setOpenLoopRampRate(0.0);
     m_rollerMotor.stopMotor();
-    armSetPosition(m_prevArmPosition.value);
+    //armSetPosition(m_prevArmPosition.value);
+    armUp();
   }
 
   @Override
