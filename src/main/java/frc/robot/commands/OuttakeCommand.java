@@ -6,15 +6,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+//import frc.robot.subsystems.ShooterSubsystem;
 
 public class OuttakeCommand extends CommandBase {
   private IntakeSubsystem m_intakeSubsytem;
-  private ShooterSubsystem m_shooterSubsystem;
+  //private ShooterSubsystem m_shooterSubsystem;
   /** Creates a new OuttakeCommand. */
-  public OuttakeCommand(IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
+  public OuttakeCommand(IntakeSubsystem intakeSubsystem) {
     this.m_intakeSubsytem = intakeSubsystem;
-    this.m_shooterSubsystem = shooterSubsystem;
+    //this.m_shooterSubsystem = shooterSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intakeSubsytem);
@@ -24,7 +24,7 @@ public class OuttakeCommand extends CommandBase {
   @Override
   public void initialize() {
     m_intakeSubsytem.outtake();
-    m_shooterSubsystem.feederOuttake();
+    //m_shooterSubsystem.feederOuttake();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,7 +35,7 @@ public class OuttakeCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_intakeSubsytem.stop();
-    m_shooterSubsystem.feederStop(false);
+    //m_shooterSubsystem.feederStop(false);
   }
 
   // Returns true when the command should end.
