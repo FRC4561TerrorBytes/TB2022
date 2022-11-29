@@ -419,7 +419,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
    * @param wasIntaking if robot was intaking or not
    */
   public void feederStop(boolean wasIntaking) {
-    if (wasIntaking) m_lowerFeederMotor.configOpenloopRamp(10.0);
+    if (wasIntaking) m_lowerFeederMotor.configOpenloopRamp(21.4);
     else m_lowerFeederMotor.configOpenloopRamp(0.0);
     
     m_upperFeederMotor.stopMotor();
