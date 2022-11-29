@@ -8,17 +8,17 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+//import frc.robot.subsystems.ShooterSubsystem;
 
 public class IntakeCommand extends CommandBase {
   private IntakeSubsystem m_intakeSubsystem;
-  private ShooterSubsystem m_shooterSubsystem;
+  //private ShooterSubsystem m_shooterSubsystem;
   private XboxController m_controller;
 
   /** Creates a new IntakeCommand. */
-  public IntakeCommand(IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, XboxController controller) {
+  public IntakeCommand(IntakeSubsystem intakeSubsystem, XboxController controller) {
     this.m_intakeSubsystem = intakeSubsystem;
-    this.m_shooterSubsystem = shooterSubsystem;
+    //this.m_shooterSubsystem = shooterSubsystem;
     this.m_controller = controller;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -26,8 +26,8 @@ public class IntakeCommand extends CommandBase {
   }
 
   /** Create a new IntakeCommand w/o controller */
-  public IntakeCommand(IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
-    this(intakeSubsystem, shooterSubsystem, null);
+  public IntakeCommand(IntakeSubsystem intakeSubsystem) {
+    this(intakeSubsystem, null);
   }
 
   // Called when the command is initially scheduled.
@@ -39,17 +39,17 @@ public class IntakeCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooterSubsystem.feederIntake();
+    //m_shooterSubsystem.feederIntake();
     
     if (m_controller == null) return;
 
-    if (m_shooterSubsystem.isFeederFull()) {
-      m_controller.setRumble(RumbleType.kLeftRumble, 1.0);
-      m_controller.setRumble(RumbleType.kRightRumble, 1.0);
-    } else {
-      m_controller.setRumble(RumbleType.kLeftRumble, 0.0);
-      m_controller.setRumble(RumbleType.kRightRumble, 0.0);
-    }
+    // if (m_shooterSubsystem.isFeederFull()) {
+    //   m_controller.setRumble(RumbleType.kLeftRumble, 1.0);
+    //   m_controller.setRumble(RumbleType.kRightRumble, 1.0);
+    // } else {
+    //   m_controller.setRumble(RumbleType.kLeftRumble, 0.0);
+    //   m_controller.setRumble(RumbleType.kRightRumble, 0.0);
+    // }
   }
 
   // Called once the command ends or is interrupted.
@@ -60,7 +60,7 @@ public class IntakeCommand extends CommandBase {
       m_controller.setRumble(RumbleType.kRightRumble, 0.0);
     }
     m_intakeSubsystem.stop();
-    m_shooterSubsystem.feederStop(true);
+    //m_shooterSubsystem.feederStop(true);
   }
 
   // Returns true when the command should end.
