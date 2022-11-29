@@ -259,8 +259,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     double turnOutput = m_turnPIDController.calculate(getAngle(), getTurnRate(), turnRequest);
 
     // Run motors with appropriate values
-    m_lMasterMotor.set(ControlMode.PercentOutput, speedOutput, DemandType.ArbitraryFeedForward, -turnOutput);
-    m_rMasterMotor.set(ControlMode.PercentOutput, speedOutput, DemandType.ArbitraryFeedForward, +turnOutput);
+    m_lMasterMotor.set(ControlMode.PercentOutput, speedOutput*speedMult, DemandType.ArbitraryFeedForward, -turnOutput);
+    m_rMasterMotor.set(ControlMode.PercentOutput, speedOutput*speedMult, DemandType.ArbitraryFeedForward, +turnOutput);
   }
 
   /**

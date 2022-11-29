@@ -16,7 +16,7 @@ public class TurboDrive extends CommandBase {
   public TurboDrive(DriveSubsystem driveSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_driveSubsystem = driveSubsystem;
-    addRequirements(m_driveSubsystem);
+    //addRequirements(m_driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
