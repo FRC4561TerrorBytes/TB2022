@@ -2,13 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.intake.manual;
+package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class ManualIntakeCommand extends CommandBase {
   private final IntakeSubsystem m_intakeSubsystem;
@@ -32,7 +31,7 @@ public class ManualIntakeCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intakeSubsystem.requestIntake();
+    m_intakeSubsystem.intake();
     m_fullSimulationTimer.reset();
     m_fullSimulationTimer.start();
   }
@@ -58,7 +57,7 @@ public class ManualIntakeCommand extends CommandBase {
       m_controller.setRumble(RumbleType.kLeftRumble, 0.0);
       m_controller.setRumble(RumbleType.kRightRumble, 0.0);
     }
-    m_intakeSubsystem.requestRetraction();
+    m_intakeSubsystem.stop();
   }
 
   // Returns true when the command should end.

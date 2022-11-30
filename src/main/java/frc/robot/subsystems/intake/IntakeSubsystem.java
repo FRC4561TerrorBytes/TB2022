@@ -201,14 +201,9 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if the request was granted (currently retracted).
    */
   public boolean requestIntake() {
-    boolean granted = true;
-    if (isStateMachineRunning()) {
-      granted = isRetracted()
-          && this.m_request.compareAndSet(IntakeRequest.NO_REQUEST_PENDING, IntakeRequest.INTAKE_REQUESTED);
-    } else {
-      intake();
-    }
-    return granted;
+    return isStateMachineRunning()
+        && isRetracted()
+        && this.m_request.compareAndSet(IntakeRequest.NO_REQUEST_PENDING, IntakeRequest.INTAKE_REQUESTED);
   }
 
   /**
@@ -217,14 +212,9 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if the request was granted (currently retracted).
    */
   public boolean requestOuttake() {
-    boolean granted = true;
-    if (isStateMachineRunning()) {
-      granted = isRetracted()
-          && this.m_request.compareAndSet(IntakeRequest.NO_REQUEST_PENDING, IntakeRequest.OUTTAKE_REQUESTED);
-    } else {
-      outtake();
-    }
-    return granted;
+    return isStateMachineRunning()
+        && isRetracted()
+        && this.m_request.compareAndSet(IntakeRequest.NO_REQUEST_PENDING, IntakeRequest.OUTTAKE_REQUESTED);
   }
 
   /**
@@ -233,14 +223,9 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if the request was granted.
    */
   public boolean requestRetraction() {
-    boolean granted = true;
-    if (isStateMachineRunning()) {
-      granted = !this.isRetracted()
-          && this.m_request.compareAndSet(IntakeRequest.NO_REQUEST_PENDING, IntakeRequest.RETRACTION_REQUESTED);
-    } else {
-      stop();
-    }
-    return granted;
+    return isStateMachineRunning()
+        && !isRetracted()
+        && this.m_request.compareAndSet(IntakeRequest.NO_REQUEST_PENDING, IntakeRequest.RETRACTION_REQUESTED);
   }
 
   /**
