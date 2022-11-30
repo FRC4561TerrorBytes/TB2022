@@ -4,17 +4,11 @@
 
 package frc.robot;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 
-import frc.robot.subsystems.ShooterSubsystem.FlywheelSpeed;
 import frc.robot.utils.TalonPIDConfig;
 
 /**
@@ -152,38 +146,6 @@ public final class Constants {
                                                                                 FLYWHEEL_SMALL_MECHANICAL_EFFICIENCY,
                                                                                 FLYWHEEL_SMALL_TOLERANCE);
 
-  // Shooter settings
-  public static final double FEEDER_INTAKE_SPEED = 0.6;
-  public static final double FEEDER_SHOOT_SPEED = 0.3;
-  public static final double SHOOT_DELAY = 0.175;
-  public static final double FLYWHEEL_SMALL_VISION_IDLE_RAMP = 1;
-  public static final FlywheelSpeed SPIT_OUT_LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1200.0, 100.0);
-  public static final FlywheelSpeed SPIT_OUT_HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(5500.0, 2000.0);
-  public static final FlywheelSpeed LOW_FLYWHEEL_SPEED = new FlywheelSpeed(1620.0, 162.0);
-  public static final FlywheelSpeed HIGH_FLYWHEEL_SPEED = new FlywheelSpeed(3200.0, 900.0);
-  public static final FlywheelSpeed FLYWHEEL_IDLE_SPEED = new FlywheelSpeed(500.0, 500.0);
-  public static final boolean FLYWHEEL_IDLE_DEFAULT_ENABLED = false;
-  public static final List<Entry<Double, FlywheelSpeed>> FLYWHEEL_VISION_MAP = Arrays.asList(
-    Map.entry(0.00, new FlywheelSpeed(2300.0, 900.0)),
-    Map.entry(1.10, new FlywheelSpeed(2300.0, 900.0)),
-    Map.entry(1.20, new FlywheelSpeed(2300.0, 900.0)),
-    Map.entry(1.30, new FlywheelSpeed(2350.0, 940.0)),
-    Map.entry(1.40, new FlywheelSpeed(2330.0, 955.0)),
-    Map.entry(1.50, new FlywheelSpeed(2250.0, 1150.0)),
-    Map.entry(1.60, new FlywheelSpeed(2200.0, 1200.0)),
-    Map.entry(1.70, new FlywheelSpeed(2150.0, 1400.0)),
-    Map.entry(1.80, new FlywheelSpeed(2050.0, 1600.0)),
-    Map.entry(2.00, new FlywheelSpeed(1800.0, 2100.0)),
-    Map.entry(2.25, new FlywheelSpeed(1700.0, 2200.0)),
-    Map.entry(2.50, new FlywheelSpeed(1750.0, 2700.0)),
-    Map.entry(2.75, new FlywheelSpeed(1600.0, 3150.0)),
-    Map.entry(3.00, new FlywheelSpeed(1625.0, 3450.0)),
-    Map.entry(3.25, new FlywheelSpeed(1550.0, 3900.0)),
-    Map.entry(3.50, new FlywheelSpeed(1525.0, 4100.0)),
-    Map.entry(3.75, new FlywheelSpeed(1525.0, 4200.0)),
-    Map.entry(4.00, new FlywheelSpeed(1500.0, 4250.0))
-  );
-
   // Telescope PID variables
   private static final double TELESCOPE_kP = 0.1;
   private static final double TELESCOPE_kI = 0.0;
@@ -255,7 +217,7 @@ public final class Constants {
   public static final double CAMERA_HEIGHT_METERS = 0.792;
   public static final double TARGET_HEIGHT_METERS = 2.642;
   public static final double CAMERA_PITCH_DEGREES = 41.8;
-  public static final double VISION_MAX_DISTANCE = FLYWHEEL_VISION_MAP.get(FLYWHEEL_VISION_MAP.size() - 1).getKey();
+  public static final double VISION_MAX_DISTANCE = 4.0;
 
 
   // Xbox controller ports
@@ -292,7 +254,4 @@ public final class Constants {
   // SmartDashboard keys
   public static final String SMARTDASHBOARD_DEFAULT_TAB = "SmartDashboard";
   public static final String SMARTDASHBOARD_AUTO_MODE = "Auto Mode";
-  public static final String SMARTDASHBOARD_FLYWHEEL_IDLE_ENABLED = "Flywheel Idle";
-  public static final String SMARTDASHBOARD_FLYWHEEL_BIG_INPUT = "Big";
-  public static final String SMARTDASHBOARD_FLYWHWEEL_SMALL_INPUT = "Small";
 }

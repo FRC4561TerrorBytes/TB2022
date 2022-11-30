@@ -19,25 +19,14 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.OuttakeCommand;
-import frc.robot.commands.ShootCommand;
-import frc.robot.commands.ShootVisionCommand;
-import frc.robot.commands.SpitOutCommand;
 import frc.robot.commands.autonomous.AlternateAuto;
 import frc.robot.commands.autonomous.AlternateVisionAuto;
 import frc.robot.commands.autonomous.FiveBallAuto;
-import frc.robot.commands.autonomous.FourBallAuto;
 import frc.robot.commands.autonomous.LeaveTarmac;
-import frc.robot.commands.autonomous.ShootDriveForwardAuto;
-import frc.robot.commands.autonomous.ThreeBallAuto;
-import frc.robot.commands.autonomous.ThreeBallVisionAuto;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.FlywheelSpeed;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.utils.BlinkinLEDController;
 
 /**
@@ -47,6 +36,9 @@ import frc.robot.utils.BlinkinLEDController;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
+  private static final XboxController SECONDARY_CONTROLLER = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
+
   // The robot's subsystems and commands are defined here...
   private static final DriveSubsystem DRIVE_SUBSYSTEM = new DriveSubsystem(DriveSubsystem.initializeHardware(),
                                                                            Constants.DRIVE_kP,
@@ -61,18 +53,11 @@ public class RobotContainer {
                                                                            Constants.DRIVE_TURN_INPUT_CURVE,
                                                                            Constants.DRIVE_CURRENT_LIMIT_CONFIGURATION);
 
-  private static final IntakeSubsystem INTAKE_SUBSYSTEM = new IntakeSubsystem(IntakeSubsystem.initializeHardware(), 
-                                                                              Constants.INTAKE_ARM_CONFIG, 
-                                                                              Constants.INTAKE_ROLLER_SPEED);
-
-  private static final ShooterSubsystem SHOOTER_SUBSYSTEM = new ShooterSubsystem(ShooterSubsystem.initializeHardware(), 
-                                                                                 Constants.FLYWHEEL_MASTER_CONFIG,
-                                                                                 Constants.FLYWHEEL_SMALL_CONFIG,
-                                                                                 Constants.LOW_FLYWHEEL_SPEED,
-                                                                                 Constants.HIGH_FLYWHEEL_SPEED,
-                                                                                 Constants.FLYWHEEL_VISION_MAP,
-                                                                                 Constants.FEEDER_INTAKE_SPEED,
-                                                                                 Constants.FEEDER_SHOOT_SPEED);
+  private static final IntakeSubsystem INTAKE_SUBSYSTEM = new IntakeSubsystem(
+      IntakeSubsystem.initializeHardware(),
+      Constants.INTAKE_ARM_CONFIG,
+      Constants.INTAKE_ROLLER_SPEED,
+      PRIMARY_CONTROLLER);
 
   private static final ClimberSubsystem CLIMBER_SUBSYSTEM = new ClimberSubsystem(ClimberSubsystem.initializeHardware(),
                                                                                  Constants.TELESCOPE_CONFIG,
@@ -83,9 +68,6 @@ public class RobotContainer {
                                                                               Constants.TARGET_HEIGHT_METERS,
                                                                               Constants.CAMERA_PITCH_DEGREES,
                                                                               Constants.VISION_MAX_DISTANCE);
-
-  private static final XboxController PRIMARY_CONTROLLER = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
-  private static final XboxController SECONDARY_CONTROLLER = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
 
   private static SendableChooser<SequentialCommandGroup> m_automodeChooser = new SendableChooser<>();
 
@@ -102,24 +84,10 @@ public class RobotContainer {
       )
     );
 
-    SHOOTER_SUBSYSTEM.setDefaultCommand(
-      new RunCommand(
-        () -> {
-          if (SmartDashboard.getBoolean(Constants.SMARTDASHBOARD_FLYWHEEL_IDLE_ENABLED, Constants.FLYWHEEL_IDLE_DEFAULT_ENABLED)) {
-            if (VISION_SUBSYSTEM.isTargetValid() && !DRIVE_SUBSYSTEM.isTurning()) SHOOTER_SUBSYSTEM.setFlywheelVisionIdle(VISION_SUBSYSTEM.getDistance());
-            else SHOOTER_SUBSYSTEM.setFlywheelSpeed(Constants.FLYWHEEL_IDLE_SPEED);
-          } else SHOOTER_SUBSYSTEM.flywheelStop();
-        },
-        SHOOTER_SUBSYSTEM,
-        VISION_SUBSYSTEM
-      )
-    );
-
     // Initialize Shuffleboard tabs
     defaultShuffleboardTab();
     DRIVE_SUBSYSTEM.shuffleboard();
     INTAKE_SUBSYSTEM.shuffleboard();
-    SHOOTER_SUBSYSTEM.shuffleboard();
     CLIMBER_SUBSYSTEM.shuffleboard();
 
     // Add port forwarding for PhotonVision
@@ -179,16 +147,10 @@ public class RobotContainer {
     Trigger secondaryRightStick = new Trigger(() -> Math.abs(SECONDARY_CONTROLLER.getRightX()) > Constants.CONTROLLER_DEADBAND);
 
     // Primary controller bindings
-    primaryButtonLBumper.whenHeld(new ShootVisionCommand(DRIVE_SUBSYSTEM, SHOOTER_SUBSYSTEM, VISION_SUBSYSTEM, Constants.SHOOT_DELAY, false));
-    primaryButtonRBumper.whenHeld(new ShootCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> SHOOTER_SUBSYSTEM.getSelectedGoal()));
-    //primaryButtonRBumper.whenHeld(new ShootManualCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, () -> getManualFlywheelSpeeds()));
-    primaryTriggerLeft.whileActiveOnce(new OuttakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-    primaryTriggerRight.whileActiveOnce(new IntakeCommand(INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, PRIMARY_CONTROLLER));
-    
-    primaryButtonA.whenHeld(new SpitOutCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, Constants.SPIT_OUT_HIGH_FLYWHEEL_SPEED));
-    primaryButtonB.whenHeld(new SpitOutCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, Constants.SPIT_OUT_LOW_FLYWHEEL_SPEED));
-    primaryButtonX.whenPressed(new InstantCommand(() -> INTAKE_SUBSYSTEM.toggleArmPosition(), INTAKE_SUBSYSTEM));
-    primaryButtonY.whenPressed(new InstantCommand(() -> SHOOTER_SUBSYSTEM.toggleSelectedGoal(), SHOOTER_SUBSYSTEM));
+    primaryTriggerLeft.whenActive(INTAKE_SUBSYSTEM::requestOuttake);
+    primaryTriggerLeft.whenInactive(INTAKE_SUBSYSTEM::requestRetraction);
+    primaryTriggerRight.whenActive(INTAKE_SUBSYSTEM::requestIntake);
+    primaryTriggerRight.whenInactive(INTAKE_SUBSYSTEM::requestRetraction);
 
     primaryDPadUp.whenHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(-0.5)))
                  .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
@@ -206,7 +168,6 @@ public class RobotContainer {
     secondaryButtonA.whenPressed(new InstantCommand(() -> CLIMBER_SUBSYSTEM.toggleClimberLED(), CLIMBER_SUBSYSTEM));
     secondaryButtonB.whenHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeSlow(), CLIMBER_SUBSYSTEM))
                     .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
-    secondaryButtonRBumper.whenHeld(new SpitOutCommand(SHOOTER_SUBSYSTEM, Constants.SHOOT_DELAY, Constants.SPIT_OUT_LOW_FLYWHEEL_SPEED));
 
     secondaryDPadUp.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(-0.2), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
     secondaryDPadDown.whenHeld(new StartEndCommand(() -> CLIMBER_SUBSYSTEM.telescopeManualOverride(+0.2), () -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
@@ -271,13 +232,9 @@ public class RobotContainer {
    */
   private void autoModeChooser() {
     m_automodeChooser.setDefaultOption("Leave Tarmac", new LeaveTarmac(DRIVE_SUBSYSTEM));
-    m_automodeChooser.addOption("Shoot Drive Forward Auto", new ShootDriveForwardAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-    m_automodeChooser.addOption("Three Ball Auto", new ThreeBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-    m_automodeChooser.addOption("Three Ball Vision Auto", new ThreeBallVisionAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, VISION_SUBSYSTEM));
-    m_automodeChooser.addOption("Four Ball Auto", new FourBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-    m_automodeChooser.addOption("Five Ball Auto", new FiveBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-    m_automodeChooser.addOption("Alternate Auto", new AlternateAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM));
-    m_automodeChooser.addOption("Alternate Vision Auto", new AlternateVisionAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, SHOOTER_SUBSYSTEM, VISION_SUBSYSTEM));
+    m_automodeChooser.addOption("Five Ball Auto", new FiveBallAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM));
+    m_automodeChooser.addOption("Alternate Auto", new AlternateAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM));
+    m_automodeChooser.addOption("Alternate Vision Auto", new AlternateVisionAuto(DRIVE_SUBSYSTEM, INTAKE_SUBSYSTEM, VISION_SUBSYSTEM));
     m_automodeChooser.addOption("Do nothing", new SequentialCommandGroup());
   }
 
@@ -292,23 +249,11 @@ public class RobotContainer {
   }
 
   /**
-   * Get manual flywheel speeds
-   * @return manual flywheel speeds
-   */
-  public FlywheelSpeed getManualFlywheelSpeeds() {
-    return new FlywheelSpeed(SmartDashboard.getNumber(Constants.SMARTDASHBOARD_FLYWHEEL_BIG_INPUT, 0.0), 
-                             SmartDashboard.getNumber(Constants.SMARTDASHBOARD_FLYWHWEEL_SMALL_INPUT, 0.0));
-  }
-
-  /**
    * Configure default Shuffleboard tab
    */
   public void defaultShuffleboardTab() {
     Shuffleboard.selectTab(Constants.SMARTDASHBOARD_DEFAULT_TAB);
     autoModeChooser();
     SmartDashboard.putData(Constants.SMARTDASHBOARD_AUTO_MODE, m_automodeChooser);
-    SmartDashboard.putBoolean(Constants.SMARTDASHBOARD_FLYWHEEL_IDLE_ENABLED, Constants.FLYWHEEL_IDLE_DEFAULT_ENABLED);
-    SmartDashboard.putNumber(Constants.SMARTDASHBOARD_FLYWHEEL_BIG_INPUT, 0.0);
-    SmartDashboard.putNumber(Constants.SMARTDASHBOARD_FLYWHWEEL_SMALL_INPUT, 0.0);
   }
 }
