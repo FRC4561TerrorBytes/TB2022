@@ -27,6 +27,8 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.ManualIntakeCommand;
+import frc.robot.subsystems.intake.ManualOuttakeCommand;
 import frc.robot.utils.BlinkinLEDController;
 
 /**
@@ -147,11 +149,16 @@ public class RobotContainer {
     Trigger secondaryRightStick = new Trigger(() -> Math.abs(SECONDARY_CONTROLLER.getRightX()) > Constants.CONTROLLER_DEADBAND);
 
     // Primary controller bindings
+    // Intake using state machine
     primaryTriggerLeft.whenActive(INTAKE_SUBSYSTEM::requestOuttake);
     primaryTriggerLeft.whenInactive(INTAKE_SUBSYSTEM::requestRetraction);
     primaryTriggerRight.whenActive(INTAKE_SUBSYSTEM::requestIntake);
     primaryTriggerRight.whenInactive(INTAKE_SUBSYSTEM::requestRetraction);
+    // Intake manual commands.
+    primaryButtonLBumper.whileHeld(new ManualOuttakeCommand(INTAKE_SUBSYSTEM));
+    primaryButtonRBumper.whileHeld(new ManualIntakeCommand(INTAKE_SUBSYSTEM));
 
+    // Climber
     primaryDPadUp.whenHeld(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeManual(-0.5)))
                  .whenReleased(new InstantCommand(() -> CLIMBER_SUBSYSTEM.telescopeStop(), CLIMBER_SUBSYSTEM));
 
