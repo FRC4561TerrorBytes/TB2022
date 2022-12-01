@@ -6,6 +6,7 @@ package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.utils.AutoTrajectory;
@@ -26,6 +27,7 @@ public class AlternateAuto extends SequentialCommandGroup {
         new InstantCommand(intakeSubsystem::requestRetraction),
 
         // Shoot 2 balls use to be here.
+        new WaitCommand(1.5),
 
         // Leaves tarmac
         AlternateAuto_2.getCommandAndStop());

@@ -17,6 +17,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -137,6 +138,20 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   public void shuffleboard() {
     ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
     tab.addNumber("Arm position (ticks)", () -> m_armMotor.getSelectedSensorPosition());
+    tab.addString("Intake command", this::buildCommandString);
+  }
+
+  /**
+   * @return a dashboard appropriate name for the current intake command.
+   */
+  private String buildCommandString() {
+    final Command current = this.getCurrentCommand();
+    if (current == null) {
+      return "<null>";
+    } else if (this.isStateMachineRunning()) {
+      return "State machine: " + m_stateMachine.getCurrentState();
+    }
+    return current.getName();
   }
 
   @Override

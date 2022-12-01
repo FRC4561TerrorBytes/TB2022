@@ -77,7 +77,7 @@ public class IntakeStateMachine {
     private final PerpetualCommand m_defaultCommand;
 
     /**
-     * @param intake the {@link IntakeSubsystem} subsystem to be operated.
+     * @param intake           the {@link IntakeSubsystem} subsystem to be operated.
      * @param rumbleController the driver controller to rumble as needed.
      */
     IntakeStateMachine(final IntakeSubsystem intake, final GenericHID rumbleController) {
@@ -90,7 +90,8 @@ public class IntakeStateMachine {
                 .andThen(new WaitUntilCommand(m_intake::isExtensionRequested));
         final Command intakingStateCommand = new InstantCommand(() -> m_intake.intake(), m_intake)
                 .andThen(new WaitUntilCommand(m_intake::isRetractionRequested)
-                        .deadlineWith(new WaitCommand(10.0).andThen(RumbleFactory.getInstance().getGroupableCommand(m_rumbleController))));
+                        .deadlineWith(new WaitCommand(10.0)
+                                .andThen(RumbleFactory.getInstance().getGroupableCommand(m_rumbleController))));
         final Command outtakingStateCommand = new InstantCommand(() -> m_intake.outtake(), m_intake)
                 .andThen(new WaitUntilCommand(m_intake::isRetractionRequested));
 
@@ -112,6 +113,16 @@ public class IntakeStateMachine {
      */
     PerpetualCommand getDefaultCommand() {
         return this.m_defaultCommand;
+    }
+
+    /**
+     * @return the current {@link State} or null if no state active.
+     */
+    State getCurrentState() {
+        final int currentIndex = m_stateMachineCommand.getCurrentCommandIndex();
+        return currentIndex == RandomAccessCommandGroup.NO_CURRENT_COMMAND
+                ? null
+                : State.getState(currentIndex);
     }
 
     /**

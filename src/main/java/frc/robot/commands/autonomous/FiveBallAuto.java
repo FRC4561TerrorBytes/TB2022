@@ -2,6 +2,7 @@ package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.utils.AutoTrajectory;
@@ -21,6 +22,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
         new InstantCommand(intakeSubsystem::requestRetraction),
 
         // Shooting use to be here.
+        new WaitCommand(1.5),
 
         // Leave tarmac again and get one more ball, then return
         new InstantCommand(intakeSubsystem::requestIntake),
@@ -28,6 +30,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
         new InstantCommand(intakeSubsystem::requestRetraction),
 
         // Shooting use to be here.
+        new WaitCommand(1.5),
 
         // Get two balls from the terminal
         new InstantCommand(intakeSubsystem::requestIntake),
@@ -35,6 +38,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
         new InstantCommand(intakeSubsystem::requestRetraction),
 
         // Shooting use to be here.
+        new WaitCommand(1.5),
 
         // Leave tarmac
         FiveBallAuto_4.getCommandAndStop());
