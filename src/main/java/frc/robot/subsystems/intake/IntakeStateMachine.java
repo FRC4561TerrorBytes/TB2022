@@ -4,12 +4,15 @@
 
 package frc.robot.subsystems.intake;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PerpetualCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.state.RandomAccessCommandGroup;
 import frc.robot.utils.RumbleFactory;
 
@@ -28,6 +31,8 @@ public class IntakeStateMachine {
     private final IntakeSubsystem m_intake;
     /** The driver controller to rumble as needed. */
     private final GenericHID m_rumbleController;
+    /** Used to control the intake of cargo (see {@link IntakeRequest}). */
+    private final AtomicReference<IntakeRequest> m_request = new AtomicReference<>(IntakeRequest.NO_REQUEST_PENDING);
 
     /**
      * This enumeration defines the state names for the machine. The order is
@@ -66,6 +71,21 @@ public class IntakeStateMachine {
         }
     }
 
+    /**
+     * This enum describes the steps in handling the extension and retraction of the
+     * intake.
+     */
+    private enum IntakeRequest {
+        /** No current state change request. */
+        NO_REQUEST_PENDING,
+        /** Extension and intake requested. */
+        INTAKE_REQUESTED,
+        /** Extension and outtake requested. */
+        OUTTAKE_REQUESTED,
+        /** Retraction and stop of the intake has been requested. */
+        RETRACTION_REQUESTED;
+    }
+
     /** The state machine implementation command group. */
     private final RandomAccessCommandGroup m_stateMachineCommand;
 
@@ -87,13 +107,13 @@ public class IntakeStateMachine {
         // Create the state commands.
         // Note that intake simulates shooter full rumble after 10 seconds.
         final Command retractedStateCommand = new InstantCommand(() -> m_intake.stop(), m_intake)
-                .andThen(new WaitUntilCommand(m_intake::isExtensionRequested));
+                .andThen(new WaitUntilCommand(this::isExtensionRequested));
         final Command intakingStateCommand = new InstantCommand(() -> m_intake.intake(), m_intake)
-                .andThen(new WaitUntilCommand(m_intake::isRetractionRequested)
+                .andThen(new WaitUntilCommand(this::isRetractionRequested)
                         .deadlineWith(new WaitCommand(10.0)
                                 .andThen(RumbleFactory.getInstance().getGroupableCommand(m_rumbleController))));
         final Command outtakingStateCommand = new InstantCommand(() -> m_intake.outtake(), m_intake)
-                .andThen(new WaitUntilCommand(m_intake::isRetractionRequested));
+                .andThen(new WaitUntilCommand(this::isRetractionRequested));
 
         /*
          * Create the state machine implementing command group. Make sure the commands
@@ -106,6 +126,9 @@ public class IntakeStateMachine {
                 outtakingStateCommand);
 
         m_defaultCommand = m_stateMachineCommand.perpetually();
+
+        new Trigger(this::isStateMachineRunning)
+                .whenInactive(new InstantCommand(() -> m_request.set(IntakeRequest.NO_REQUEST_PENDING)));
     }
 
     /**
@@ -160,21 +183,21 @@ public class IntakeStateMachine {
         if (currentState != null) {
             switch (currentState) {
                 case RETRACTED:
-                    if (m_intake.intakeHandled()) {
+                    if (intakeHandled()) {
                         next = State.INTAKING;
-                    } else if (m_intake.outtakeHandled()) {
+                    } else if (outtakeHandled()) {
                         next = State.OUTTAKING;
                     }
                     break;
 
                 case INTAKING:
-                    if (m_intake.retractionHandled()) {
+                    if (retractionHandled()) {
                         next = State.RETRACTED;
                     }
                     break;
 
                 case OUTTAKING:
-                    if (m_intake.retractionHandled()) {
+                    if (retractionHandled()) {
                         next = State.RETRACTED;
                     }
                     break;
@@ -184,5 +207,98 @@ public class IntakeStateMachine {
             }
         }
         return next;
+    }
+
+    /**
+     * @return true if the state machine is running and false otherwise.
+     */
+    public boolean isStateMachineRunning() {
+        return this.getDefaultCommand().isScheduled();
+    }
+
+    /**
+     * Called to request that we start the intake of cargo.
+     * 
+     * @return true if the request was granted (currently retracted).
+     */
+    public boolean requestIntake() {
+        return isStateMachineRunning()
+                && m_intake.isArmRetracted()
+                && m_request.compareAndSet(IntakeRequest.NO_REQUEST_PENDING, IntakeRequest.INTAKE_REQUESTED);
+    }
+
+    /**
+     * Called to request that we start the outtake of cargo.
+     * 
+     * @return true if the request was granted (currently retracted).
+     */
+    public boolean requestOuttake() {
+        return isStateMachineRunning()
+                && m_intake.isArmRetracted()
+                && m_request.compareAndSet(IntakeRequest.NO_REQUEST_PENDING, IntakeRequest.OUTTAKE_REQUESTED);
+    }
+
+    /**
+     * Called to request that the intake be retracted.
+     * 
+     * @return true if the request was granted.
+     */
+    public boolean requestRetraction() {
+        return isStateMachineRunning()
+                && !m_intake.isArmRetracted()
+                && m_request.compareAndSet(IntakeRequest.NO_REQUEST_PENDING, IntakeRequest.RETRACTION_REQUESTED);
+    }
+
+    /**
+     * @return true if intake has been requested but not yet handled.
+     */
+    boolean isIntakeRequested() {
+        return m_request.get() == IntakeRequest.INTAKE_REQUESTED;
+    }
+
+    /**
+     * @return true if intake has been requested but not yet handled.
+     */
+    boolean isOuttakeRequested() {
+        return m_request.get() == IntakeRequest.OUTTAKE_REQUESTED;
+    }
+
+    /**
+     * @return true if either intake or outake has been requested but not yet
+     *         handled.
+     */
+    boolean isExtensionRequested() {
+        return isIntakeRequested() || isOuttakeRequested();
+    }
+
+    /**
+     * @return true if intake retraction has been requested but not yet handled.
+     */
+    boolean isRetractionRequested() {
+        return m_request.get() == IntakeRequest.RETRACTION_REQUESTED;
+    }
+
+    /**
+     * @return true (the caller can move to next state machine state) if an
+     *         intake had been requested.
+     */
+    boolean intakeHandled() {
+        return m_request.compareAndSet(IntakeRequest.INTAKE_REQUESTED, IntakeRequest.NO_REQUEST_PENDING);
+    }
+
+    /**
+     * @return true (the caller can move to next state machine state) if an
+     *         outtake had been requested.
+     */
+    boolean outtakeHandled() {
+        return m_request.compareAndSet(IntakeRequest.OUTTAKE_REQUESTED, IntakeRequest.NO_REQUEST_PENDING);
+    }
+
+    /**
+     * @return true (the caller can move to next state machine state) if a
+     *         retraction had been requested.
+     */
+    boolean retractionHandled() {
+        return m_request.compareAndSet(IntakeRequest.RETRACTION_REQUESTED, IntakeRequest.NO_REQUEST_PENDING);
     }
 }

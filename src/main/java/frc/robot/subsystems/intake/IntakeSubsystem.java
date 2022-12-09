@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.intake;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -18,20 +16,17 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.utils.TalonPIDConfig;
-
 
 public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   static class Hardware {
     private WPI_TalonFX armMotor;
     private CANSparkMax rollerMotor;
 
-    Hardware(WPI_TalonFX armMotor, 
-                    CANSparkMax rollerMotor) {
+    Hardware(WPI_TalonFX armMotor,
+        CANSparkMax rollerMotor) {
       this.armMotor = armMotor;
       this.rollerMotor = rollerMotor;
     }
@@ -66,42 +61,28 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   private ArmPosition m_armPosition;
   /** Holds the fixed roller speed (TODO make this 2x drive speed) */
   private double m_rollerSpeed;
-  /** Used to control the intake of cargo (see {@link IntakeRequest}). */
-  private final AtomicReference<IntakeRequest> m_request = new AtomicReference<>(IntakeRequest.NO_REQUEST_PENDING);
+  /** The state machine running this intake. */
   private final IntakeStateMachine m_stateMachine;
-
-  /**
-   * This enum describes the steps in handling the extension and retraction of the
-   * intake.
-   */
-  private enum IntakeRequest {
-    /** No current state change request. */
-    NO_REQUEST_PENDING,
-    /** Extension and intake requested. */
-    INTAKE_REQUESTED,
-    /** Extension and outtake requested. */
-    OUTTAKE_REQUESTED,
-    /** Retraction and stop of the intake has been requested. */
-    RETRACTION_REQUESTED;
-  }
 
   /**
    * Create an instance of IntakeSubsystem
    * <p>
    * ONLY ONE INSTANCE SHOULD EXIST AT ANY TIME!
    * <p>
-   * @param armConfig PID config for arm
-   * @param rollerSpeed Intake roller speed [-1.0, +1.0]
+   * 
+   * @param armConfig        PID config for arm
+   * @param rollerSpeed      Intake roller speed [-1.0, +1.0]
    * @param rumbleController the driver controller to rumble as needed.
    */
-  public IntakeSubsystem(final Hardware intakeHardware, final TalonPIDConfig armConfig, final double rollerSpeed, final GenericHID rumbleController) {
+  public IntakeSubsystem(final Hardware intakeHardware, final TalonPIDConfig armConfig, final double rollerSpeed,
+      final GenericHID rumbleController) {
     this.m_armMotor = intakeHardware.armMotor;
     this.m_rollerMotor = intakeHardware.rollerMotor;
     this.m_armConfig = armConfig;
     this.m_rollerSpeed = rollerSpeed;
 
     m_armPosition = ArmPosition.Top;
-    
+
     m_rollerMotor.setIdleMode(IdleMode.kCoast);
     m_rollerMotor.setInverted(true);
 
@@ -109,18 +90,17 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     m_armMotor.setNeutralMode(NeutralMode.Brake);
     m_armMotor.setSelectedSensorPosition(0.0);
     m_stateMachine = new IntakeStateMachine(this, rumbleController);
-    setDefaultCommand(this.m_stateMachine.getDefaultCommand());
-        new Trigger(this::isStateMachineRunning)
-                .whenInactive(new InstantCommand(() -> m_request.set(IntakeRequest.NO_REQUEST_PENDING)));
+    setDefaultCommand(m_stateMachine.getDefaultCommand());
   }
 
   /**
    * Initialize hardware devices for intake subsystem
+   * 
    * @return hardware object containing all necessary devices for this subsystem
    */
   public static Hardware initializeHardware() {
     Hardware intakeHardware = new Hardware(new WPI_TalonFX(Constants.ARM_MOTOR_PORT),
-                                           new CANSparkMax(Constants.INTAKE_ROLLER_PORT, MotorType.kBrushless));
+        new CANSparkMax(Constants.INTAKE_ROLLER_PORT, MotorType.kBrushless));
 
     return intakeHardware;
   }
@@ -148,7 +128,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     final Command current = this.getCurrentCommand();
     if (current == null) {
       return "<null>";
-    } else if (this.isStateMachineRunning()) {
+    } else if (m_stateMachine.isStateMachineRunning()) {
       return "State machine: " + m_stateMachine.getCurrentState();
     }
     return current.getName();
@@ -161,6 +141,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
 
   /**
    * Move arm to position
+   * 
    * @param targetPosition position to move arm to
    */
   private void armSetPosition(final ArmPosition targetPosition) {
@@ -183,7 +164,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     armSetPosition(ArmPosition.Bottom);
   }
 
-   /**
+  /**
    * Intake balls
    */
   void intake() {
@@ -216,9 +197,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if the request was granted (currently retracted).
    */
   public boolean requestIntake() {
-    return isStateMachineRunning()
-        && isRetracted()
-        && this.m_request.compareAndSet(IntakeRequest.NO_REQUEST_PENDING, IntakeRequest.INTAKE_REQUESTED);
+    return m_stateMachine.requestIntake();
   }
 
   /**
@@ -227,9 +206,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if the request was granted (currently retracted).
    */
   public boolean requestOuttake() {
-    return isStateMachineRunning()
-        && isRetracted()
-        && this.m_request.compareAndSet(IntakeRequest.NO_REQUEST_PENDING, IntakeRequest.OUTTAKE_REQUESTED);
+    return m_stateMachine.requestOuttake();
   }
 
   /**
@@ -238,79 +215,29 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * @return true if the request was granted.
    */
   public boolean requestRetraction() {
-    return isStateMachineRunning()
-        && !isRetracted()
-        && this.m_request.compareAndSet(IntakeRequest.NO_REQUEST_PENDING, IntakeRequest.RETRACTION_REQUESTED);
+    return m_stateMachine.requestRetraction();
   }
 
   /**
-   * @return true if intake has been requested but not yet handled.
+   * Return the current {@link ArmPosition} for the intake arm. This is just the
+   * physical state of the arm itself and cannot be relied upon to indicate the
+   * current state of the {@link IntakeStateMachine}.
+   * 
+   * @return true if the intake <b>arm</b> is retracted or on its way to retracted
+   *         and false otherwise.
    */
-  boolean isIntakeRequested() {
-    return this.m_request.get() == IntakeRequest.INTAKE_REQUESTED;
-  }
-
-  /**
-   * @return true if intake has been requested but not yet handled.
-   */
-  boolean isOuttakeRequested() {
-    return this.m_request.get() == IntakeRequest.OUTTAKE_REQUESTED;
-  }
-
-  /**
-   * @return true if either intake or outake has been requested but not yet
-   *         handled.
-   */
-  boolean isExtensionRequested() {
-    return isIntakeRequested() || isOuttakeRequested();
-  }
-
-  /**
-   * @return true if the intake is retracted or on its way to retracted and false
-   *         otherwise.
-   */
-  boolean isRetracted() {
+  boolean isArmRetracted() {
     return this.m_armPosition == ArmPosition.Top;
   }
 
   /**
-   * @return true if intake retraction has been requested but not yet handled.
+   * <p>
+   * This implementation is here to support the JUnit tests. The mock hardware
+   * implementations are forgotten.
+   * </p>
+   * 
+   * {@inheritDoc}
    */
-  boolean isRetractionRequested() {
-    return this.m_request.get() == IntakeRequest.RETRACTION_REQUESTED;
-  }
-
-  /**
-   * @return true (the caller can move to next state machine state) if an
-   *         intake had been requested.
-   */
-  boolean intakeHandled() {
-    return this.m_request.compareAndSet(IntakeRequest.INTAKE_REQUESTED, IntakeRequest.NO_REQUEST_PENDING);
-  }
-
-  /**
-   * @return true (the caller can move to next state machine state) if an
-   *         outtake had been requested.
-   */
-  boolean outtakeHandled() {
-    return this.m_request.compareAndSet(IntakeRequest.OUTTAKE_REQUESTED, IntakeRequest.NO_REQUEST_PENDING);
-  }
-
-  /**
-   * @return true (the caller can move to next state machine state) if a
-   *         retraction had been requested.
-   */
-  boolean retractionHandled() {
-    return this.m_request.compareAndSet(IntakeRequest.RETRACTION_REQUESTED, IntakeRequest.NO_REQUEST_PENDING);
-  }
-
-  /**
-   * @return true if the state machine is running and false otherwise.
-   */
-  public boolean isStateMachineRunning() {
-    return this.m_stateMachine.getDefaultCommand().isScheduled();
-  }
-
   @Override
   public void close() {
     m_armMotor = null;
