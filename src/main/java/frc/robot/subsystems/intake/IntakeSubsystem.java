@@ -57,8 +57,6 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   private WPI_TalonFX m_armMotor;
   private CANSparkMax m_rollerMotor;
   private TalonPIDConfig m_armConfig;
-  /** Holds the last set {@link ArmPosition} */
-  private ArmPosition m_armPosition;
   /** Holds the fixed roller speed (TODO make this 2x drive speed) */
   private double m_rollerSpeed;
   /** The state machine running this intake. */
@@ -80,8 +78,6 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     this.m_rollerMotor = intakeHardware.rollerMotor;
     this.m_armConfig = armConfig;
     this.m_rollerSpeed = rollerSpeed;
-
-    m_armPosition = ArmPosition.Top;
 
     m_rollerMotor.setIdleMode(IdleMode.kCoast);
     m_rollerMotor.setInverted(true);
@@ -145,9 +141,8 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    * @param targetPosition position to move arm to
    */
   private void armSetPosition(final ArmPosition targetPosition) {
-    m_armPosition = targetPosition;
     // Move arm toward setpoint
-    m_armMotor.set(ControlMode.MotionMagic, m_armPosition.setPoint);
+    m_armMotor.set(ControlMode.MotionMagic, targetPosition.setPoint);
   }
 
   /**
@@ -192,6 +187,15 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   /**
+   * TODO dummy this up from dashboard and use for rumble.
+   * 
+   * @return true if the robot is holding the maximum number of cargo.
+   */
+  boolean isFull() {
+    return false;
+  }
+
+  /**
    * Called to request that we start the intake of cargo.
    * 
    * @return true if the request was granted (currently retracted).
@@ -216,18 +220,6 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
    */
   public boolean requestRetraction() {
     return m_stateMachine.requestRetraction();
-  }
-
-  /**
-   * Return the current {@link ArmPosition} for the intake arm. This is just the
-   * physical state of the arm itself and cannot be relied upon to indicate the
-   * current state of the {@link IntakeStateMachine}.
-   * 
-   * @return true if the intake <b>arm</b> is retracted or on its way to retracted
-   *         and false otherwise.
-   */
-  boolean isArmRetracted() {
-    return this.m_armPosition == ArmPosition.Top;
   }
 
   /**
