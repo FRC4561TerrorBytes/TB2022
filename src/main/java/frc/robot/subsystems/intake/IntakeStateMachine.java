@@ -132,35 +132,18 @@ public class IntakeStateMachine {
     }
 
     /**
-     * This is the next command index operator for the state machine. If the current
-     * state is no state, the result is STOWED_EMPTY (see
-     * {@link #setNextInitialState(State)} for initial state options).
-     * 
-     * <p>
-     * For the intake, the state machine is rather complex and is implemented in
-     * {@link #getNextState(State)}. That method is wrapped by this method.
-     * This method handles enum/ordinal mapping so that the implemenation can be
-     * purely enum based for readability.
+     * This is the next command index operator for the state machine. If the pending
+     * next state is no state, the result is RETRACTED.
      * 
      * @param current the current state index as passed from the state machine
      *                command.
      * 
      * @return the next state index in the range [0, State.SIZE).
      */
-    private int getNextStateIndex(final int current) {
-        return getNextState().ordinal();
-    }
-
-    /**
-     * This is the next command state operator for the state machine. If the pending
-     * next state is no state, the result is RETRACTED.
-     * 
-     * @return the next {@link State} of the state machine command. Never null.
-     */
-    synchronized private State getNextState() {
+    synchronized private int getNextStateIndex(final int current) {
         final State next = m_nextState == null ? State.RETRACTED : m_nextState;
         m_nextState = null;
-        return next;
+        return next.ordinal();
     }
 
     /**
