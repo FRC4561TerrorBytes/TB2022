@@ -135,12 +135,9 @@ public class IntakeStateMachine {
      * This is the next command index operator for the state machine. If the pending
      * next state is no state, the result is RETRACTED.
      * 
-     * @param current the current state index as passed from the state machine
-     *                command.
-     * 
      * @return the next state index in the range [0, State.SIZE).
      */
-    synchronized private int getNextStateIndex(final int current) {
+    synchronized private int getNextStateIndex() {
         final State next = m_nextState == null ? State.RETRACTED : m_nextState;
         m_nextState = null;
         return next.ordinal();
@@ -184,7 +181,7 @@ public class IntakeStateMachine {
      * 
      * @return true if the request was granted.
      */
-    public boolean requestOuttake() {
+    synchronized boolean requestOuttake() {
         boolean stateChange = false;
         final State current = getCurrentState();
         if ((current != null) && (!isNextStatePending())) {
@@ -203,7 +200,7 @@ public class IntakeStateMachine {
      * 
      * @return true if the request was granted.
      */
-    public boolean requestRetraction() {
+    synchronized boolean requestRetraction() {
         boolean stateChange = false;
         final State current = getCurrentState();
         if ((current != null) && (!isNextStatePending())) {

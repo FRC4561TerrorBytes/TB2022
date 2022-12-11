@@ -63,10 +63,7 @@ public class ScriptedCommandGroup extends RandomAccessCommandGroup {
      * @param commands the commands to include in this group.
      */
     public ScriptedCommandGroup(final Command... commands) {
-        // Would prefer to send an IntUnaryOperator on super call, but that would
-        // require an instance method reference during construction which is not
-        // allowed. See the getNextCommandIndex() override instead.
-        super(commands);
+        super(NO_OP_SUPPLIER, commands);
     }
 
     /**

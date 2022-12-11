@@ -7,12 +7,12 @@ package frc.robot.commands.state;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.IntUnaryOperator;
+import java.util.Objects;
+import java.util.function.IntSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.PerpetualCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
  * A CommandGroup that runs a list of commands in an arbitrary order. During
@@ -33,29 +33,21 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class RandomAccessCommandGroup extends CommandGroupBase {
   /** The result of {@link #getCurrentCommandIndex()} if no current command. */
   public static final int NO_CURRENT_COMMAND = -1;
+  /** Used by subclases that intend to override {@link #getNextCommandIndex()}. */
+  protected static final IntSupplier NO_OP_SUPPLIER = () -> NO_CURRENT_COMMAND;
 
   /** The order commands that can be access by index (0 based). */
   private final List<Command> m_commands = new ArrayList<>();
   /** A read only wrapper for {@link #getCommands()}. */
   private final List<Command> m_unmodifiableCommands = Collections.unmodifiableList(m_commands);
-  /** The operator for determining the next command. */
-  private final IntUnaryOperator m_nextCommandIndexOperator;
+  /** The supplier for determining the next command. */
+  private final IntSupplier m_nextCommandIndexSupplier;
   /** The initial command index the next time {@link #initialize()} is called. */
   private int m_initialCommandIndex = NO_CURRENT_COMMAND;
   /** The currently active command index. */
   private int m_currentCommandIndex = NO_CURRENT_COMMAND;
   /** Will continue to be true if all added commands can run when disabled. */
   private boolean m_runWhenDisabled = true;
-
-  /**
-   * Same as {@link #RandomAccessCommandGroup(IntUnaryOperator, Command...)} with
-   * a null operator.
-   *
-   * @param commands the commands to include in this group.
-   */
-  public RandomAccessCommandGroup(final Command... commands) {
-    this(null, commands);
-  }
 
   /**
    * Creates a new RandomAccessCommandGroup. The given commands will be run
@@ -86,16 +78,13 @@ public class RandomAccessCommandGroup extends CommandGroupBase {
    * command for a subsystem and this group implements a state machine for the
    * subsystem.
    *
-   * @param nextCommandIndexOperator an operator that takes the current index as a
-   *                                 parameter and returns the next index. If
-   *                                 null, an operator that simply increments the
-   *                                 index is used. This results in behavior like
-   *                                 a {@link SequentialCommandGroup}.
-   * @param commands                 the commands to include in this group.
+   * @param nextCommandIndexSupplier a supplier that returns the next index. This
+   *                                 parameter must not be null.
    */
-  public RandomAccessCommandGroup(final IntUnaryOperator nextCommandIndexOperator, final Command... commands) {
+  public RandomAccessCommandGroup(final IntSupplier nextCommandIndexSupplier, final Command... commands) {
+    Objects.requireNonNull(nextCommandIndexSupplier, "Next command index supplier cannot be null.");
     addCommands(commands);
-    m_nextCommandIndexOperator = nextCommandIndexOperator != null ? nextCommandIndexOperator : i -> i + 1;
+    m_nextCommandIndexSupplier = nextCommandIndexSupplier;
   }
 
   /**
@@ -257,7 +246,7 @@ public class RandomAccessCommandGroup extends CommandGroupBase {
    *         if out of range.
    */
   protected int getNextCommandIndex() {
-    m_currentCommandIndex = m_nextCommandIndexOperator.applyAsInt(m_currentCommandIndex);
+    m_currentCommandIndex = m_nextCommandIndexSupplier.getAsInt();
     isCurrentCommandIndexInRange();
     return m_currentCommandIndex;
   }
