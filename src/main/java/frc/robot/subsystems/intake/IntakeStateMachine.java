@@ -132,7 +132,7 @@ public class IntakeStateMachine {
     }
 
     /**
-     * This is the next command index operator for the state machine. If the pending
+     * This is the next command index supplier for the state machine. If the pending
      * next state is no state, the result is RETRACTED.
      * 
      * @return the next state index in the range [0, State.SIZE).

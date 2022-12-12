@@ -21,6 +21,7 @@ import frc.robot.Constants;
 import frc.robot.utils.TalonPIDConfig;
 
 public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
+  /** This class exists to support mock hardware for JUnit tests. */
   static class Hardware {
     private WPI_TalonFX armMotor;
     private CANSparkMax rollerMotor;
@@ -57,7 +58,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   private WPI_TalonFX m_armMotor;
   private CANSparkMax m_rollerMotor;
   private TalonPIDConfig m_armConfig;
-  /** Holds the fixed roller speed (TODO make this 2x drive speed) */
+  /** Holds the fixed roller speed (TODO make this 2x drive speed with bounds) */
   private double m_rollerSpeed;
   /** The state machine running this intake. */
   private final IntakeStateMachine m_stateMachine;

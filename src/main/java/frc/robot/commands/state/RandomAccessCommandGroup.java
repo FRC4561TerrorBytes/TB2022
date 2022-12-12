@@ -33,10 +33,10 @@ import edu.wpi.first.wpilibj2.command.PerpetualCommand;
 public class RandomAccessCommandGroup extends CommandGroupBase {
   /** The result of {@link #getCurrentCommandIndex()} if no current command. */
   public static final int NO_CURRENT_COMMAND = -1;
-  /** Used by subclases that intend to override {@link #getNextCommandIndex()}. */
+  /** For subclasses that intend to override {@link #getNextCommandIndex()}. */
   protected static final IntSupplier NO_OP_SUPPLIER = () -> NO_CURRENT_COMMAND;
 
-  /** The order commands that can be access by index (0 based). */
+  /** The commands that can be access by index (0 based). */
   private final List<Command> m_commands = new ArrayList<>();
   /** A read only wrapper for {@link #getCommands()}. */
   private final List<Command> m_unmodifiableCommands = Collections.unmodifiableList(m_commands);
@@ -63,14 +63,14 @@ public class RandomAccessCommandGroup extends CommandGroupBase {
    * parameter cannot be used as reliable input into selecting the next command.
    * The isFinished() method must properly detect the time for a command change.
    * The selection of the next command is left to the
-   * <code>nextCommandIndexOperator</code>.
+   * <code>nextCommandIndexSupplier</code>.
    * 
    * <p>
-   * Typically, if the nextCommandIndexOperator returned index is out of range
+   * Typically, if the nextCommandIndexSupplier returned index is out of range
    * (see {@link #isCurrentCommandIndexInRange()}), this command group ends.
    * However, this command is designed to work properly with
    * {@link PerpetualCommand} (see {@link #perpetually()}). In that case, it will
-   * not end, but will call the nextCommandIndexOperator during each execute call
+   * not end, but will call the nextCommandIndexSupplier during each execute call
    * with a parameter of -1.
    * 
    * <p>
@@ -214,7 +214,7 @@ public class RandomAccessCommandGroup extends CommandGroupBase {
   /**
    * Sets the index of the command to use the next time the command group is
    * initialized. Setting this attribute to {@link #NO_CURRENT_COMMAND} directs
-   * the {@link #initialize()} to call the {@link #m_nextCommandIndexOperator} to
+   * the {@link #initialize()} to call the {@link #m_nextCommandIndexSupplier} to
    * get the initial command index (NO_CURRENT_COMMAND is the default value).
    * 
    * @param initialCommandIndex the index of the command to use the next time the
@@ -229,6 +229,9 @@ public class RandomAccessCommandGroup extends CommandGroupBase {
   }
 
   /**
+   * If {@link #m_currentCommandIndex} is out of range, this method normalizes the
+   * value to {@link #NO_CURRENT_COMMAND}.
+   * 
    * @return the current command index. It will be set to
    *         {@link #NO_CURRENT_COMMAND} if out of range.
    */
